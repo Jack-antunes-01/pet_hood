@@ -56,7 +56,10 @@ class LoginPage extends StatelessWidget {
                   )),
               Padding(
                 padding: const EdgeInsets.only(right: 32, left: 32, bottom: 20),
-                child: CustomButton(text: "Entrar", onPress: () {}),
+                child: CustomButton(
+                  text: "Entrar",
+                  onPress: () => Get.offAllNamed("/"),
+                ),
               ),
               InkWell(
                 splashColor: inputColor,

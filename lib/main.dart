@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/route_manager.dart';
 import 'package:pet_hood/constants/app_constants.dart';
-import 'package:pet_hood/pages/terms_of_use/terms_of_use.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 import 'pages/pages.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -32,6 +33,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: appTitle,
       theme: ThemeData(
+        splashColor: primaryDark,
+        highlightColor: primaryDark,
         fontFamily: 'Nunito',
         scaffoldBackgroundColor: base,
       ),
@@ -43,6 +46,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/register", page: () => FirstRegisterForm()),
         GetPage(name: "/register_2", page: () => SecondRegisterForm()),
         GetPage(name: "/terms_of_use", page: () => const TermsOfUsePage()),
+        GetPage(name: "/", page: () => HomePage()),
       ],
       initialRoute: "/welcome",
     );

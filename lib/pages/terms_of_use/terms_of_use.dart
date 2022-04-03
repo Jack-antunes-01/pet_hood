@@ -10,7 +10,9 @@ class TermsOfUsePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var safePaddingBottom = MediaQuery.of(context).padding.bottom;
     return Scaffold(
-      appBar: appBarHeader(),
+      appBar: AppBarHeader(
+        appBar: AppBar(),
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(

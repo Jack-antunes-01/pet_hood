@@ -5,6 +5,7 @@ class CustomText extends StatelessWidget {
   final Color color;
   final FontWeight fontWeight;
   final double fontSize;
+  final String? fontFamily;
 
   const CustomText({
     Key? key,
@@ -12,6 +13,7 @@ class CustomText extends StatelessWidget {
     required this.color,
     this.fontWeight = FontWeight.normal,
     this.fontSize = 16,
+    this.fontFamily,
   }) : super(key: key);
 
   @override
@@ -22,6 +24,7 @@ class CustomText extends StatelessWidget {
         color: color,
         fontSize: fontSize,
         fontWeight: fontWeight,
+        fontFamily: fontFamily,
       ),
     );
   }
