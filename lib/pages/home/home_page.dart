@@ -11,12 +11,12 @@ class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
   final HomePageController _homePageController = Get.put(HomePageController());
 
-  final List<Widget> _pages = const [
-    FeedPage(),
-    SearchPage(),
-    SizedBox.shrink(),
+  final List<Widget> _pages = [
+    const FeedPage(),
+    const SearchPage(),
+    const SizedBox.shrink(),
     AdoptionPage(),
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   @override

@@ -14,6 +14,8 @@ class CustomInput extends StatelessWidget {
   final VoidCallback? onIconPress;
   final TextEditingController? controller;
   final bool readOnly;
+  final bool labelActive;
+  final Icon? prefixIcon;
 
   const CustomInput({
     Key? key,
@@ -28,6 +30,8 @@ class CustomInput extends StatelessWidget {
     this.onIconPress,
     this.controller,
     this.readOnly = false,
+    this.labelActive = true,
+    this.prefixIcon,
   }) : super(key: key);
 
   @override
@@ -38,18 +42,21 @@ class CustomInput extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: textInputType,
       decoration: InputDecoration(
-        suffixIcon: GestureDetector(
-          onTap: onIconPress,
-          child: SizedBox(
-            width: 50,
-            height: 50,
-            child: obscureText ? suffixIcon : suffixIconReverse,
-          ),
-        ),
+        suffixIcon: suffixIcon != null || suffixIconReverse != null
+            ? GestureDetector(
+                onTap: onIconPress,
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: obscureText ? suffixIcon : suffixIconReverse,
+                ),
+              )
+            : null,
         contentPadding: const EdgeInsets.all(15),
+        prefixIcon: prefixIcon,
         fillColor: backgroundColor,
         filled: true,
-        labelText: placeholderText,
+        labelText: labelActive ? placeholderText : null,
         labelStyle: TextStyle(
           fontSize: fontSize,
           color: placeholderColor,

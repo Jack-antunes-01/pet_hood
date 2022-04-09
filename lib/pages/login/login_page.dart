@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/pages/login/login_page_controller.dart';
+import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 class LoginPage extends StatelessWidget {
@@ -79,7 +80,7 @@ class LoginPage extends StatelessWidget {
                   InkWell(
                     splashColor: inputColor,
                     highlightColor: inputColor,
-                    onTap: () => Get.toNamed("/register"),
+                    onTap: () => Get.toNamed(Routes.register),
                     child:
                         const CustomText(text: "Cadastre-se", color: primary),
                   ),

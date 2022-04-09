@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/route_manager.dart';
 import 'package:pet_hood/constants/app_constants.dart';
+import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 import 'pages/pages.dart';
@@ -40,15 +41,8 @@ class MyApp extends StatelessWidget {
       ),
       defaultTransition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 150),
-      getPages: [
-        GetPage(name: "/welcome", page: () => const WelcomePage()),
-        GetPage(name: "/login", page: () => LoginPage()),
-        GetPage(name: "/register", page: () => FirstRegisterForm()),
-        GetPage(name: "/register_2", page: () => SecondRegisterForm()),
-        GetPage(name: "/terms_of_use", page: () => const TermsOfUsePage()),
-        GetPage(name: "/", page: () => HomePage()),
-      ],
-      initialRoute: "/welcome",
+      getPages: Routes.routeList,
+      initialRoute: Routes.welcome,
     );
   }
 }

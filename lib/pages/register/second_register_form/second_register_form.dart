@@ -4,6 +4,7 @@ import 'package:get/route_manager.dart';
 import 'package:get/state_manager.dart';
 import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/pages/register/second_register_form/second_register_form_controller.dart';
+import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 class SecondRegisterForm extends StatelessWidget {
@@ -103,7 +104,7 @@ class SecondRegisterForm extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                     InkWell(
-                      onTap: () => Get.toNamed("/terms_of_use"),
+                      onTap: () => Get.toNamed(Routes.termsOfUse),
                       child: const CustomText(
                         text: "Termos de Uso e Privacidade",
                         color: primary,

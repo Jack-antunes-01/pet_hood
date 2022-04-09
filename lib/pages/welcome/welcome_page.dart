@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/route_manager.dart';
 import 'package:pet_hood/components/custom_button/custom_button.dart';
+import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -47,7 +48,7 @@ class WelcomePage extends StatelessWidget {
               left: 32,
               child: CustomButton(
                 text: "Continuar",
-                onPress: () => Get.toNamed("/login"),
+                onPress: () => Get.toNamed(Routes.login),
               ),
             ),
           ],

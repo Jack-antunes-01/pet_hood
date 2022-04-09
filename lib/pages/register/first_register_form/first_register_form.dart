@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/pages/register/first_register_form/fisrt_register_form_controller.dart';
+import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 class FirstRegisterForm extends StatelessWidget {
@@ -60,7 +61,7 @@ class FirstRegisterForm extends StatelessWidget {
                 ),
                 child: CustomButton(
                   text: "Continuar",
-                  onPress: () => Get.toNamed("/register_2"),
+                  onPress: () => Get.toNamed(Routes.register2),
                 ),
               ),
               const Spacer(),

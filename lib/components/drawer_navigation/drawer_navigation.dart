@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/route_manager.dart';
 import 'package:pet_hood/components/components.dart';
+import 'package:pet_hood/routes/routes.dart';
 
 import '../../constants/constants.dart';
 import '../../theme/colors.dart';
@@ -101,7 +102,7 @@ class DrawerNavigation extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () => Get.toNamed("terms_of_use"),
+            onTap: () => Get.toNamed(Routes.termsOfUse),
             child: const CustomText(
               text: "Termos de uso e privacidade",
               color: base,
