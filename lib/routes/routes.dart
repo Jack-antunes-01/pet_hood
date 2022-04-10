@@ -7,6 +7,8 @@ import 'package:pet_hood/pages/profile/edit_profile_page.dart';
 import 'package:pet_hood/pages/ranking/ranking_page.dart';
 import 'package:pet_hood/pages/stakeholders/stakeholders_page.dart';
 
+import '../pages/profile/external_profile_page.dart';
+
 abstract class Routes {
   static List<GetPage> get routeList => [
         GetPage(name: welcome, page: () => const WelcomePage()),
@@ -21,6 +23,7 @@ abstract class Routes {
         GetPage(name: aboutUs, page: () => const AboutUsPage()),
         GetPage(name: stakeholders, page: () => const StakeholdersPage()),
         GetPage(name: ranking, page: () => const RankingPage()),
+        GetPage(name: externalProfile, page: () => const ExternalProfilePage()),
       ];
 
   static String get welcome => "/welcome";
@@ -35,4 +38,5 @@ abstract class Routes {
   static String get aboutUs => "/about_us";
   static String get stakeholders => "/stakeholders";
   static String get ranking => "/ranking";
+  static String get externalProfile => "/external_profile";
 }

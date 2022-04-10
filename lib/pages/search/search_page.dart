@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:pet_hood/components/components.dart';
+import 'package:pet_hood/components/user_avatar/user.avatar.dart';
+import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 class SearchPage extends StatelessWidget {
@@ -7,53 +10,55 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 16),
-            child: CustomInput(
-              placeholderText: "Digite algo..",
-              prefixIcon: Icon(Icons.search, color: grey600),
-              labelActive: false,
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(right: 20, left: 20, top: 16, bottom: 16),
+          child: CustomInput(
+            placeholderText: "Digite algo..",
+            prefixIcon: Icon(Icons.search, color: grey600),
+            labelActive: false,
+          ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 60),
+              child: Column(
+                children: List.generate(7, (index) => _peopleCard()),
+              ),
             ),
           ),
-          Column(
-            children: List.generate(5, (index) => _peopleCard()),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _peopleCard() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: () {},
-        splashColor: grey200,
-        highlightColor: grey200,
-        child: Card(
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(color: grey200, width: 1),
-            borderRadius: BorderRadius.circular(8),
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () {
+        Get.toNamed(Routes.externalProfile);
+      },
+      splashColor: grey200,
+      highlightColor: grey200,
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: grey200,
+              width: 2,
+            ),
           ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16, left: 16),
           child: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: Image.network(
-                      "https://www.gettyimages.pt/gi-resources/images/500px/983794168.jpg",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: UserAvatar(
+                  size: 60,
                 ),
               ),
               Column(

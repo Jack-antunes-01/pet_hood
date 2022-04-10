@@ -11,15 +11,18 @@ import 'package:pet_hood/theme/colors.dart';
 import '../adoption/pet_widget/pet_widget.dart';
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({Key? key}) : super(key: key);
+  final bool isOwner;
+
+  ProfilePage({Key? key, required this.isOwner}) : super(key: key);
 
   final List pets = getPetList();
 
   @override
   Widget build(BuildContext context) {
+    var safePadding = MediaQuery.of(context).padding.bottom;
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
+        padding: EdgeInsets.only(bottom: safePadding + 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -41,11 +44,11 @@ class ProfilePage extends StatelessWidget {
           padding: EdgeInsets.only(
             left: 20,
             right: 20,
-            top: 16,
           ),
           child: CustomText(
             text: "Publicações",
             color: grey800,
+            fontSize: 18,
           ),
         ),
       ],
@@ -57,8 +60,12 @@ class ProfilePage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.only(top: 16, bottom: 8, left: 20, right: 20),
-          child: CustomText(text: "Adoção", color: grey800),
+          padding: EdgeInsets.only(bottom: 8, left: 20, right: 20),
+          child: CustomText(
+            text: "Adoção",
+            color: grey800,
+            fontSize: 18,
+          ),
         ),
         _noAdoptionPets(),
         SizedBox(
@@ -74,11 +81,17 @@ class ProfilePage extends StatelessWidget {
             }).toList(),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 20, left: 20),
-          child:
-              CustomButton(text: "Cadastrar pet para adoção", onPress: () {}),
-        ),
+        isOwner
+            ? Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 16,
+                  right: 20,
+                  left: 20,
+                ),
+                child: CustomButton(
+                    text: "Cadastrar pet para adoção", onPress: () {}),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -89,7 +102,11 @@ class ProfilePage extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.only(bottom: 8, left: 20, right: 20),
-          child: CustomText(text: "Meus Pets", color: grey800),
+          child: CustomText(
+            text: "Meus Pets",
+            color: grey800,
+            fontSize: 18,
+          ),
         ),
         _noPets(),
         SizedBox(
@@ -100,10 +117,16 @@ class ProfilePage extends StatelessWidget {
             children: buildNewestPet(),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 20, left: 20),
-          child: CustomButton(text: "Adicionar pet", onPress: () {}),
-        ),
+        isOwner
+            ? Padding(
+                padding: const EdgeInsets.only(
+                  right: 20,
+                  left: 20,
+                  bottom: 16,
+                ),
+                child: CustomButton(text: "Adicionar pet", onPress: () {}),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -177,6 +200,7 @@ class ProfilePage extends StatelessWidget {
                 title: CustomText(
                   text: "Bio",
                   color: grey800,
+                  fontSize: 18,
                 ),
                 children: [
                   CustomText(
@@ -209,26 +233,29 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                right: 10,
-                top: 10,
-                child: Material(
-                  color: primary,
-                  borderRadius: BorderRadius.circular(4),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(4),
-                    onTap: () {},
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
+              isOwner
+                  ? Positioned(
+                      right: 10,
+                      top: 10,
+                      child: Material(
+                        color: primary,
                         borderRadius: BorderRadius.circular(4),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(4),
+                          onTap: () {},
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child:
+                                const Icon(Icons.edit, color: base, size: 18),
+                          ),
+                        ),
                       ),
-                      child: const Icon(Icons.edit, color: base, size: 18),
-                    ),
-                  ),
-                ),
-              ),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
           Positioned(
@@ -240,34 +267,36 @@ class ProfilePage extends StatelessWidget {
                 Stack(
                   children: [
                     const UserAvatar(size: 100),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Material(
-                        borderRadius: BorderRadius.circular(16),
-                        color: primary,
-                        child: InkWell(
-                          onTap: () {},
-                          borderRadius: BorderRadius.circular(16),
-                          child: Container(
-                            width: 32,
-                            height: 32,
-                            decoration: BoxDecoration(
+                    isOwner
+                        ? Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Material(
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: base,
-                                width: 1,
+                              color: primary,
+                              child: InkWell(
+                                onTap: () {},
+                                borderRadius: BorderRadius.circular(16),
+                                child: Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: base,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.edit,
+                                    color: base,
+                                    size: 16,
+                                  ),
+                                ),
                               ),
                             ),
-                            child: const Icon(
-                              Icons.edit,
-                              color: base,
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          )
+                        : const SizedBox.shrink(),
                   ],
                 ),
                 Expanded(
@@ -287,6 +316,7 @@ class ProfilePage extends StatelessWidget {
                           CustomText(
                             text: "Jackson Antunes",
                             color: grey800,
+                            fontSize: 18,
                             textOverflow: TextOverflow.ellipsis,
                           ),
                           CustomText(
@@ -299,29 +329,31 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Material(
-                    color: primary,
-                    borderRadius: BorderRadius.circular(4),
-                    child: InkWell(
-                      onTap: () => Get.toNamed(Routes.editProfile),
-                      borderRadius: BorderRadius.circular(4),
-                      child: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
+                isOwner
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Material(
+                          color: primary,
                           borderRadius: BorderRadius.circular(4),
+                          child: InkWell(
+                            onTap: () => Get.toNamed(Routes.editProfile),
+                            borderRadius: BorderRadius.circular(4),
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Icon(
+                                Icons.edit_note,
+                                color: base,
+                                size: 24,
+                              ),
+                            ),
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.edit_note,
-                          color: base,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                      )
+                    : const SizedBox.shrink(),
               ],
             ),
           ),
