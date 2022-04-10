@@ -2,6 +2,8 @@ import 'package:get/route_manager.dart';
 import 'package:pet_hood/pages/about_us/about_us.dart';
 import 'package:pet_hood/pages/adoption/category_list/category_list.dart';
 import 'package:pet_hood/pages/adoption/pet_details/pet_details.dart';
+import 'package:pet_hood/pages/chat/chat_page.dart';
+import 'package:pet_hood/pages/chat/chat_people_page.dart';
 import 'package:pet_hood/pages/pages.dart';
 import 'package:pet_hood/pages/profile/edit_profile_page.dart';
 import 'package:pet_hood/pages/ranking/ranking_page.dart';
@@ -24,6 +26,8 @@ abstract class Routes {
         GetPage(name: stakeholders, page: () => const StakeholdersPage()),
         GetPage(name: ranking, page: () => const RankingPage()),
         GetPage(name: externalProfile, page: () => const ExternalProfilePage()),
+        GetPage(name: chat, page: () => const ChatPage()),
+        GetPage(name: chatPeople, page: () => const ChatPeoplePage()),
       ];
 
   static String get welcome => "/welcome";
@@ -39,4 +43,6 @@ abstract class Routes {
   static String get stakeholders => "/stakeholders";
   static String get ranking => "/ranking";
   static String get externalProfile => "/external_profile";
+  static String get chat => "/chat";
+  static String get chatPeople => "/chat_people";
 }

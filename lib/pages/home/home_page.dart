@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/instance_manager.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/components/bottom_tab_navigation/bottom_tab_navigation.dart';
 import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/components/drawer_navigation/drawer_navigation.dart';
 import 'package:pet_hood/pages/home/home_page_controller.dart';
 import 'package:pet_hood/pages/pages.dart';
+import 'package:pet_hood/routes/routes.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -39,7 +39,9 @@ class HomePage extends StatelessWidget {
       child: IconButton(
         splashRadius: 25,
         icon: const Icon(Icons.chat_outlined, size: 28),
-        onPressed: () {},
+        onPressed: () {
+          Get.toNamed(Routes.chat);
+        },
       ),
     );
   }
