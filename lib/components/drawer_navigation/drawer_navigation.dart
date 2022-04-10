@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+
 import 'package:pet_hood/components/components.dart';
+import 'package:pet_hood/pages/home/home_page_controller.dart';
 import 'package:pet_hood/routes/routes.dart';
 
 import '../../constants/constants.dart';
 import '../../theme/colors.dart';
 
 class DrawerNavigation extends StatelessWidget {
-  const DrawerNavigation({Key? key}) : super(key: key);
+  DrawerNavigation({Key? key}) : super(key: key);
+
+  final HomePageController _homePageController = Get.put(HomePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -71,31 +75,43 @@ class DrawerNavigation extends StatelessWidget {
                 _listTileItem(
                   text: "Meu perfil",
                   icons: Icons.account_circle_outlined,
-                  onPress: () {},
+                  onPress: () {
+                    Navigator.of(context).pop();
+                    _homePageController.selectedIndex = 4;
+                  },
                 ),
                 _divider(),
                 _listTileItem(
                   text: "Animais para adoção",
                   imagePath: "assets/images/app_logo_outline.svg",
-                  onPress: () {},
+                  onPress: () {
+                    Navigator.of(context).pop();
+                    _homePageController.selectedIndex = 3;
+                  },
                 ),
                 _divider(),
                 _listTileItem(
                   text: "Parcerias",
                   icons: Icons.handshake_outlined,
-                  onPress: () {},
+                  onPress: () {
+                    Get.toNamed(Routes.stakeholders);
+                  },
                 ),
                 _divider(),
                 _listTileItem(
                   text: "Ranking",
                   icons: Icons.star_border_outlined,
-                  onPress: () {},
+                  onPress: () {
+                    Get.toNamed(Routes.ranking);
+                  },
                 ),
                 _divider(),
                 _listTileItem(
                   text: "Sobre nós",
                   icons: Icons.info_outline,
-                  onPress: () {},
+                  onPress: () {
+                    Get.toNamed(Routes.aboutUs);
+                  },
                 ),
                 _divider(),
               ],

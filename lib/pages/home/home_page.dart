@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const DrawerNavigation(),
+      drawer: DrawerNavigation(),
       appBar: _appBar(),
       bottomNavigationBar: BottomTabNavigation(),
       body: Obx(
@@ -30,7 +30,6 @@ class HomePage extends StatelessWidget {
           child: _pages.elementAt(_homePageController.selectedIndex),
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(items: []),
     );
   }
 

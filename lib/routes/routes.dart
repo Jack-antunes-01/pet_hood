@@ -1,7 +1,11 @@
 import 'package:get/route_manager.dart';
+import 'package:pet_hood/pages/about_us/about_us.dart';
 import 'package:pet_hood/pages/adoption/category_list/category_list.dart';
 import 'package:pet_hood/pages/adoption/pet_details/pet_details.dart';
 import 'package:pet_hood/pages/pages.dart';
+import 'package:pet_hood/pages/profile/edit_profile_page.dart';
+import 'package:pet_hood/pages/ranking/ranking_page.dart';
+import 'package:pet_hood/pages/stakeholders/stakeholders_page.dart';
 
 abstract class Routes {
   static List<GetPage> get routeList => [
@@ -13,6 +17,10 @@ abstract class Routes {
         GetPage(name: home, page: () => HomePage()),
         GetPage(name: categoryList, page: () => const CategoryList()),
         GetPage(name: petDetails, page: () => PetDetails()),
+        GetPage(name: editProfile, page: () => const EditProfilePage()),
+        GetPage(name: aboutUs, page: () => const AboutUsPage()),
+        GetPage(name: stakeholders, page: () => const StakeholdersPage()),
+        GetPage(name: ranking, page: () => const RankingPage()),
       ];
 
   static String get welcome => "/welcome";
@@ -23,4 +31,8 @@ abstract class Routes {
   static String get home => "/";
   static String get categoryList => "/category_list";
   static String get petDetails => "/pet_details";
+  static String get editProfile => "/edit_profile";
+  static String get aboutUs => "/about_us";
+  static String get stakeholders => "/stakeholders";
+  static String get ranking => "/ranking";
 }

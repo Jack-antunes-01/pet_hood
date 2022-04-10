@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/components/user_avatar/user.avatar.dart';
 import 'package:pet_hood/data/data.dart';
 import 'package:pet_hood/entities/pet.dart';
 import 'package:pet_hood/pages/profile/pet_profile_widget/pet_profile_widget.dart';
+import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 import '../adoption/pet_widget/pet_widget.dart';
@@ -303,7 +305,7 @@ class ProfilePage extends StatelessWidget {
                     color: primary,
                     borderRadius: BorderRadius.circular(4),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () => Get.toNamed(Routes.editProfile),
                       borderRadius: BorderRadius.circular(4),
                       child: Container(
                         width: 36,
