@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
     const SearchPage(),
     const SizedBox.shrink(),
     AdoptionPage(),
-    const ProfilePage(),
+    ProfilePage(),
   ];
 
   @override
@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
       appBar: _appBar(),
       bottomNavigationBar: BottomTabNavigation(),
       body: Obx(
-        () => Center(
+        () => Container(
           child: _pages.elementAt(_homePageController.selectedIndex),
         ),
       ),

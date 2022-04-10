@@ -446,18 +446,6 @@ class PublicationPage extends StatelessWidget {
           ),
         ],
       ),
-      // actions: [
-      //   SizedBox(
-      //     width: 80,
-      //     height: 40,
-      //     child: CustomButton(
-      //       onPress: () {
-      //         Navigator.of(context).pop();
-      //       },
-      //       text: "Fechar",
-      //     ),
-      //   ),
-      // ],
     );
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/entities/pet.dart';
 import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
-class PetWidget extends StatelessWidget {
-  const PetWidget({
+class PetProfileWidget extends StatelessWidget {
+  const PetProfileWidget({
     Key? key,
     required this.pet,
     required this.index,
@@ -19,7 +20,7 @@ class PetWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routes.petDetails, arguments: {
-          "showAdoption": true,
+          "showAdoption": false,
           "name": pet.name,
           "location": pet.location,
           "distance": pet.distance,
@@ -41,7 +42,7 @@ class PetWidget extends StatelessWidget {
             width: 1,
           ),
         ),
-        width: 220,
+        width: 230,
         margin: EdgeInsets.only(
           right: 16,
           left: index == 0 ? 16 : 0,
@@ -73,7 +74,7 @@ class PetWidget extends StatelessWidget {
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(6),
                       child: Container(
                         height: 30,
                         width: 30,
@@ -93,64 +94,70 @@ class PetWidget extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.only(bottom: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: getBackgroundColor(pet.category),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 16,
+                      left: 16,
+                      top: 8,
+                      bottom: 8,
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Text(
-                      parsePetCondition(pet.category),
-                      style: TextStyle(
-                        color: getFontColor(pet.category),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    pet.name,
-                    style: const TextStyle(
+                    child: CustomText(
+                      text: pet.name,
                       color: grey800,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
                   Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(
-                        Icons.location_on,
-                        color: grey600,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        pet.location,
-                        style: const TextStyle(
-                          color: grey600,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "(" + pet.distance + ")",
-                        style: const TextStyle(
-                          color: grey600,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      const SizedBox(width: 8),
+                      buildPetFeature(value: "4 anos", feature: "Idade"),
+                      const SizedBox(width: 8),
+                      buildPetFeature(value: "Vira-lata", feature: "Raça"),
+                      const SizedBox(width: 8),
                     ],
                   ),
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildPetFeature({
+    required String value,
+    required String feature,
+  }) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: grey200,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            CustomText(
+              text: value,
+              color: grey800,
+              fontWeight: FontWeight.bold,
+              textOverflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            CustomText(
+              text: feature,
+              color: grey600,
+              fontSize: 15,
             ),
           ],
         ),

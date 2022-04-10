@@ -11,6 +11,7 @@ class PetDetails extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  final showAdoption = Get.arguments["showAdoption"];
   final Pet pet = Pet(
     name: Get.arguments['name'],
     location: Get.arguments['location'],
@@ -77,33 +78,35 @@ class PetDetails extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Material(
-                          color: primary,
-                          borderRadius: BorderRadius.circular(20),
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 20),
-                              decoration: BoxDecoration(
+                        showAdoption
+                            ? Material(
+                                color: primary,
                                 borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: primary.withOpacity(0.5),
-                                    spreadRadius: 1,
-                                    blurRadius: 2,
-                                    offset: const Offset(0, 0),
-                                  )
-                                ],
-                              ),
-                              child: const CustomText(
-                                text: "Me adote",
-                                color: base,
-                              ),
-                            ),
-                          ),
-                        ),
+                                child: InkWell(
+                                  onTap: () {},
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 20),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: primary.withOpacity(0.5),
+                                          spreadRadius: 1,
+                                          blurRadius: 2,
+                                          offset: const Offset(0, 0),
+                                        )
+                                      ],
+                                    ),
+                                    child: const CustomText(
+                                      text: "Me adote",
+                                      color: base,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                       ],
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_hood/theme/colors.dart';
 
 class UserAvatar extends StatelessWidget {
   final double size;
@@ -16,11 +17,11 @@ class UserAvatar extends StatelessWidget {
       height: size,
       width: size,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: base,
         shape: BoxShape.circle,
         border: Border.all(
           width: 3,
-          color: Colors.white,
+          color: base,
         ),
         image: DecorationImage(
           image: AssetImage(avatar),
