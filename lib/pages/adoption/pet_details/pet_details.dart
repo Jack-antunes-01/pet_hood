@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/components/user_avatar/user.avatar.dart';
 import 'package:pet_hood/entities/pet.dart';
+import 'package:pet_hood/theme/colors.dart';
 
 class PetDetails extends StatelessWidget {
   PetDetails({
@@ -21,267 +23,267 @@ class PetDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var safePadding = MediaQuery.of(context).padding.bottom;
     return Scaffold(
-      backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          pet.name,
-          style: TextStyle(
-            color: Colors.grey[800],
-          ),
-        ),
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.arrow_back,
-            color: Colors.grey[800],
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Icon(
-              Icons.more_horiz,
-              color: Colors.grey[800],
-            ),
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Hero(
-                  tag: pet.imageUrl,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(pet.imageUrl),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(25),
-                        bottomRight: Radius.circular(25),
-                      ),
+      appBar: _appBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _petImage(context),
+            Container(
+              color: base,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 20,
+                      left: 20,
+                      top: 16,
+                      bottom: 16,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              pet.name,
+                              style: const TextStyle(
+                                color: grey800,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  color: grey600,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  pet.location,
+                                  style: const TextStyle(
+                                    color: grey600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Material(
+                          color: primary,
+                          borderRadius: BorderRadius.circular(20),
+                          child: InkWell(
+                            onTap: () {},
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: primary.withOpacity(0.5),
+                                    spreadRadius: 1,
+                                    blurRadius: 2,
+                                    offset: const Offset(0, 0),
+                                  )
+                                ],
+                              ),
+                              child: const CustomText(
+                                text: "Me adote",
+                                color: base,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            pet.name,
-                            style: TextStyle(
-                              color: Colors.grey[800],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 12),
+                        buildPetFeature(value: "4 anos", feature: "Idade"),
+                        buildPetFeature(value: "Vira-lata", feature: "Raça"),
+                        buildPetFeature(value: "Sim", feature: "Vacinado"),
+                        buildPetFeature(value: "6 Kg", feature: "Peso"),
+                        const SizedBox(width: 12),
+                      ],
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(
+                      right: 20,
+                      left: 20,
+                      top: 16,
+                      bottom: 8,
+                    ),
+                    child: CustomText(
+                      text: "Descrição",
+                      color: grey800,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomText(
+                      text:
+                          "O tom é muito fofo quando se trata de ser o melhor gato da família! Todos aqui em casa amam ele :)",
+                      color: grey600,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 20,
+                      left: 20,
+                      top: 16,
+                      bottom: safePadding + 10,
+                    ),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {},
+                          child: const UserAvatar(),
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            CustomText(
+                              text: "Publicação feita por",
+                              color: grey800,
                               fontWeight: FontWeight.bold,
-                              fontSize: 24,
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                color: Colors.grey[600],
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                pet.location,
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                "(" + pet.distance + ")",
-                                style: TextStyle(
-                                  color: Color(0xFF757575),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: pet.favorite ? Colors.red[400] : Colors.white,
+                            CustomText(
+                              text: "Jackson Antunes",
+                              color: grey600,
+                            ),
+                          ],
                         ),
-                        child: Icon(
-                          Icons.favorite,
-                          size: 24,
-                          color: pet.favorite ? Colors.white : Colors.grey[300],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Row(
-                    children: [
-                      buildPetFeature("4 months", "Age"),
-                      buildPetFeature("Grey", "Color"),
-                      buildPetFeature("11 Kg", "Weight"),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Text(
-                    "Pet Story",
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    "Maine coo cats are known for their intelligence and playfullness, as well as their size. One of the largest breeds of domestica cats, they are lovingly referreds.",
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 16,
-                    left: 16,
-                    top: 16,
-                    bottom: 24,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          UserAvatar(),
-                          SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Posted by",
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                "Nannie Barker",
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                        decoration: BoxDecoration(
-                            color: Colors.blue[300],
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF64B5F6).withOpacity(0.5),
-                                spreadRadius: 3,
-                                blurRadius: 5,
-                                offset: Offset(0, 0),
-                              )
-                            ]),
-                        child: Text(
-                          "Contact Me",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildPetFeature(String value, String feature) {
-    return Expanded(
+  PreferredSizeWidget _appBar() {
+    return AppBar(
+      systemOverlayStyle: SystemUiOverlayStyle.light,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      titleSpacing: 0,
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Get.back(),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: base,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(6.0),
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: grey800,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      // leading:
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Container(
+            height: 36,
+            width: 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: pet.favorite ? red : base,
+            ),
+            child: Icon(
+              Icons.favorite,
+              size: 18,
+              color: pet.favorite ? base : grey200,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _petImage(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    return Stack(
+      children: [
+        Hero(
+          tag: pet.imageUrl,
+          child: Container(
+            height: height * 0.5,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                  "https://www.gettyimages.pt/gi-resources/images/500px/983794168.jpg",
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildPetFeature({
+    required String value,
+    required String feature,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Container(
-        height: 70,
-        padding: EdgeInsets.all(12),
-        margin: EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Color(0xFFEEEEEE),
+            color: grey200,
             width: 1,
           ),
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           children: [
-            Text(
-              value,
-              style: TextStyle(
-                color: Colors.grey[800],
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+            CustomText(
+              text: value,
+              color: grey800,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
             const SizedBox(height: 4),
-            Text(
-              feature,
-              style: TextStyle(
-                color: Colors.grey[800],
-                fontSize: 14,
-              ),
+            CustomText(
+              text: feature,
+              color: grey600,
+              fontSize: 14,
             ),
           ],
         ),

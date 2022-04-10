@@ -18,7 +18,15 @@ class PetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Get.toNamed(Routes.petDetails);
+        Get.toNamed(Routes.petDetails, arguments: {
+          "name": pet.name,
+          "location": pet.location,
+          "distance": pet.distance,
+          "category": pet.category,
+          "imageUrl": pet.imageUrl,
+          "favorite": pet.favorite,
+          "newest": pet.newest,
+        });
         // Navigator.push(
         //   context,
         //   MaterialPageRoute(
@@ -50,24 +58,23 @@ class PetWidget extends StatelessWidget {
             Expanded(
               child: Stack(
                 children: [
-                  // Hero(
-                  //   tag: pet.imageUrl,
-                  // child:
-                  Container(
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          "https://www.gettyimages.pt/gi-resources/images/500px/983794168.jpg",
+                  Hero(
+                    tag: pet.imageUrl,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            "https://www.gettyimages.pt/gi-resources/images/500px/983794168.jpg",
+                          ),
+                          fit: BoxFit.cover,
                         ),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
                       ),
                     ),
                   ),
-                  // ),
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(
