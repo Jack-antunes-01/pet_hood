@@ -39,7 +39,7 @@ class _CategoryListState extends State<CategoryList> {
       data: ThemeData(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-      ),
+      ).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         trailing: const Icon(Icons.sort, color: grey800),

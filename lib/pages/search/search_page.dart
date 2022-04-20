@@ -46,7 +46,7 @@ class SearchPage extends StatelessWidget {
           border: Border(
             bottom: BorderSide(
               color: grey200,
-              width: 2,
+              width: 1,
             ),
           ),
         ),

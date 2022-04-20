@@ -38,11 +38,14 @@ class ProfilePage extends StatelessWidget {
 
   Widget _publications() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
+        Divider(color: grey200, thickness: 10),
         Padding(
           padding: EdgeInsets.only(
             left: 20,
             right: 20,
+            top: 16,
           ),
           child: CustomText(
             text: "Publicações",
@@ -50,6 +53,11 @@ class ProfilePage extends StatelessWidget {
             fontSize: 18,
           ),
         ),
+        NormalPublication(),
+        Divider(color: grey200, thickness: 10),
+        NormalPublication(),
+        Divider(color: grey200, thickness: 10),
+        NormalPublication(),
       ],
     );
   }

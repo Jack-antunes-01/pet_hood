@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:pet_hood/components/tag_pet/tag_pet.dart';
 import 'package:pet_hood/entities/pet.dart';
 import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
@@ -97,24 +98,7 @@ class PetWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: getBackgroundColor(pet.category),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Text(
-                      parsePetCondition(pet.category),
-                      style: TextStyle(
-                        color: getFontColor(pet.category),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
+                  TagPet(category: pet.category),
                   const SizedBox(height: 8),
                   Text(
                     pet.name,

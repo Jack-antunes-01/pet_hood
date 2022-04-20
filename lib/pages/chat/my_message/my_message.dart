@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/theme/colors.dart';
 
 class MyMessageCard extends StatelessWidget {
@@ -35,12 +36,10 @@ class MyMessageCard extends StatelessWidget {
                   top: 5,
                   bottom: 20,
                 ),
-                child: Text(
-                  message,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: base,
-                  ),
+                child: CustomText(
+                  text: message,
+                  fontSize: 16,
+                  color: base,
                 ),
               ),
               Positioned(
@@ -48,20 +47,18 @@ class MyMessageCard extends StatelessWidget {
                 right: 10,
                 child: Row(
                   children: [
-                    Text(
-                      date,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.white60,
-                      ),
+                    CustomText(
+                      text: date,
+                      fontSize: 13,
+                      color: grey200.withOpacity(0.5),
                     ),
                     const SizedBox(
                       width: 5,
                     ),
-                    const Icon(
+                    Icon(
                       Icons.done_all,
                       size: 20,
-                      color: Colors.white60,
+                      color: grey200.withOpacity(0.5),
                     ),
                   ],
                 ),

@@ -7,5 +7,5 @@ class PublicationPageController extends GetxController {
 
   set selectedOption(int index) => _selectedOption.value = index;
 
-  final List items = ["", "Normal", "Adoção", "Desaparecido", "Encontrado"];
+  final List items = ["", "Meu pet", "Adoção", "Desaparecido", "Encontrado"];
 }

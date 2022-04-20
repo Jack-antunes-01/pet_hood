@@ -4,11 +4,13 @@ import 'package:pet_hood/theme/colors.dart';
 class UserAvatar extends StatelessWidget {
   final double size;
   final String avatar;
+  final bool useBorder;
 
   const UserAvatar({
     Key? key,
     this.size = 80,
     this.avatar = "assets/images/user_avatar.jpg",
+    this.useBorder = true,
   }) : super(key: key);
 
   @override
@@ -19,10 +21,12 @@ class UserAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         color: base,
         shape: BoxShape.circle,
-        border: Border.all(
-          width: 2,
-          color: base,
-        ),
+        border: useBorder
+            ? Border.all(
+                width: 2,
+                color: base,
+              )
+            : null,
         image: DecorationImage(
           image: AssetImage(avatar),
           fit: BoxFit.cover,
