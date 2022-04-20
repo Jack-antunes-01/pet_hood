@@ -28,7 +28,10 @@ class SecondRegisterForm extends StatelessWidget {
                     constraints.maxHeight > 550
                         ? SizedBox(height: height * 0.1)
                         : SizedBox(height: height * 0.04),
-                    SvgPicture.asset("assets/images/app_logo.svg"),
+                    SvgPicture.asset(
+                      "assets/images/app_logo.svg",
+                      color: primary,
+                    ),
                     SizedBox(height: height * 0.05),
                     const Padding(
                       padding: EdgeInsets.only(

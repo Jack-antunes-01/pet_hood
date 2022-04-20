@@ -3,7 +3,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/components/components.dart';
-import 'package:pet_hood/components/user_avatar/user.avatar.dart';
 import 'package:pet_hood/pages/chat/chat_list/chat_list.dart';
 import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';

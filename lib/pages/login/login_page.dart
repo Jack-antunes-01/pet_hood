@@ -27,7 +27,10 @@ class LoginPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               SizedBox(height: safePaddingTop + height * 0.1),
-              SvgPicture.asset("assets/images/app_logo.svg"),
+              SvgPicture.asset(
+                "assets/images/app_logo.svg",
+                color: primary,
+              ),
               SizedBox(height: height * 0.05),
               const Padding(
                 padding: EdgeInsets.only(right: 32, left: 32, bottom: 16),

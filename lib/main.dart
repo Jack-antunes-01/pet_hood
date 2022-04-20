@@ -6,8 +6,6 @@ import 'package:pet_hood/constants/app_constants.dart';
 import 'package:pet_hood/routes/routes.dart';
 import 'package:pet_hood/theme/colors.dart';
 
-import 'pages/pages.dart';
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -34,8 +32,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: appTitle,
       theme: ThemeData(
-        splashColor: primaryDark,
-        highlightColor: primaryDark,
+        splashColor: base.withOpacity(0.1),
+        highlightColor: base.withOpacity(0.1),
         fontFamily: 'Nunito',
         scaffoldBackgroundColor: base,
       ),

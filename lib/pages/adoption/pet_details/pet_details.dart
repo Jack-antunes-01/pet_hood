@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/components/components.dart';
-import 'package:pet_hood/components/user_avatar/user.avatar.dart';
 import 'package:pet_hood/entities/pet.dart';
 import 'package:pet_hood/theme/colors.dart';
 
@@ -113,13 +112,13 @@ class PetDetails extends StatelessWidget {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: [
-                        const SizedBox(width: 12),
-                        buildPetFeature(value: "4 anos", feature: "Idade"),
-                        buildPetFeature(value: "Vira-lata", feature: "Raça"),
-                        buildPetFeature(value: "Sim", feature: "Vacinado"),
-                        buildPetFeature(value: "6 Kg", feature: "Peso"),
-                        const SizedBox(width: 12),
+                      children: const [
+                        SizedBox(width: 12),
+                        BuildPetFeature(value: "4 anos", feature: "Idade"),
+                        BuildPetFeature(value: "Vira-lata", feature: "Raça"),
+                        BuildPetFeature(value: "Sim", feature: "Vacinado"),
+                        BuildPetFeature(value: "6 Kg", feature: "Peso"),
+                        SizedBox(width: 12),
                       ],
                     ),
                   ),

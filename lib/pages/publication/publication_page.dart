@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/components/components.dart';
-import 'package:pet_hood/components/custom_radio_button/custom_radio_button.dart';
-import 'package:pet_hood/components/custom_select/custom_select.dart';
 import 'package:pet_hood/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/pages/register/first_register_form/fisrt_register_form_controller.dart';
 import 'package:pet_hood/theme/colors.dart';

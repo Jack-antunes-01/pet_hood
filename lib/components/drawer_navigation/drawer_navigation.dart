@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-
 import 'package:pet_hood/components/components.dart';
 import 'package:pet_hood/pages/home/home_page_controller.dart';
 import 'package:pet_hood/routes/routes.dart';

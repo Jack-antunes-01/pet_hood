@@ -55,7 +55,7 @@ class PetProfileWidget extends StatelessWidget {
               child: Stack(
                 children: [
                   Hero(
-                    tag: pet.imageUrl,
+                    tag: '$pet.imageUrl$index',
                     child: Container(
                       decoration: const BoxDecoration(
                         image: DecorationImage(

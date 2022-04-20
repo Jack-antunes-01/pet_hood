@@ -21,21 +21,21 @@ class _CategoryListFilterState extends State<CategoryListFilter> {
         false, // isExpanded ?
         'Header', // header
         Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(children: <Widget>[
-              Text('data'),
-              Text('data'),
+              const Text('data'),
+              const Text('data'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
+                children: const [
                   Text('data'),
                   Text('data'),
                   Text('data'),
                 ],
               ),
-              Radio(value: null, groupValue: null, onChanged: null)
+              const Radio(value: null, groupValue: null, onChanged: null)
             ])), // body
-        Icon(Icons.image) // iconPic
+        const Icon(Icons.image) // iconPic
         ),
   ];
 
@@ -46,7 +46,7 @@ class _CategoryListFilterState extends State<CategoryListFilter> {
     listCriteria = ListView(
       children: [
         Padding(
-          padding: EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
           child: ExpansionPanelList(
             expansionCallback: (int index, bool isExpanded) {
               setState(() {
@@ -57,15 +57,16 @@ class _CategoryListFilterState extends State<CategoryListFilter> {
               return ExpansionPanel(
                 headerBuilder: (BuildContext context, bool isExpanded) {
                   return ListTile(
-                      leading: item.iconpic,
-                      title: Text(
-                        item.header,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ));
+                    leading: item.iconpic,
+                    title: Text(
+                      item.header,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  );
                 },
                 isExpanded: item.isExpanded,
                 body: item.body,

@@ -22,7 +22,10 @@ class WelcomePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SvgPicture.asset("assets/images/app_logo.svg"),
+                  SvgPicture.asset(
+                    "assets/images/app_logo.svg",
+                    color: primary,
+                  ),
                   const Text(
                     "Pet Hood",
                     style: TextStyle(

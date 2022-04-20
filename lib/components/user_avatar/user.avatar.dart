@@ -20,7 +20,7 @@ class UserAvatar extends StatelessWidget {
         color: base,
         shape: BoxShape.circle,
         border: Border.all(
-          width: 3,
+          width: 2,
           color: base,
         ),
         image: DecorationImage(
@@ -30,8 +30,8 @@ class UserAvatar extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 1,
+            spreadRadius: 0.5,
+            blurRadius: 0.5,
             offset: const Offset(0, 0),
           ),
         ],
