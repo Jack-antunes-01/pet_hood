@@ -5,8 +5,8 @@ import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
-class PetProfileWidget extends StatelessWidget {
-  const PetProfileWidget({
+class PetWidgetProfile extends StatelessWidget {
+  const PetWidgetProfile({
     Key? key,
     required this.pet,
     required this.index,

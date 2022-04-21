@@ -3,7 +3,6 @@ import 'package:get/route_manager.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/data/data.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
-import 'package:pet_hood/app/pages/adoption/pet_widget/pet_widget.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/utils.dart';

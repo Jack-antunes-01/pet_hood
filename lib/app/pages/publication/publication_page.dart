@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_hood/app/components/bottom_sheet_modal/bottom_sheet_modal_image.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/pages/register/first_register_form/fisrt_register_form_controller.dart';
@@ -295,7 +296,7 @@ class PublicationPage extends StatelessWidget {
           alignment: Alignment.topRight,
           child: GestureDetector(
             onTap: () {
-              _openBottomSheetModal(context);
+              openBottomSheetModalImage(context);
             },
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -322,54 +323,6 @@ class PublicationPage extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  _openBottomSheetModal(context) {
-    var safePadding = MediaQuery.of(context).padding.bottom;
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext buildContext) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: safePadding),
-            child: Theme(
-              data: ThemeData(
-                splashColor: grey200,
-                highlightColor: grey200,
-              ),
-              child: Wrap(
-                children: [
-                  Row(
-                    children: const [
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                        child:
-                            CustomText(text: "Anexar imagem", color: grey800),
-                      ),
-                    ],
-                  ),
-                  const Divider(thickness: 1, color: grey200, height: 0),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.photo_camera_outlined,
-                      color: grey800,
-                    ),
-                    title: const CustomText(text: 'Tirar foto', color: grey800),
-                    onTap: () => {},
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.collections_outlined,
-                      color: grey800,
-                    ),
-                    title: const CustomText(text: 'Galeria', color: grey800),
-                    onTap: () => {},
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
   }
 
   Widget _emptyWidget() {

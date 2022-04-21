@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
     const SearchPage(),
     const SizedBox.shrink(),
     AdoptionPage(),
-    ProfilePage(isOwner: true),
+    const ProfilePage(isOwner: true),
   ];
 
   @override

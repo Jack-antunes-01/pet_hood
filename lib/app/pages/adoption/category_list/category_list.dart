@@ -6,7 +6,6 @@ import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 import '../../../data/data.dart';
-import '../pet_widget/pet_widget.dart';
 
 class CategoryList extends StatefulWidget {
   const CategoryList({

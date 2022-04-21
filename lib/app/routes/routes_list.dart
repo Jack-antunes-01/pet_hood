@@ -1,15 +1,6 @@
 import 'package:get/route_manager.dart';
 import 'package:pet_hood/app/routes/routes.dart';
-import 'package:pet_hood/app/pages/about_us/about_us.dart';
-import 'package:pet_hood/app/pages/adoption/category_list/category_list.dart';
-import 'package:pet_hood/app/pages/adoption/pet_details/pet_details.dart';
-import 'package:pet_hood/app/pages/chat/chat_page.dart';
-import 'package:pet_hood/app/pages/chat/chat_people_page.dart';
 import 'package:pet_hood/app/pages/pages.dart';
-import 'package:pet_hood/app/pages/profile/edit_profile_page.dart';
-import 'package:pet_hood/app/pages/profile/external_profile_page.dart';
-import 'package:pet_hood/app/pages/ranking/ranking_page.dart';
-import 'package:pet_hood/app/pages/stakeholders/stakeholders_page.dart';
 
 abstract class RoutesList {
   static List<GetPage> get routes => [

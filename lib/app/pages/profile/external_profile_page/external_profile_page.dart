@@ -11,7 +11,7 @@ class ExternalProfilePage extends StatelessWidget {
       appBar: AppBarHeader(
         appBar: AppBar(),
       ),
-      body: ProfilePage(isOwner: false),
+      body: const ProfilePage(isOwner: false),
     );
   }
 }

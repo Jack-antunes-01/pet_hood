@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:pet_hood/app/components/bottom_sheet_modal/bottom_sheet_modal_image.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/constants/constants.dart';
 import 'package:pet_hood/app/data/data.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
-import 'package:pet_hood/app/pages/profile/pet_profile_widget/pet_profile_widget.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/utils.dart';
 
-import '../adoption/pet_widget/pet_widget.dart';
-
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   final bool isOwner;
 
-  ProfilePage({Key? key, required this.isOwner}) : super(key: key);
+  const ProfilePage({
+    Key? key,
+    required this.isOwner,
+  }) : super(key: key);
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   final List<PetEntity> pets = getPetList();
 
   @override
@@ -90,7 +96,7 @@ class ProfilePage extends StatelessWidget {
             }).toList(),
           ),
         ),
-        isOwner
+        widget.isOwner
             ? Padding(
                 padding: const EdgeInsets.only(
                   bottom: 16,
@@ -126,7 +132,7 @@ class ProfilePage extends StatelessWidget {
             children: buildNewestPet(),
           ),
         ),
-        isOwner
+        widget.isOwner
             ? Padding(
                 padding: const EdgeInsets.only(
                   right: 20,
@@ -146,7 +152,7 @@ class ProfilePage extends StatelessWidget {
     for (var i = 0; i < pets.length; i++) {
       if (pets[i].createdAt.verifyNewest()) {
         list.add(
-          PetProfileWidget(
+          PetWidgetProfile(
             pet: pets[i],
             index: i,
           ),
@@ -234,7 +240,7 @@ class ProfilePage extends StatelessWidget {
           Stack(
             children: [
               const UserBackgroundImage(),
-              isOwner
+              widget.isOwner
                   ? Positioned(
                       right: 10,
                       top: 10,
@@ -243,7 +249,7 @@ class ProfilePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(4),
-                          onTap: () {},
+                          onTap: () => openBottomSheetModalImage(context),
                           child: Container(
                             width: 36,
                             height: 36,
@@ -268,7 +274,7 @@ class ProfilePage extends StatelessWidget {
                 Stack(
                   children: [
                     const UserAvatar(size: 100),
-                    isOwner
+                    widget.isOwner
                         ? Positioned(
                             bottom: 0,
                             right: 0,
@@ -276,7 +282,7 @@ class ProfilePage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                               color: primary,
                               child: InkWell(
-                                onTap: () {},
+                                onTap: () => openBottomSheetModalImage(context),
                                 borderRadius: BorderRadius.circular(16),
                                 child: Container(
                                   width: 32,
@@ -330,7 +336,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                isOwner
+                widget.isOwner
                     ? Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: Material(
