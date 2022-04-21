@@ -33,10 +33,34 @@ extension DateTimeExt on DateTime {
       if (minuteDiff == 1) {
         return "$hourDiff minuto atrás";
       }
-
       return "$minuteDiff minutos atrás";
     } else {
       return "Agora";
     }
+  }
+
+  String toYearOrMonth() {
+    final timeNow = DateTime.now();
+
+    final int yearDiff = timeNow.year - year;
+    final int monthDiff = timeNow.month - month;
+
+    if (yearDiff > 0) {
+      if (yearDiff == 1) {
+        return "1 ano";
+      }
+      return "$yearDiff anos";
+    } else {
+      if (monthDiff == 1) {
+        return "1 mês";
+      }
+      return "$monthDiff meses";
+    }
+  }
+
+  bool verifyNewest() {
+    final timeNow = DateTime.now();
+
+    return timeNow.day - day < 2;
   }
 }

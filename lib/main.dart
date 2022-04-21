@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/route_manager.dart';
-import 'package:pet_hood/constants/app_constants.dart';
-import 'package:pet_hood/routes/routes.dart';
-import 'package:pet_hood/theme/colors.dart';
+import 'package:pet_hood/app/routes/routes.dart';
+import 'package:pet_hood/app/routes/routes_list.dart';
+import 'package:pet_hood/app/theme/colors.dart';
+
+import 'app/constants/constants.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +41,7 @@ class MyApp extends StatelessWidget {
       ),
       defaultTransition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 150),
-      getPages: Routes.routeList,
+      getPages: RoutesList.routes,
       initialRoute: Routes.welcome,
     );
   }
