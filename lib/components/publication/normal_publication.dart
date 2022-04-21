@@ -140,13 +140,13 @@ class _NormalPublicationState extends State<NormalPublication> {
             fontSize: 16,
           ),
         ),
-        Stack(
-          children: [
-            GestureDetector(
-              onDoubleTap: () {
-                key.currentState!.onTap();
-              },
-              child: Container(
+        GestureDetector(
+          onDoubleTap: () {
+            key.currentState!.onTap();
+          },
+          child: Stack(
+            children: [
+              Container(
                 height: 300,
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -155,8 +155,8 @@ class _NormalPublicationState extends State<NormalPublication> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

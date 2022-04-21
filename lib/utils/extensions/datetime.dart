@@ -13,22 +13,22 @@ extension DateTimeExt on DateTime {
       if (yearDiff == 1) {
         return "$yearDiff ano atrás";
       }
-      return "$yearDiff anos";
+      return "$yearDiff anos atrás";
     } else if (monthDiff > 0) {
       if (monthDiff == 1) {
         return "$monthDiff mês atrás";
       }
-      return "$monthDiff meses";
+      return "$monthDiff meses atrás";
     } else if (dayDiff > 0) {
       if (dayDiff == 1) {
         return "$dayDiff dia atrás";
       }
-      return "$dayDiff dias";
+      return "$dayDiff dias atrás";
     } else if (hourDiff > 0) {
       if (hourDiff == 1) {
         return "$hourDiff hora atrás";
       }
-      return "$hourDiff horas";
+      return "$hourDiff horas atrás";
     } else if (minuteDiff > 0) {
       if (minuteDiff == 1) {
         return "$hourDiff minuto atrás";

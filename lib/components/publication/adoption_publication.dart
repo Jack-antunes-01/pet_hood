@@ -179,7 +179,7 @@ class AdoptionPublication extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(
-            top: 10,
+            top: 15,
             right: 15,
             left: 15,
             bottom: 10,
