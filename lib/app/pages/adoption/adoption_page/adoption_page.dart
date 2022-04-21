@@ -30,7 +30,7 @@ class AdoptionPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.only(right: 20, left: 20, top: 20),
+          padding: EdgeInsets.only(right: 15, left: 15, top: 20),
           child: CustomText(
             text: "Animais",
             color: grey800,
@@ -38,7 +38,7 @@ class AdoptionPage extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 7),
           child: Column(
             children: [
               buildPetCategory(PetCategory.adoption),
@@ -56,7 +56,7 @@ class AdoptionPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(15),
           child: CustomText(
             text: "Novos Pets",
             color: grey800,

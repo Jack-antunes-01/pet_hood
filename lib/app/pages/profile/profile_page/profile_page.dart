@@ -305,7 +305,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Positioned(
             bottom: 0,
             right: 10,
-            left: 10,
+            left: 15,
             child: Row(
               children: [
                 Stack(

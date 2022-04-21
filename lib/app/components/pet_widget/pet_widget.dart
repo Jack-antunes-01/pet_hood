@@ -48,7 +48,7 @@ class PetWidget extends StatelessWidget {
             width: 1,
           ),
         ),
-        width: 220,
+        width: 230,
         margin: EdgeInsets.only(
           right: 16,
           left: index == 0 ? 16 : 0,
