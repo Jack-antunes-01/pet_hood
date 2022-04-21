@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/components/user_background_image/user_background_image.dart';
 import 'package:pet_hood/app/constants/constants.dart';
 import 'package:pet_hood/app/data/data.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
