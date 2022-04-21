@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class SearchPage extends StatelessWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  final UserController _userController = Get.put(UserController());
+
+  SearchPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +57,11 @@ class SearchPage extends StatelessWidget {
           padding: const EdgeInsets.only(right: 16, left: 16),
           child: Row(
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16),
+              Padding(
+                padding: const EdgeInsets.all(16),
                 child: UserAvatar(
                   size: 60,
+                  avatar: _userController.profileImage,
                 ),
               ),
               Column(

@@ -1,8 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
-import 'package:pet_hood/app/components/bottom_sheet_modal/bottom_sheet_modal_image.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/constants/constants.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/data/data.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/routes/routes.dart';
@@ -23,6 +26,33 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final List<PetEntity> pets = getPetList();
+
+  final UserController _userController = Get.put(UserController());
+
+  Future pickImage({
+    required ImageSource source,
+    required BuildContext context,
+    required bool isProfileImage,
+  }) async {
+    try {
+      Navigator.of(context).pop();
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+
+      if (isProfileImage) {
+        _userController.profileImage = imageTemporary;
+      } else {
+        _userController.backgroundImage = imageTemporary;
+      }
+    } on PlatformException {
+      Get.snackbar(
+        "Permissão negada",
+        "Nós precisamos de permissão para executar essa tarefa :/",
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +269,11 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Stack(
             children: [
-              const UserBackgroundImage(),
+              Obx(
+                () => UserBackgroundImage(
+                  backgroundImage: _userController.backgroundImage,
+                ),
+              ),
               widget.isOwner
                   ? Positioned(
                       right: 10,
@@ -249,7 +283,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         borderRadius: BorderRadius.circular(4),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(4),
-                          onTap: () => openBottomSheetModalImage(context),
+                          onTap: () => openBottomSheetModalImage(
+                            context: context,
+                            isProfileImage: false,
+                          ),
                           child: Container(
                             width: 36,
                             height: 36,
@@ -273,7 +310,12 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Stack(
                   children: [
-                    const UserAvatar(size: 100),
+                    Obx(
+                      () => UserAvatar(
+                        size: 100,
+                        avatar: _userController.profileImage,
+                      ),
+                    ),
                     widget.isOwner
                         ? Positioned(
                             bottom: 0,
@@ -282,7 +324,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               borderRadius: BorderRadius.circular(16),
                               color: primary,
                               child: InkWell(
-                                onTap: () => openBottomSheetModalImage(context),
+                                onTap: () => openBottomSheetModalImage(
+                                  context: context,
+                                  isProfileImage: true,
+                                ),
                                 borderRadius: BorderRadius.circular(16),
                                 child: Container(
                                   width: 32,
@@ -412,6 +457,102 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
+    );
+  }
+
+  openBottomSheetModalImage({
+    required BuildContext context,
+    required bool isProfileImage,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext buildContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(buildContext).padding.bottom,
+          ),
+          child: Theme(
+            data: ThemeData(
+              splashColor: grey200,
+              highlightColor: grey200,
+            ),
+            child: Wrap(
+              children: [
+                _headerModal(),
+                _contentModal(
+                  context: context,
+                  isProfileImage: isProfileImage,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _headerModal() {
+    return Column(
+      children: [
+        Row(
+          children: const [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: CustomText(
+                text: "Selecione",
+                color: grey800,
+              ),
+            ),
+          ],
+        ),
+        const Divider(thickness: 1, color: grey200, height: 0),
+      ],
+    );
+  }
+
+  Widget _contentModal({
+    required BuildContext context,
+    required bool isProfileImage,
+  }) {
+    return Column(
+      children: [
+        _buildButton(
+          icon: const Icon(
+            Icons.photo_camera_outlined,
+            color: grey800,
+          ),
+          text: "Tirar foto",
+          onTap: () => pickImage(
+            source: ImageSource.camera,
+            context: context,
+            isProfileImage: isProfileImage,
+          ),
+        ),
+        _buildButton(
+          icon: const Icon(
+            Icons.collections_outlined,
+            color: grey800,
+          ),
+          text: "Galeria",
+          onTap: () => pickImage(
+            source: ImageSource.gallery,
+            context: context,
+            isProfileImage: isProfileImage,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButton({
+    required Icon icon,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: icon,
+      title: CustomText(text: text, color: grey800),
+      onTap: onTap,
     );
   }
 }

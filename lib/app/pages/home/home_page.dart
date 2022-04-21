@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
 
   final List<Widget> _pages = [
     const FeedPage(),
-    const SearchPage(),
+    SearchPage(),
     const SizedBox.shrink(),
     AdoptionPage(),
     const ProfilePage(isOwner: true),

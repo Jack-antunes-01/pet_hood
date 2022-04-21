@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -18,6 +19,8 @@ class AdoptionPublication extends StatelessWidget {
   final double weight = 6.32;
   final PetCategory category = PetCategory.adoption;
   final DateTime postedAt = DateTime(2022, 04, 10);
+
+  final UserController _userController = Get.put(UserController());
 
   void seeMore() {
     Get.toNamed(
@@ -68,13 +71,16 @@ class AdoptionPublication extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                     top: 15,
                     left: 15,
                   ),
-                  child: UserAvatar(
-                    size: 56,
+                  child: Obx(
+                    () => UserAvatar(
+                      size: 56,
+                      avatar: _userController.profileImage,
+                    ),
                   ),
                 ),
                 Expanded(

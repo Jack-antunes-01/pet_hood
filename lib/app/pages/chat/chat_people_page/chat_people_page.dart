@@ -3,11 +3,14 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class ChatPeoplePage extends StatelessWidget {
-  const ChatPeoplePage({Key? key}) : super(key: key);
+  final UserController _userController = Get.put(UserController());
+
+  ChatPeoplePage({Key? key}) : super(key: key);
 
   void openExternalProfile() => Get.toNamed(Routes.externalProfile);
 
@@ -62,12 +65,15 @@ class ChatPeoplePage extends StatelessWidget {
                     left: 4,
                   ),
                   child: Row(
-                    children: const [
-                      UserAvatar(
-                        size: 40,
-                        useBorder: false,
+                    children: [
+                      Obx(
+                        () => UserAvatar(
+                          size: 40,
+                          useBorder: false,
+                          avatar: _userController.profileImage,
+                        ),
                       ),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.only(
                           left: 8,
                           right: 8,

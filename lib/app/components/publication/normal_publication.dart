@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import "package:pet_hood/utils/utils.dart";
 
@@ -12,6 +14,8 @@ class NormalPublication extends StatefulWidget {
 }
 
 class _NormalPublicationState extends State<NormalPublication> {
+  final UserController _userController = Get.put(UserController());
+
   final String name = "Jackson Antunes Batista";
   final String username = "@Jack_antunes01";
   final String description = "Eu amo meu gatinho, ele é muito fofooooo!";
@@ -59,13 +63,16 @@ class _NormalPublicationState extends State<NormalPublication> {
           Expanded(
             child: Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                     top: 15,
                     left: 15,
                   ),
-                  child: UserAvatar(
-                    size: 56,
+                  child: Obx(
+                    () => UserAvatar(
+                      size: 56,
+                      avatar: _userController.profileImage,
+                    ),
                   ),
                 ),
                 Expanded(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -7,6 +8,8 @@ import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class MissingPublication extends StatelessWidget {
+  final UserController _userController = Get.put(UserController());
+
   MissingPublication({Key? key}) : super(key: key);
 
   final String name = "Jackson Antunes Batista";
@@ -55,13 +58,16 @@ class MissingPublication extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                     top: 15,
                     left: 15,
                   ),
-                  child: UserAvatar(
-                    size: 56,
+                  child: Obx(
+                    () => UserAvatar(
+                      size: 56,
+                      avatar: _userController.profileImage,
+                    ),
                   ),
                 ),
                 Expanded(

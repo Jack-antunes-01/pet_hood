@@ -1,9 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class UserAvatar extends StatelessWidget {
   final double size;
-  final String? avatar;
+  final File? avatar;
   final bool useBorder;
 
   const UserAvatar({
@@ -27,12 +28,6 @@ class UserAvatar extends StatelessWidget {
                 color: base,
               )
             : null,
-        image: avatar != null
-            ? DecorationImage(
-                image: AssetImage(avatar!),
-                fit: BoxFit.cover,
-              )
-            : null,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -42,8 +37,15 @@ class UserAvatar extends StatelessWidget {
           ),
         ],
       ),
-      child: avatar != null
-          ? null
+      child: avatar?.path != ""
+          ? ClipOval(
+              child: Image.file(
+                avatar!,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Icon(

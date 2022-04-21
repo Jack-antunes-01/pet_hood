@@ -58,11 +58,11 @@ abstract class RoutesList {
         ),
         GetPage(
           name: Routes.chat,
-          page: () => const ChatPage(),
+          page: () => ChatPage(),
         ),
         GetPage(
           name: Routes.chatPeople,
-          page: () => const ChatPeoplePage(),
+          page: () => ChatPeoplePage(),
         ),
       ];
 }

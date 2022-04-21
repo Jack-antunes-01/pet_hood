@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_hood/app/components/bottom_sheet_modal/bottom_sheet_modal_image.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/pages/register/first_register_form/fisrt_register_form_controller.dart';
@@ -404,6 +403,85 @@ class PublicationPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  openBottomSheetModalImage(context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext buildContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(buildContext).padding.bottom,
+          ),
+          child: Theme(
+            data: ThemeData(
+              splashColor: grey200,
+              highlightColor: grey200,
+            ),
+            child: Wrap(
+              children: [
+                _header(),
+                _content(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _header() {
+    return Column(
+      children: [
+        Row(
+          children: const [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: CustomText(
+                text: "Selecione",
+                color: grey800,
+              ),
+            ),
+          ],
+        ),
+        const Divider(thickness: 1, color: grey200, height: 0),
+      ],
+    );
+  }
+
+  Widget _content() {
+    return Column(
+      children: [
+        _buildButton(
+          icon: const Icon(
+            Icons.photo_camera_outlined,
+            color: grey800,
+          ),
+          text: "Tirar foto",
+          onTap: () {},
+        ),
+        _buildButton(
+          icon: const Icon(
+            Icons.collections_outlined,
+            color: grey800,
+          ),
+          text: "Galeria",
+          onTap: () {},
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButton({
+    required Icon icon,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: icon,
+      title: CustomText(text: text, color: grey800),
+      onTap: onTap,
     );
   }
 }

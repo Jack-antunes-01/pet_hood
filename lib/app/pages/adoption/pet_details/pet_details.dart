@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class PetDetails extends StatelessWidget {
+  final UserController _userController = Get.put(UserController());
+
   PetDetails({
     Key? key,
   }) : super(key: key);
@@ -239,7 +242,11 @@ class PetDetails extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () => openExternalProfile(),
-            child: const UserAvatar(),
+            child: Obx(
+              () => UserAvatar(
+                avatar: _userController.profileImage,
+              ),
+            ),
           ),
           const SizedBox(width: 12),
           Column(

@@ -43,7 +43,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Por favor, nos permita acessar a galeria!</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Precisamos acessar sua câmera</string>
+	<string>Por favor, nos permita acessar a câmera!</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Post videos to profile</string>
 </dict>
 </plist>

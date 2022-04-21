@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  final UserController _userController = Get.put(UserController());
+
+  ChatPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +74,13 @@ class ChatPage extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: UserAvatar(
-                size: 55,
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Obx(
+                () => UserAvatar(
+                  size: 55,
+                  avatar: _userController.profileImage,
+                ),
               ),
             ),
             Expanded(
