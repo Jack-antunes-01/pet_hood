@@ -13,6 +13,7 @@ export "drawer_navigation/drawer_navigation.dart";
 export "pet_widget/pet_widget.dart";
 export "pet_widget_profile/pet_widget_profile.dart";
 export "publication/publication.dart";
+export "scroll_to_hide_bottom_tab/scroll_to_hide_bottom_tab.dart";
 export "tag_pet/tag_pet.dart";
 export "user_avatar/user.avatar.dart";
 export "user_background_image/user_background_image.dart";

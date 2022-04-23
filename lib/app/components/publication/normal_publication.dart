@@ -4,39 +4,34 @@ import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:pet_hood/core/entities/post_entity.dart';
 import "package:pet_hood/utils/utils.dart";
 
-class NormalPublication extends StatefulWidget {
-  const NormalPublication({Key? key}) : super(key: key);
+class NormalPublication extends StatelessWidget {
+  final PostEntity post;
 
-  @override
-  State<NormalPublication> createState() => _NormalPublicationState();
-}
+  NormalPublication({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
 
-class _NormalPublicationState extends State<NormalPublication> {
   final UserController _userController = Get.put(UserController());
 
-  final String name = "Jackson Antunes Batista";
-  final String username = "@Jack_antunes01";
-  final String description = "Eu amo meu gatinho, ele é muito fofooooo!";
-  final String imageUrl = "assets/images/dog_image.png";
-  int qtLikes = 12;
-  bool isLiked = false;
-  final DateTime postedAt = DateTime(2022, 04, 19);
-
-  final key = GlobalKey<LikeButtonState>();
+  final likeKey = GlobalKey<LikeButtonState>();
 
   void likeFn() async {
-    setState(() {
-      isLiked = !isLiked;
-      qtLikes += isLiked ? 1 : -1;
-    });
+    post.isLiked = !post.isLiked!;
+    if (post.isLiked!) {
+      post.qtLikes = post.qtLikes! + 1;
+    } else {
+      post.qtLikes = post.qtLikes! - 1;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Container(
         color: base,
         child: Column(
@@ -85,13 +80,13 @@ class _NormalPublicationState extends State<NormalPublication> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          text: name,
+                          text: post.name,
                           color: grey800,
                           fontSize: 18,
                           textOverflow: TextOverflow.ellipsis,
                         ),
                         CustomText(
-                          text: username,
+                          text: post.username,
                           color: grey600,
                           fontSize: 16,
                           textOverflow: TextOverflow.ellipsis,
@@ -142,14 +137,14 @@ class _NormalPublicationState extends State<NormalPublication> {
             bottom: 15,
           ),
           child: CustomText(
-            text: description,
+            text: post.description!,
             color: grey800,
             fontSize: 16,
           ),
         ),
         GestureDetector(
           onDoubleTap: () {
-            key.currentState!.onTap();
+            likeKey.currentState!.onTap();
           },
           child: Stack(
             children: [
@@ -157,7 +152,7 @@ class _NormalPublicationState extends State<NormalPublication> {
                 height: 300,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(imageUrl),
+                    image: AssetImage(post.postImage),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -185,10 +180,10 @@ class _NormalPublicationState extends State<NormalPublication> {
                   left: 15,
                 ),
                 child: LikeButton(
-                  key: key,
+                  key: likeKey,
                   size: 32,
-                  isLiked: isLiked,
-                  likeCount: qtLikes,
+                  isLiked: post.isLiked,
+                  likeCount: post.qtLikes,
                   likeBuilder: (bool isLiked) {
                     return Container(
                       width: 40,
@@ -204,6 +199,7 @@ class _NormalPublicationState extends State<NormalPublication> {
                       ),
                     );
                   },
+                  likeCountAnimationDuration: const Duration(microseconds: 0),
                   countBuilder: (count, isLiked, text) {
                     return CustomText(
                       text: text,
@@ -217,7 +213,7 @@ class _NormalPublicationState extends State<NormalPublication> {
                   onTap: (isLiked) async {
                     likeFn();
 
-                    return this.isLiked;
+                    return post.isLiked;
                   },
                 ),
               ),
@@ -239,7 +235,7 @@ class _NormalPublicationState extends State<NormalPublication> {
               right: 15,
             ),
             child: CustomText(
-              text: postedAt.postDate(),
+              text: post.postedAt.postDate(),
               color: grey600,
               fontSize: 14,
             ),

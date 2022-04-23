@@ -5,26 +5,18 @@ import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:pet_hood/core/entities/post_entity.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class MissingPublication extends StatelessWidget {
+  final PostEntity post;
+
   final UserController _userController = Get.put(UserController());
 
-  MissingPublication({Key? key}) : super(key: key);
-
-  final String name = "Jackson Antunes Batista";
-  final String username = "@Jack_antunes01";
-  final String imageUrl = "assets/images/dog_image.png";
-  final String dateMissing = "13/03/2022";
-  final String petName = "Sansão";
-  final String breed = "Vira-lata";
-  final int age = 4;
-  final PetCategory category = PetCategory.disappear;
-
-  final String description =
-      "Perdi meu animal perto da faculdade uniube, por favor, estamos desesperados! Aproximadamente 11:30 da manhã!";
-
-  final postedAt = DateTime(2022, 04, 02);
+  MissingPublication({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
 
   void goToChat() => Get.toNamed(Routes.chatPeople);
 
@@ -80,13 +72,13 @@ class MissingPublication extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          text: name,
+                          text: post.name,
                           color: grey800,
                           fontSize: 18,
                           textOverflow: TextOverflow.ellipsis,
                         ),
                         CustomText(
-                          text: username,
+                          text: post.username,
                           color: grey600,
                           fontSize: 16,
                           textOverflow: TextOverflow.ellipsis,
@@ -128,6 +120,7 @@ class MissingPublication extends StatelessWidget {
 
   Widget _content() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(
@@ -137,12 +130,7 @@ class MissingPublication extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                const SizedBox(width: 8),
-                BuildPetFeature(value: dateMissing, feature: "Perdido"),
-                BuildPetFeature(value: petName, feature: "Nome"),
-                BuildPetFeature(value: breed, feature: "Raça"),
-                BuildPetFeature(value: "$age ano(s)", feature: "Idade"),
-                const SizedBox(width: 8),
+                _buildFeatures(),
               ],
             ),
           ),
@@ -150,7 +138,7 @@ class MissingPublication extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
           child: CustomText(
-            text: description,
+            text: post.description!,
             color: grey800,
           ),
         ),
@@ -160,17 +148,20 @@ class MissingPublication extends StatelessWidget {
               height: 300,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(imageUrl),
+                  image: AssetImage(post.postImage),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             Positioned(
-                bottom: 15,
-                left: 15,
-                child: TagPet(
-                  category: category,
-                ))
+              bottom: 15,
+              left: 15,
+              child: TagPet(
+                category: PetCategory.values.firstWhere(
+                  (element) => element.name == post.type.name,
+                ),
+              ),
+            )
           ],
         ),
       ],
@@ -201,13 +192,34 @@ class MissingPublication extends StatelessWidget {
                 bottom: 8,
               ),
               child: CustomText(
-                text: postedAt.postDate(),
+                text: post.postedAt.postDate(),
                 color: grey600,
                 fontSize: 14,
               ),
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildFeatures() {
+    return Row(
+      children: [
+        const SizedBox(width: 8),
+        post.dateMissing != null
+            ? BuildPetFeature(value: post.dateMissing!, feature: "Desaparecido")
+            : const SizedBox.shrink(),
+        post.petName != null
+            ? BuildPetFeature(value: post.petName!, feature: "Nome")
+            : const SizedBox.shrink(),
+        post.age != null
+            ? BuildPetFeature(value: "${post.age} anos", feature: "Idade")
+            : const SizedBox.shrink(),
+        post.breed != null
+            ? BuildPetFeature(value: post.breed!, feature: "Raça")
+            : const SizedBox.shrink(),
+        const SizedBox(width: 8),
       ],
     );
   }

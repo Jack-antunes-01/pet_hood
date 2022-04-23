@@ -5,23 +5,18 @@ import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:pet_hood/core/entities/post_entity.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class FoundPublication extends StatelessWidget {
+  final PostEntity post;
+
   final UserController _userController = Get.put(UserController());
 
-  FoundPublication({Key? key}) : super(key: key);
-
-  final String name = "Jackson Antunes Batista";
-  final String username = "@Jack_antunes01";
-  final String imageUrl = "assets/images/dog_image.png";
-  final String dateFound = "13/03/2022";
-  final String breed = "Vira-lata";
-  final PetCategory category = PetCategory.found;
-  final DateTime postedAt = DateTime(2022, 01, 02);
-
-  final String description =
-      "Animal encontrado 10:20 da manhã de hoje perto da rua das constelações no bairro jacarandá!";
+  FoundPublication({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
 
   void goToChat() => Get.toNamed(Routes.chatPeople);
 
@@ -125,6 +120,7 @@ class FoundPublication extends StatelessWidget {
 
   Widget _content() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(
@@ -134,10 +130,7 @@ class FoundPublication extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                const SizedBox(width: 8),
-                BuildPetFeature(value: dateFound, feature: "Encontrado"),
-                BuildPetFeature(value: breed, feature: "Raça"),
-                const SizedBox(width: 8),
+                _buildFeature(),
               ],
             ),
           ),
@@ -145,7 +138,7 @@ class FoundPublication extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
           child: CustomText(
-            text: description,
+            text: post.description!,
             color: grey800,
           ),
         ),
@@ -155,7 +148,7 @@ class FoundPublication extends StatelessWidget {
               height: 300,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(imageUrl),
+                  image: AssetImage(post.postImage),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -164,7 +157,9 @@ class FoundPublication extends StatelessWidget {
               bottom: 15,
               left: 15,
               child: TagPet(
-                category: category,
+                category: PetCategory.values.firstWhere(
+                  (element) => element.name == post.type.name,
+                ),
               ),
             ),
           ],
@@ -197,13 +192,28 @@ class FoundPublication extends StatelessWidget {
                 bottom: 8,
               ),
               child: CustomText(
-                text: postedAt.postDate(),
+                text: post.postedAt.postDate(),
                 color: grey600,
                 fontSize: 14,
               ),
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildFeature() {
+    return Row(
+      children: [
+        const SizedBox(width: 8),
+        post.dateFound != null
+            ? BuildPetFeature(value: post.dateFound!, feature: "Encontrado")
+            : const SizedBox.shrink(),
+        post.breed != null
+            ? BuildPetFeature(value: post.breed!, feature: "Raça")
+            : const SizedBox.shrink(),
+        const SizedBox(width: 8),
       ],
     );
   }

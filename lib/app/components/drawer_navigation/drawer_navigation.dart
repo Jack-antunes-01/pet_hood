@@ -71,24 +71,24 @@ class DrawerNavigation extends StatelessWidget {
                   ),
                 ),
                 _divider(),
-                _listTileItem(
-                  text: "Meu perfil",
-                  icons: Icons.account_circle_outlined,
-                  onPress: () {
-                    Navigator.of(context).pop();
-                    _homePageController.selectedIndex = 4;
-                  },
-                ),
-                _divider(),
-                _listTileItem(
-                  text: "Animais para adoção",
-                  imagePath: "assets/images/app_logo_outline.svg",
-                  onPress: () {
-                    Navigator.of(context).pop();
-                    _homePageController.selectedIndex = 3;
-                  },
-                ),
-                _divider(),
+                // _listTileItem(
+                //   text: "Meu perfil",
+                //   icons: Icons.account_circle_outlined,
+                //   onPress: () {
+                //     Navigator.of(context).pop();
+                //     _homePageController.selectedIndex = 4;
+                //   },
+                // ),
+                // _divider(),
+                // _listTileItem(
+                //   text: "Animais para adoção",
+                //   imagePath: "assets/images/app_logo_outline.svg",
+                //   onPress: () {
+                //     Navigator.of(context).pop();
+                //     _homePageController.selectedIndex = 3;
+                //   },
+                // ),
+                // _divider(),
                 _listTileItem(
                   text: "Parcerias",
                   icons: Icons.handshake_outlined,
@@ -110,6 +110,14 @@ class DrawerNavigation extends StatelessWidget {
                   icons: Icons.info_outline,
                   onPress: () {
                     Get.toNamed(Routes.aboutUs);
+                  },
+                ),
+                _divider(),
+                _listTileItem(
+                  text: "Sair",
+                  icons: Icons.exit_to_app,
+                  onPress: () {
+                    Get.offAndToNamed(Routes.login);
                   },
                 ),
                 _divider(),

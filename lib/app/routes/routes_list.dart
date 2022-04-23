@@ -26,7 +26,7 @@ abstract class RoutesList {
         ),
         GetPage(
           name: Routes.home,
-          page: () => HomePage(),
+          page: () => const HomePage(),
         ),
         GetPage(
           name: Routes.categoryList,

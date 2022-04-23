@@ -91,11 +91,11 @@ class _ProfilePageState extends State<ProfilePage> {
             fontSize: 18,
           ),
         ),
-        NormalPublication(),
-        Divider(color: grey200, thickness: 10),
-        NormalPublication(),
-        Divider(color: grey200, thickness: 10),
-        NormalPublication(),
+        // NormalPublication(),
+        // Divider(color: grey200, thickness: 10),
+        // NormalPublication(),
+        // Divider(color: grey200, thickness: 10),
+        // NormalPublication(),
       ],
     );
   }

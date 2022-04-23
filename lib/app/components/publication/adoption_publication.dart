@@ -5,20 +5,16 @@ import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:pet_hood/core/entities/post_entity.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class AdoptionPublication extends StatelessWidget {
-  AdoptionPublication({Key? key}) : super(key: key);
+  final PostEntity post;
 
-  final String name = "Jackson Antunes Batista";
-  final String username = "@Jack_antunes01";
-  final String imageUrl = "assets/images/dog_image.png";
-  final int age = 4;
-  final String breed = "Vira-lata";
-  final bool vaccinated = true;
-  final double weight = 6.32;
-  final PetCategory category = PetCategory.adoption;
-  final DateTime postedAt = DateTime(2022, 04, 10);
+  AdoptionPublication({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
 
   final UserController _userController = Get.put(UserController());
 
@@ -93,13 +89,13 @@ class AdoptionPublication extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          text: name,
+                          text: post.name,
                           color: grey800,
                           fontSize: 18,
                           textOverflow: TextOverflow.ellipsis,
                         ),
                         CustomText(
-                          text: username,
+                          text: post.username,
                           color: grey600,
                           fontSize: 16,
                           textOverflow: TextOverflow.ellipsis,
@@ -150,13 +146,7 @@ class AdoptionPublication extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                const SizedBox(width: 8),
-                BuildPetFeature(value: "$age anos", feature: "Idade"),
-                BuildPetFeature(value: breed, feature: "Raça"),
-                BuildPetFeature(
-                    value: vaccinated.toText(), feature: "Vacinado"),
-                BuildPetFeature(value: "$weight Kg", feature: "Peso"),
-                const SizedBox(width: 8),
+                _buildFeatures(),
               ],
             ),
           ),
@@ -167,7 +157,7 @@ class AdoptionPublication extends StatelessWidget {
               height: 300,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(imageUrl),
+                  image: AssetImage(post.postImage),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -176,7 +166,9 @@ class AdoptionPublication extends StatelessWidget {
               bottom: 15,
               left: 15,
               child: TagPet(
-                category: category,
+                category: PetCategory.values.firstWhere(
+                  (element) => element.name == post.type.name,
+                ),
               ),
             )
           ],
@@ -209,13 +201,38 @@ class AdoptionPublication extends StatelessWidget {
                 bottom: 8,
               ),
               child: CustomText(
-                text: postedAt.postDate(),
+                text: post.postedAt.postDate(),
                 color: grey600,
                 fontSize: 14,
               ),
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildFeatures() {
+    return Row(
+      children: [
+        const SizedBox(width: 8),
+        post.petName != null
+            ? BuildPetFeature(value: post.petName!, feature: "Nome")
+            : const SizedBox.shrink(),
+        post.age != null
+            ? BuildPetFeature(value: "${post.age} anos", feature: "Idade")
+            : const SizedBox.shrink(),
+        post.breed != null
+            ? BuildPetFeature(value: post.breed!, feature: "Raça")
+            : const SizedBox.shrink(),
+        post.vaccine != null
+            ? BuildPetFeature(
+                value: post.vaccine!.toText(), feature: "Vacinado")
+            : const SizedBox.shrink(),
+        post.weight != null
+            ? BuildPetFeature(value: "${post.weight} Kg", feature: "Peso")
+            : const SizedBox.shrink(),
+        const SizedBox(width: 8),
       ],
     );
   }

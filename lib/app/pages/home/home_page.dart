@@ -5,27 +5,54 @@ import 'package:pet_hood/app/pages/home/home_page_controller.dart';
 import 'package:pet_hood/app/pages/pages.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+List<Widget> _pages(ScrollController controller) => [
+      FeedPage(controller: controller),
+      SearchPage(),
+      const SizedBox.shrink(),
+      AdoptionPage(),
+      const ProfilePage(isOwner: true),
+    ];
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final HomePageController _homePageController = Get.put(HomePageController());
 
-  final List<Widget> _pages = [
-    const FeedPage(),
-    SearchPage(),
-    const SizedBox.shrink(),
-    AdoptionPage(),
-    const ProfilePage(isOwner: true),
-  ];
+  late ScrollController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    controller.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: DrawerNavigation(),
       appBar: _appBar(),
-      bottomNavigationBar: BottomTabNavigation(),
+      bottomNavigationBar: ScrollToHideBottomTab(
+        controller: controller,
+        child: BottomTabNavigation(),
+        isBottomTab: true,
+      ),
       body: Obx(
         () => Container(
-          child: _pages.elementAt(_homePageController.selectedIndex),
+          child:
+              _pages(controller).elementAt(_homePageController.selectedIndex),
         ),
       ),
     );
