@@ -16,7 +16,7 @@ class AdoptionPublication extends StatelessWidget {
     required this.post,
   }) : super(key: key);
 
-  final UserController _userController = Get.put(UserController());
+  final UserController _userController = Get.find();
 
   void seeMore() {
     Get.toNamed(

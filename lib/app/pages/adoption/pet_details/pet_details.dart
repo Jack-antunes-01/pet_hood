@@ -9,7 +9,7 @@ import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class PetDetails extends StatelessWidget {
-  final UserController _userController = Get.put(UserController());
+  final UserController _userController = Get.find();
 
   PetDetails({
     Key? key,

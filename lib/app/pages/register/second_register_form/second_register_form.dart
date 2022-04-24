@@ -26,6 +26,8 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
   double _strength = 0;
   String _displayText = "Vazio";
 
+  final double _maxStrength = 1.0;
+
   bool hasUppercase = false;
   bool hasDigits = false;
   bool hasLowercase = false;
@@ -109,20 +111,31 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
     final isValidForm = formKey.currentState!.validate();
 
     if (isValidForm) {
-      _registerController.loading = true;
-      await Future.delayed(const Duration(seconds: 2), () {
-        UserEntity userEntity = _userController.userEntity;
+      if (_strength == _maxStrength) {
+        _registerController.loading = true;
+        await Future.delayed(const Duration(seconds: 2), () {
+          UserEntity userEntity = _userController.userEntity;
 
-        userEntity.name = _registerController.nameController.text;
-        userEntity.userName = "@${_registerController.nameController.text}";
-        userEntity.email = _registerController.emailController.text;
+          String name = _registerController.nameController.text;
+          String username = name.split(" ").join("_").toLowerCase();
 
-        _userController.userEntity = userEntity;
-        _userController.password = _registerController.passwordController.text;
+          userEntity.name = name;
+          userEntity.userName = username;
+          userEntity.email = _registerController.emailController.text;
 
-        Get.offAllNamed(Routes.home);
-      });
-      _registerController.loading = false;
+          _userController.userEntity = userEntity;
+          _userController.password =
+              _registerController.passwordController.text;
+
+          Get.offAllNamed(Routes.home);
+        });
+        _registerController.loading = false;
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => _buildPopupDialog(context),
+        );
+      }
     }
   }
 
@@ -213,7 +226,7 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
                               ),
                               AnimatedSwitcher(
                                 duration: const Duration(seconds: 1),
-                                child: _strength == 1.0
+                                child: _strength == _maxStrength
                                     ? const SizedBox.shrink()
                                     : Column(
                                         children: [
@@ -400,7 +413,7 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
           ),
           CustomText(
             text: "1 letra minúscula (a-z)",
-            color: hasMinLength ? Colors.green : red,
+            color: hasLowercase ? Colors.green : red,
           ),
           CustomText(
             text: "1 número (0-9)",

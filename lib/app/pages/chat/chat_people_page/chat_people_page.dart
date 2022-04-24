@@ -8,7 +8,7 @@ import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class ChatPeoplePage extends StatelessWidget {
-  final UserController _userController = Get.put(UserController());
+  final UserController _userController = Get.find();
 
   ChatPeoplePage({Key? key}) : super(key: key);
 

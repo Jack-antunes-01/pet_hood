@@ -11,7 +11,7 @@ import 'package:pet_hood/utils/utils.dart';
 class MissingPublication extends StatelessWidget {
   final PostEntity post;
 
-  final UserController _userController = Get.put(UserController());
+  final UserController _userController = Get.find();
 
   MissingPublication({
     Key? key,

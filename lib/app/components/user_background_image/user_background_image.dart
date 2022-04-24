@@ -6,10 +6,12 @@ import 'package:pet_hood/app/theme/colors.dart';
 class UserBackgroundImage extends StatelessWidget {
   // final String? backgroundImage;
   final File? backgroundImage;
+  final bool isLoading;
 
   const UserBackgroundImage({
     Key? key,
     this.backgroundImage,
+    this.isLoading = false,
   }) : super(key: key);
 
   @override
@@ -18,10 +20,16 @@ class UserBackgroundImage extends StatelessWidget {
         ? Row(
             children: [
               Expanded(
-                child: Image.file(
-                  backgroundImage!,
-                  height: 120,
-                  fit: BoxFit.cover,
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(isLoading ? 0.4 : 0),
+                    BlendMode.darken,
+                  ),
+                  child: Image.file(
+                    backgroundImage!,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ],

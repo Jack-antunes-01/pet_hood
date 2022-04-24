@@ -36,6 +36,8 @@ class LoginPage extends StatelessWidget {
             duration: const Duration(
               seconds: 2,
             ),
+            backgroundColor: primary,
+            colorText: base,
           );
         }
       });
@@ -97,6 +99,10 @@ class LoginPage extends StatelessWidget {
                           Icons.visibility_outlined,
                           color: placeholder,
                         ),
+                        validator: (password) =>
+                            password != null && password.isNotEmpty
+                                ? null
+                                : "Digite sua senha",
                       ),
                     )),
                 Padding(

@@ -6,12 +6,14 @@ class UserAvatar extends StatelessWidget {
   final double size;
   final File? avatar;
   final bool useBorder;
+  final bool isLoading;
 
   const UserAvatar({
     Key? key,
     this.size = 80,
     this.avatar,
     this.useBorder = true,
+    this.isLoading = false,
   }) : super(key: key);
 
   @override
@@ -39,11 +41,17 @@ class UserAvatar extends StatelessWidget {
       ),
       child: avatar?.path != ""
           ? ClipOval(
-              child: Image.file(
-                avatar!,
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(isLoading ? 0.4 : 0),
+                  BlendMode.darken,
+                ),
+                child: Image.file(
+                  avatar!,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
               ),
             )
           : Padding(
