@@ -67,7 +67,14 @@ class EditProfilePage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 16, bottom: 20),
-              child: CustomButton(text: "Salvar", onPress: () {}),
+              child: CustomButton(
+                  child: const CustomText(
+                    text: "Salvar",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: base,
+                  ),
+                  onPress: () {}),
             ),
           ],
         ),

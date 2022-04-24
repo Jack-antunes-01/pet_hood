@@ -179,7 +179,12 @@ class FoundPublication extends StatelessWidget {
             bottom: 10,
           ),
           child: CustomButton(
-            text: "Contate-me",
+            child: const CustomText(
+              text: "Contate-me",
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: base,
+            ),
             onPress: () => goToChat(),
           ),
         ),

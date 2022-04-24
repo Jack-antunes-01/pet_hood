@@ -14,6 +14,9 @@ dependencies:
   flutter_svg: ^1.0.3
   like_button: ^2.0.4
   image_picker: ^0.8.5
+  email_validator: ^2.0.1
+  mask_text_input_formatter: ^2.3.0
+  percent_indicator: ^4.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

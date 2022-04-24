@@ -188,7 +188,12 @@ class AdoptionPublication extends StatelessWidget {
             bottom: 10,
           ),
           child: CustomButton(
-            text: "Ver mais",
+            child: const CustomText(
+              text: "Ver mais",
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: base,
+            ),
             onPress: () => seeMore(),
           ),
         ),

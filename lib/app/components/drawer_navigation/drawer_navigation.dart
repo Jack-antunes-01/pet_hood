@@ -3,15 +3,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/pages/home/home_page_controller.dart';
 
 import '../../constants/constants.dart';
 import '../../theme/colors.dart';
 
 class DrawerNavigation extends StatelessWidget {
-  DrawerNavigation({Key? key}) : super(key: key);
-
-  final HomePageController _homePageController = Get.put(HomePageController());
+  const DrawerNavigation({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +114,7 @@ class DrawerNavigation extends StatelessWidget {
                   text: "Sair",
                   icons: Icons.exit_to_app,
                   onPress: () {
-                    Get.offAndToNamed(Routes.login);
+                    Get.offAllNamed(Routes.login);
                   },
                 ),
                 _divider(),

@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: DrawerNavigation(),
+      drawer: const DrawerNavigation(),
       appBar: _appBar(),
       bottomNavigationBar: ScrollToHideBottomTab(
         controller: controller,

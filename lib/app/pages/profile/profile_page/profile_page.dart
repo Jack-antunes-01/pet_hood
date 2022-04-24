@@ -134,7 +134,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   left: 20,
                 ),
                 child: CustomButton(
-                    text: "Cadastrar pet para adoção", onPress: () {}),
+                    child: const CustomText(
+                      text: "Cadastrar pet para adoção",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: base,
+                    ),
+                    onPress: () {}),
               )
             : const SizedBox.shrink(),
       ],
@@ -169,7 +175,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   left: 20,
                   bottom: 16,
                 ),
-                child: CustomButton(text: "Adicionar pet", onPress: () {}),
+                child: CustomButton(
+                    child: const CustomText(
+                      text: "Adicionar pet",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: base,
+                    ),
+                    onPress: () {}),
               )
             : const SizedBox.shrink(),
       ],

@@ -2,14 +2,14 @@ import 'dart:convert';
 
 class UserEntity {
   final String id;
-  final String email;
-  final String name;
-  final String userName;
-  final String phoneNumber;
-  final String profileImage;
-  final String backgroundImage;
-  final DateTime birthDate;
-  final String bio;
+  String email;
+  String name;
+  String userName;
+  String phoneNumber;
+  String profileImage;
+  String backgroundImage;
+  String birthDate;
+  String bio;
 
   UserEntity({
     required this.id,
@@ -32,7 +32,7 @@ class UserEntity {
       'phoneNumber': phoneNumber,
       'profileImage': profileImage,
       'backgroundImage': backgroundImage,
-      'birthDate': birthDate.millisecondsSinceEpoch,
+      'birthDate': birthDate,
       'bio': bio,
     };
   }
@@ -46,7 +46,7 @@ class UserEntity {
       phoneNumber: map['phoneNumber'] ?? '',
       profileImage: map['profileImage'] ?? '',
       backgroundImage: map['backgroundImage'] ?? '',
-      birthDate: DateTime.fromMillisecondsSinceEpoch(map['birthDate']),
+      birthDate: map['birthDate'] ?? '',
       bio: map['bio'] ?? '',
     );
   }

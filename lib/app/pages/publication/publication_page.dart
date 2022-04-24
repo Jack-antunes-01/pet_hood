@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
-import 'package:pet_hood/app/pages/register/first_register_form/fisrt_register_form_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class PublicationPage extends StatelessWidget {
@@ -11,9 +10,6 @@ class PublicationPage extends StatelessWidget {
   final PublicationPageController _publicationPageController = Get.put(
     PublicationPageController(),
   );
-
-  final FirstRegisterFormController _firstRegisterFormController =
-      Get.put(FirstRegisterFormController());
 
   @override
   Widget build(BuildContext context) {
@@ -124,23 +120,16 @@ class PublicationPage extends StatelessWidget {
           padding: const EdgeInsets.only(
             bottom: 16,
           ),
-          child: Row(children: [
+          child: Row(children: const [
             Flexible(
               child: CustomInput(
-                controller: _firstRegisterFormController.dateController,
+                // controller: _firstRegisterFormController.dateController,
                 placeholderText: "01/01/2022",
-                readOnly: true,
-                suffixIconReverse: const Icon(
-                  Icons.calendar_month_outlined,
-                  color: primary,
-                ),
-                onIconPress: () async =>
-                    await _firstRegisterFormController.selectDate(),
                 labelActive: false,
               ),
             ),
-            const SizedBox(width: 16),
-            const Flexible(child: CustomInput(placeholderText: "Raça")),
+            SizedBox(width: 16),
+            Flexible(child: CustomInput(placeholderText: "Raça")),
           ]),
         ),
         Row(
@@ -182,23 +171,17 @@ class PublicationPage extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
-          child: Row(children: [
-            Flexible(
-              child: CustomInput(
-                controller: _firstRegisterFormController.dateController,
-                placeholderText: "01/01/2022",
-                readOnly: true,
-                suffixIconReverse: const Icon(
-                  Icons.calendar_month_outlined,
-                  color: primary,
+          child: Row(
+            children: const [
+              Flexible(
+                child: CustomInput(
+                  placeholderText: "01/01/2022",
+                  labelActive: false,
                 ),
-                onIconPress: () async =>
-                    await _firstRegisterFormController.selectDate(),
-                labelActive: false,
               ),
-            ),
-            const Spacer(),
-          ]),
+              Spacer(),
+            ],
+          ),
         ),
         const CustomText(
           text: "Seu pet possui problemas de saúde?",
@@ -313,7 +296,12 @@ class PublicationPage extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(bottom: safePaddingBottom + height * 0.05),
           child: CustomButton(
-            text: "Publicar",
+            child: const CustomText(
+              text: "Publicar",
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: base,
+            ),
             onPress: () {
               Get.back();
               _publicationPageController.selectedOption = 0;

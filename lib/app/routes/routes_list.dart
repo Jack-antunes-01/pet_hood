@@ -14,11 +14,11 @@ abstract class RoutesList {
         ),
         GetPage(
           name: Routes.register,
-          page: () => FirstRegisterForm(),
+          page: () => const FirstRegisterForm(),
         ),
         GetPage(
           name: Routes.register2,
-          page: () => SecondRegisterForm(),
+          page: () => const SecondRegisterForm(),
         ),
         GetPage(
           name: Routes.termsOfUse,

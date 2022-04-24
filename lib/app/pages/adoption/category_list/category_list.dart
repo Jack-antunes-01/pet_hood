@@ -116,7 +116,14 @@ class _CategoryListState extends State<CategoryList> {
               alignment: Alignment.center,
               child: SizedBox(
                 width: 100,
-                child: CustomButton(text: "Aplicar", onPress: () {}),
+                child: CustomButton(
+                    child: const CustomText(
+                      text: "Aplicar",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: base,
+                    ),
+                    onPress: () {}),
               ),
             ),
           )

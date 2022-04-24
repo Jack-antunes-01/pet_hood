@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/route_manager.dart';
-import 'package:pet_hood/app/components/custom_button/custom_button.dart';
+import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/constants/constants.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
@@ -51,7 +51,12 @@ class WelcomePage extends StatelessWidget {
               right: 32,
               left: 32,
               child: CustomButton(
-                text: "Continuar",
+                child: const CustomText(
+                  text: "Continuar",
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: base,
+                ),
                 onPress: () => Get.toNamed(Routes.login),
               ),
             ),

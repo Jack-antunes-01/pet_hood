@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class CustomButton extends StatelessWidget {
-  final String text;
+  final Widget child;
   final VoidCallback onPress;
 
   const CustomButton({
     Key? key,
-    required this.text,
+    required this.child,
     required this.onPress,
   }) : super(key: key);
 
@@ -26,14 +26,7 @@ class CustomButton extends StatelessWidget {
           onTap: onPress,
           child: Container(
             alignment: Alignment.center,
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: base,
-              ),
-            ),
+            child: child,
           ),
         ),
       ),

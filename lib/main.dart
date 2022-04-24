@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/route_manager.dart';
+import 'package:pet_hood/app/bindings/initial_binding.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/routes/routes_list.dart';
 import 'package:pet_hood/app/theme/colors.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [Locale('pt', 'BR')],
       debugShowCheckedModeBanner: false,
       title: appTitle,
+      initialBinding: InitialBinding(),
       theme: ThemeData(
         splashColor: base.withOpacity(0.1),
         highlightColor: base.withOpacity(0.1),
