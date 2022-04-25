@@ -4,13 +4,15 @@ import 'package:pet_hood/app/theme/colors.dart';
 
 class UserAvatar extends StatelessWidget {
   final double size;
-  final File? avatar;
+  final File? avatarFile;
+  final String? avatar;
   final bool useBorder;
   final bool isLoading;
 
   const UserAvatar({
     Key? key,
     this.size = 80,
+    this.avatarFile,
     this.avatar,
     this.useBorder = true,
     this.isLoading = false,
@@ -39,29 +41,48 @@ class UserAvatar extends StatelessWidget {
           ),
         ],
       ),
-      child: avatar?.path != ""
-          ? ClipOval(
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(isLoading ? 0.4 : 0),
-                  BlendMode.darken,
-                ),
-                child: Image.file(
-                  avatar!,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Icon(
-                Icons.pets_rounded,
-                size: size - 15,
-                color: grey600,
-              ),
-            ),
+      child: _buildAvatar(),
     );
+  }
+
+  Widget _buildAvatar() {
+    if (avatarFile != null && avatarFile?.path != "") {
+      return ClipOval(
+        child: ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(isLoading ? 0.4 : 0),
+            BlendMode.darken,
+          ),
+          child: Image.file(
+            avatarFile!,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    } else if (avatar != null && avatar!.isNotEmpty) {
+      return ClipOval(
+        child: ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(isLoading ? 0.4 : 0),
+            BlendMode.darken,
+          ),
+          child: Image.asset(
+            avatar!,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Icon(
+          Icons.pets_rounded,
+          size: size - 15,
+          color: grey600,
+        ),
+      );
+    }
   }
 }

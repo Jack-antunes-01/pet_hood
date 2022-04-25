@@ -61,7 +61,7 @@ class SearchPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: UserAvatar(
                   size: 60,
-                  avatar: _userController.profileImage,
+                  avatarFile: _userController.profileImage,
                 ),
               ),
               Column(

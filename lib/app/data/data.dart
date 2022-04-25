@@ -1,6 +1,61 @@
 import 'dart:math';
 
-import 'package:pet_hood/core/entities/pet_entity.dart';
+import 'package:pet_hood/core/entities/entities.dart';
+
+List<PostEntity> getPostList() => [
+      PostEntity(
+        type: PostTypeEnum.normal,
+        name: "Pet Hood",
+        avatar: "assets/images/profile_image.png",
+        username: "pet_hood",
+        isOwner: false,
+        postImage: "assets/images/presentation.png",
+        qtLikes: 102,
+        isLiked: false,
+        postedAt: DateTime(2022, 01, 01),
+        description: "Bem vindo a Pet Hood!",
+      ),
+      // PostEntity(
+      //   type: PostTypeEnum.adoption,
+      //   name: "Jack Antunes",
+      //   avatar: "assets/images/dog_image.png",
+      //   username: "jack_antunes01",
+      //   isOwner: true,
+      //   postImage: "assets/images/dog_image.png",
+      //   postedAt: DateTime(2022, 01, 01),
+      //   age: 3,
+      //   breed: "Vira-lata",
+      //   vaccine: false,
+      //   weight: 6.43,
+      //   petName: "Salah",
+      // ),
+      // PostEntity(
+      //   type: PostTypeEnum.disappear,
+      //   name: "Jack Antunes",
+      //   avatar: "assets/images/dog_image.png",
+      //   username: "jack_antunes01",
+      //   isOwner: true,
+      //   postImage: "assets/images/dog_image.png",
+      //   postedAt: DateTime(2022, 01, 01),
+      //   description: "Eu amo meu gatineo!!",
+      //   petName: "Sansão",
+      //   dateMissing: "02/02/2022",
+      //   breed: "Vira-lata",
+      //   age: 5,
+      // ),
+      // PostEntity(
+      //   type: PostTypeEnum.found,
+      //   name: "Jack Antunes",
+      //   avatar: "assets/images/dog_image.png",
+      //   username: "jack_antunes01",
+      //   isOwner: true,
+      //   postImage: "assets/images/dog_image.png",
+      //   postedAt: DateTime(2022, 01, 01),
+      //   description: "Eu amo meu gatineo!!",
+      //   dateFound: "01/02/2022",
+      //   breed: "Vira-lata",
+      // ),
+    ];
 
 List<PetEntity> getPetList() {
   return <PetEntity>[

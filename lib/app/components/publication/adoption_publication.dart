@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -11,12 +10,10 @@ import 'package:pet_hood/utils/utils.dart';
 class AdoptionPublication extends StatelessWidget {
   final PostEntity post;
 
-  AdoptionPublication({
+  const AdoptionPublication({
     Key? key,
     required this.post,
   }) : super(key: key);
-
-  final UserController _userController = Get.find();
 
   void seeMore() {
     Get.toNamed(
@@ -73,11 +70,9 @@ class AdoptionPublication extends StatelessWidget {
                     top: 15,
                     left: 15,
                   ),
-                  child: Obx(
-                    () => UserAvatar(
-                      size: 56,
-                      avatar: _userController.profileImage,
-                    ),
+                  child: UserAvatar(
+                    size: 56,
+                    avatar: post.avatar,
                   ),
                 ),
                 Expanded(

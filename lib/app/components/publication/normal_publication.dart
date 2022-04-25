@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/post_entity.dart';
 import "package:pet_hood/utils/utils.dart";
@@ -14,8 +12,6 @@ class NormalPublication extends StatelessWidget {
     Key? key,
     required this.post,
   }) : super(key: key);
-
-  final UserController _userController = Get.find();
 
   final likeKey = GlobalKey<LikeButtonState>();
 
@@ -30,18 +26,15 @@ class NormalPublication extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Container(
-        color: base,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _header(context),
-            _content(),
-            _footer(),
-          ],
-        ),
+    return Container(
+      color: base,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _header(context),
+          _content(),
+          _footer(),
+        ],
       ),
     );
   }
@@ -63,11 +56,9 @@ class NormalPublication extends StatelessWidget {
                     top: 15,
                     left: 15,
                   ),
-                  child: Obx(
-                    () => UserAvatar(
-                      size: 56,
-                      avatar: _userController.profileImage,
-                    ),
+                  child: UserAvatar(
+                    size: 56,
+                    avatar: post.avatar,
                   ),
                 ),
                 Expanded(

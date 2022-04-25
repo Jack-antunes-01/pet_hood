@@ -66,12 +66,10 @@ class ChatPeoplePage extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Obx(
-                        () => UserAvatar(
-                          size: 40,
-                          useBorder: false,
-                          avatar: _userController.profileImage,
-                        ),
+                      UserAvatar(
+                        size: 40,
+                        useBorder: false,
+                        avatarFile: _userController.profileImage,
                       ),
                       const Padding(
                         padding: EdgeInsets.only(

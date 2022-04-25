@@ -154,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           UserAvatar(
                             size: 100,
-                            avatar: _userController.profileImage,
+                            avatarFile: _userController.profileImage,
                             isLoading: _userController.loadingProfileImage,
                           ),
                           _userController.loadingProfileImage

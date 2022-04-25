@@ -243,10 +243,8 @@ class PetDetails extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () => openExternalProfile(),
-            child: Obx(
-              () => UserAvatar(
-                avatar: _userController.profileImage,
-              ),
+            child: UserAvatar(
+              avatarFile: _userController.profileImage,
             ),
           ),
           const SizedBox(width: 12),
