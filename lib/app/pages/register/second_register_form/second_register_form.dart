@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/route_manager.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/register_controller.dart';
@@ -9,6 +8,7 @@ import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/user_entity.dart';
+import 'package:pet_hood/utils/validators/confirm_password_validator.dart';
 import 'package:pet_hood/utils/validators/email_validator.dart';
 
 class SecondRegisterForm extends StatefulWidget {
@@ -19,7 +19,7 @@ class SecondRegisterForm extends StatefulWidget {
 }
 
 class _SecondRegisterFormState extends State<SecondRegisterForm> {
-  final RegisterController _registerController = RegisterController();
+  final RegisterController _registerController = Get.find();
   final UserController _userController = UserController();
 
   bool validation = false;
@@ -295,16 +295,13 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
                               color: placeholder,
                             ),
                             textInputAction: TextInputAction.done,
-                            validator: (value) {
-                              if (!validation ||
-                                  _registerController.passwordController.text ==
-                                      _registerController
-                                          .confirmPasswordController.text) {
-                                return null;
-                              } else {
-                                return "Senhas não coincidem";
-                              }
-                            },
+                            validator: (value) => confirmPasswordValidator(
+                              isEnabled: validation,
+                              password:
+                                  _registerController.passwordController.text,
+                              confirmPassword: _registerController
+                                  .confirmPasswordController.text,
+                            ),
                           ),
                         ),
                       ),

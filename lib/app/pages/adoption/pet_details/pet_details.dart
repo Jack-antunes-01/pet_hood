@@ -25,6 +25,7 @@ class PetDetails extends StatelessWidget {
     description: Get.arguments.description,
     age: Get.arguments.age,
     city: Get.arguments.city,
+    state: Get.arguments.state,
     petImage: Get.arguments.petImage,
     category: Get.arguments.category,
     createdAt: Get.arguments.createdAt,
@@ -143,7 +144,7 @@ class PetDetails extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    pet.city,
+                    "${pet.city}/${pet.state}",
                     style: const TextStyle(
                       color: grey600,
                       fontSize: 16,

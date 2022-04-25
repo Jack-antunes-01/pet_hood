@@ -1,4 +1,5 @@
 import 'package:get/route_manager.dart';
+import 'package:pet_hood/app/bindings/home_bindings.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/pages/pages.dart';
 
@@ -27,6 +28,7 @@ abstract class RoutesList {
         GetPage(
           name: Routes.home,
           page: () => const HomePage(),
+          binding: HomeBindings(),
         ),
         GetPage(
           name: Routes.categoryList,

@@ -30,6 +30,7 @@ class PetWidgetProfile extends StatelessWidget {
             description: pet.description,
             age: pet.age,
             city: pet.city,
+            state: pet.state,
             petImage: "assets/images/dog_image.png",
             category: pet.category,
             createdAt: DateTime.now(),

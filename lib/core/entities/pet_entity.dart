@@ -9,6 +9,7 @@ class PetEntity {
   final String description;
   final DateTime age;
   final String city;
+  final String state;
   final String petImage;
   final DateTime createdAt;
 
@@ -23,6 +24,7 @@ class PetEntity {
     required this.description,
     required this.age,
     required this.city,
+    required this.state,
     required this.petImage,
     required this.category,
     required this.createdAt,

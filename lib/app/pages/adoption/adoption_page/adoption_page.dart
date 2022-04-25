@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/data/data.dart';
+import 'package:pet_hood/app/controllers/adoption_controller.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
@@ -11,6 +12,8 @@ class AdoptionPage extends StatelessWidget {
   final List<PetEntity> pets = getPetList();
 
   AdoptionPage({Key? key}) : super(key: key);
+
+  final AdoptionController _adoptionPageController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -68,14 +71,29 @@ class AdoptionPage extends StatelessWidget {
           child: ListView(
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            children: buildNewestPet(),
+            children: _buildList(),
           ),
         ),
       ],
     );
   }
 
-  List<Widget> buildNewestPet() {
+  List<Widget> _buildList() {
+    if (pets.isNotEmpty) {
+      return _buildNewestPet();
+    }
+    return [
+      const Padding(
+        padding: EdgeInsets.only(left: 15, right: 15),
+        child: CustomText(
+          text: "Não há novos pets no momento.",
+          color: grey800,
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildNewestPet() {
     List<Widget> list = [];
 
     for (var i = 0; i < pets.length; i++) {
@@ -108,9 +126,8 @@ class AdoptionPage extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routes.categoryList, arguments: {
-          "category": petCategory,
-        });
+        _adoptionPageController.petCategory = petCategory;
+        Get.toNamed(Routes.categoryList);
       },
       child: Container(
         height: 80,

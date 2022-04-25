@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:pet_hood/app/components/tag_pet/tag_pet.dart';
+import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
@@ -17,23 +17,19 @@ class PetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime createdAtDate = pet.createdAt;
+    var day = createdAtDate.day;
+    var month = createdAtDate.month < 10
+        ? "0${createdAtDate.month}"
+        : createdAtDate.month;
+    var year = createdAtDate.year;
+    String createdAt = "$day/$month/$year";
+
     return GestureDetector(
       onTap: () {
         Get.toNamed(
           Routes.petDetails,
-          arguments: PetEntity(
-            name: "Abyssinian Cats",
-            city: "California",
-            category: PetCategory.adoption,
-            petImage: "assets/images/cats/cat_1.jpg",
-            createdAt: DateTime.now(),
-            age: DateTime(2021, 01, 01),
-            breed: "Vira-lata",
-            description: "Animal maravilhoso de fofo demais jentiiiiii",
-            id: '210930askd',
-            vaccine: true,
-            userId: '918290319',
-          ),
+          arguments: pet,
         );
       },
       child: Container(
@@ -83,12 +79,30 @@ class PetWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TagPet(category: pet.category),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TagPet(category: pet.category),
+                      CustomText(
+                        text: createdAt,
+                        color: grey800,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     pet.name,
                     style: const TextStyle(
                       color: grey800,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    pet.breed,
+                    style: const TextStyle(
+                      color: grey600,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

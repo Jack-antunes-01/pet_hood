@@ -24,6 +24,7 @@ class AdoptionPublication extends StatelessWidget {
       arguments: PetEntity(
         name: "Abyssinian Cats",
         city: "California",
+        state: "US",
         category: PetCategory.adoption,
         petImage: "assets/images/cats/cat_1.jpg",
         createdAt: DateTime.now(),

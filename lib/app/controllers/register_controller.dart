@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
-  /// Singleton
-  RegisterController._privateConstructor();
+  // /// Singleton
+  // RegisterController._privateConstructor();
 
-  static final RegisterController _instance =
-      RegisterController._privateConstructor();
+  // static final RegisterController _instance =
+  //     RegisterController._privateConstructor();
 
-  factory RegisterController() {
-    return _instance;
-  }
+  // factory RegisterController() {
+  //   return _instance;
+  // }
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController birthDateController = TextEditingController();
