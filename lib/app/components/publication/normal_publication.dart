@@ -32,7 +32,7 @@ class NormalPublication extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _header(context),
-          _content(),
+          _content(context),
           _footer(),
         ],
       ),
@@ -77,7 +77,7 @@ class NormalPublication extends StatelessWidget {
                           textOverflow: TextOverflow.ellipsis,
                         ),
                         CustomText(
-                          text: post.username,
+                          text: "@${post.username}",
                           color: grey600,
                           fontSize: 16,
                           textOverflow: TextOverflow.ellipsis,
@@ -117,37 +117,49 @@ class NormalPublication extends StatelessWidget {
     );
   }
 
-  Widget _content() {
+  Widget _content(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 15,
-            right: 15,
-            bottom: 15,
-          ),
-          child: CustomText(
-            text: post.description!,
-            color: grey800,
-            fontSize: 16,
-          ),
-        ),
+        post.description != null && post.description!.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(
+                  left: 15,
+                  right: 15,
+                  bottom: 15,
+                ),
+                child: CustomText(
+                  text: post.description!,
+                  color: grey800,
+                  fontSize: 16,
+                ),
+              )
+            : const SizedBox.shrink(),
         GestureDetector(
           onDoubleTap: () {
             likeKey.currentState!.onTap();
           },
           child: Stack(
             children: [
-              Container(
-                height: 300,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(post.postImage),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+              post.postImage != null
+                  ? Container(
+                      height: 300,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(post.postImage!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : SizedBox(
+                      height: 300,
+                      width: width,
+                      child: Image.file(
+                        post.postImageFile!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
             ],
           ),
         ),

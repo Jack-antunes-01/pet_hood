@@ -39,20 +39,44 @@ class _HomePageState extends State<HomePage> {
     controller.dispose();
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Vai nos deixar? 🥺'),
+            content: const Text('Você quer sair do app'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Não'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Sim'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const DrawerNavigation(),
-      appBar: _appBar(),
-      bottomNavigationBar: ScrollToHideBottomTab(
-        controller: controller,
-        child: BottomTabNavigation(),
-        isBottomTab: true,
-      ),
-      body: Obx(
-        () => Container(
-          child:
-              _pages(controller).elementAt(_homePageController.selectedIndex),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        drawer: const DrawerNavigation(),
+        appBar: _appBar(),
+        bottomNavigationBar: ScrollToHideBottomTab(
+          controller: controller,
+          child: BottomTabNavigation(),
+          isBottomTab: true,
+        ),
+        body: Obx(
+          () => Container(
+            child:
+                _pages(controller).elementAt(_homePageController.selectedIndex),
+          ),
         ),
       ),
     );

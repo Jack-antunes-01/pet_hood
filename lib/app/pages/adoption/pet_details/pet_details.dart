@@ -24,6 +24,7 @@ class PetDetails extends StatelessWidget {
     vaccine: Get.arguments.vaccine,
     description: Get.arguments.description,
     age: Get.arguments.age,
+    yearOrMonth: Get.arguments.yearOrMonth,
     city: Get.arguments.city,
     state: Get.arguments.state,
     petImage: Get.arguments.petImage,
@@ -98,7 +99,9 @@ class PetDetails extends StatelessWidget {
     return Stack(
       children: [
         Hero(
-          tag: pet.petImage,
+          tag: pet.petImage != null && pet.petImage!.isNotEmpty
+              ? pet.petImage!
+              : pet.petImageFile!.path,
           child: Container(
             height: height * 0.5,
             decoration: const BoxDecoration(
@@ -128,7 +131,7 @@ class PetDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                pet.name,
+                pet.name!,
                 style: const TextStyle(
                   color: grey800,
                   fontWeight: FontWeight.bold,
@@ -197,9 +200,10 @@ class PetDetails extends StatelessWidget {
           child: Row(
             children: [
               const SizedBox(width: 12),
-              BuildPetFeature(value: pet.age.toYearOrMonth(), feature: "Idade"),
-              BuildPetFeature(value: pet.breed, feature: "Raça"),
-              BuildPetFeature(value: pet.vaccine.toText(), feature: "Vacinado"),
+              BuildPetFeature(value: pet.age.toString(), feature: "Idade"),
+              BuildPetFeature(value: pet.breed!, feature: "Raça"),
+              BuildPetFeature(
+                  value: pet.vaccine!.toText(), feature: "Vacinado"),
               // BuildPetFeature(value: "6 Kg", feature: "Peso"),
               const SizedBox(width: 12),
             ],

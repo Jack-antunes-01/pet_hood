@@ -19,12 +19,15 @@ class FeedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: inputColor,
-      body: ListView.builder(
-        controller: controller,
-        padding: const EdgeInsets.only(top: 10),
-        itemBuilder: (context, index) =>
-            _buildFeed(_feedController.listPosts[index]),
-        itemCount: _feedController.listPosts.length,
+      body: Obx(
+        () => ListView.builder(
+          controller: controller,
+          padding: const EdgeInsets.only(top: 10, bottom: 100),
+          itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _buildFeed(_feedController.listPosts[index])),
+          itemCount: _feedController.listPosts.length,
+        ),
       ),
     );
   }

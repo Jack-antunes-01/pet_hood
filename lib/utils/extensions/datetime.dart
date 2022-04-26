@@ -31,7 +31,7 @@ extension DateTimeExt on DateTime {
       return "$hourDiff horas atrás";
     } else if (minuteDiff > 0) {
       if (minuteDiff == 1) {
-        return "$hourDiff minuto atrás";
+        return "$minuteDiff minuto atrás";
       }
       return "$minuteDiff minutos atrás";
     } else {

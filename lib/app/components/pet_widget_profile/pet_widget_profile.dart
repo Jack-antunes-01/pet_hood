@@ -29,6 +29,7 @@ class PetWidgetProfile extends StatelessWidget {
             vaccine: pet.vaccine,
             description: pet.description,
             age: pet.age,
+            yearOrMonth: pet.yearOrMonth,
             city: pet.city,
             state: pet.state,
             petImage: "assets/images/dog_image.png",
@@ -94,7 +95,7 @@ class PetWidgetProfile extends StatelessWidget {
                       bottom: 8,
                     ),
                     child: CustomText(
-                      text: pet.name,
+                      text: pet.name!,
                       color: grey800,
                       fontWeight: FontWeight.bold,
                     ),

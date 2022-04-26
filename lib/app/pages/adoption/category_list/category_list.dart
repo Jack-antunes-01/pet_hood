@@ -7,6 +7,7 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/adoption_controller.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:pet_hood/utils/regex/only_letters.dart';
 import 'package:pet_hood/utils/validators/date_validator.dart';
 
 class CategoryList extends StatefulWidget {
@@ -77,7 +78,7 @@ class _CategoryListState extends State<CategoryList> {
 
             return element.category == category &&
                 ((_breed.isNotEmpty &&
-                        element.breed.toLowerCase().contains(_breed)) ||
+                        element.breed!.toLowerCase().contains(_breed)) ||
                     (_dateSearch.isNotEmpty && _dateSearch == createdAt) ||
                     (_city.isNotEmpty &&
                         element.city.toLowerCase().contains(_city)) ||
@@ -161,7 +162,7 @@ class _CategoryListState extends State<CategoryList> {
                       placeholderText: "Vira-lata",
                       labelActive: false,
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[a-zA-z- ]")),
+                        FilteringTextInputFormatter.allow(onlyLetters),
                       ],
                     ),
                   ),
@@ -210,8 +211,7 @@ class _CategoryListState extends State<CategoryList> {
                                 labelActive: false,
                                 maxLength: 30,
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z]"))
+                                  FilteringTextInputFormatter.allow(onlyLetters)
                                 ],
                               ),
                             ],
@@ -237,7 +237,8 @@ class _CategoryListState extends State<CategoryList> {
                                 maxLength: 2,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
-                                      RegExp("[a-zA-Z]"))
+                                    onlyLettersSample,
+                                  )
                                 ],
                               ),
                             ],

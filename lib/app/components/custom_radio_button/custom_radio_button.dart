@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 enum RadioEnum { unselected, yes, no }
@@ -13,13 +15,13 @@ class CustomRadioButton extends StatefulWidget {
 }
 
 class _CustomRadioButtonState extends State<CustomRadioButton> {
-  RadioEnum? _radioValue = RadioEnum.unselected;
+  final PublicationPageController _publicationPageController = Get.find();
 
   setRadioValue(int index) {
     if (index == 0) {
-      setState(() => _radioValue = RadioEnum.yes);
+      _publicationPageController.radioValue = RadioEnum.yes;
     } else {
-      setState(() => _radioValue = RadioEnum.no);
+      _publicationPageController.radioValue = RadioEnum.no;
     }
   }
 
@@ -30,34 +32,34 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
-      child: Row(
-        children: List.generate(
-          items.length,
-          (index) => Flexible(
-            child: ListTile(
-              dense: true,
-              horizontalTitleGap: 0,
-              contentPadding: EdgeInsets.zero,
-              onTap: () {
-                setRadioValue(index);
-              },
-              title: CustomText(
-                text: items[index],
-                color: grey800,
-                fontSize: 16,
-              ),
-              leading: Radio<RadioEnum>(
-                value: index == 0 ? RadioEnum.yes : RadioEnum.no,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: const VisualDensity(horizontal: -4),
-                activeColor: primary,
-                focusColor: Colors.red,
-                groupValue: _radioValue,
-                onChanged: (RadioEnum? value) {
-                  setState(() {
-                    _radioValue = value;
-                  });
+      child: Obx(
+        () => Row(
+          children: List.generate(
+            items.length,
+            (index) => Flexible(
+              child: ListTile(
+                dense: true,
+                horizontalTitleGap: 0,
+                contentPadding: EdgeInsets.zero,
+                onTap: () {
+                  setRadioValue(index);
                 },
+                title: CustomText(
+                  text: items[index],
+                  color: grey800,
+                  fontSize: 16,
+                ),
+                leading: Radio<RadioEnum>(
+                  value: index == 0 ? RadioEnum.yes : RadioEnum.no,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: const VisualDensity(horizontal: -4),
+                  activeColor: primary,
+                  focusColor: red,
+                  groupValue: _publicationPageController.radioValue,
+                  onChanged: (RadioEnum? value) {
+                    _publicationPageController.radioValue = value!;
+                  },
+                ),
               ),
             ),
           ),

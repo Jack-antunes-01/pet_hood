@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:pet_hood/core/entities/entities.dart';
+
 enum PostTypeEnum {
   normal,
   adoption,
@@ -13,18 +16,15 @@ class PostEntity {
   final String username;
   final bool isOwner;
   final String? description;
-  final String postImage;
+  final String? postImage;
+  final File? postImageFile;
   int? qtLikes;
   bool? isLiked;
   final DateTime postedAt;
 
-  final int? age;
-  final String? breed;
-  final bool? vaccine;
-  final double? weight;
+  final PetEntity? pet;
 
   final String? dateMissing;
-  final String? petName;
 
   final String? dateFound;
 
@@ -34,17 +34,14 @@ class PostEntity {
     required this.avatar,
     required this.username,
     required this.isOwner,
-    required this.postImage,
     required this.postedAt,
+    this.postImage,
+    this.postImageFile,
     this.qtLikes,
     this.isLiked,
     this.description,
-    this.age,
-    this.breed,
-    this.vaccine,
-    this.weight,
     this.dateMissing,
-    this.petName,
     this.dateFound,
+    this.pet,
   });
 }

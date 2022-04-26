@@ -1,16 +1,21 @@
+import 'dart:io';
+
 enum PetCategory { adoption, disappear, found }
+enum YearOrMonth { years, months }
 
 class PetEntity {
   final String id;
   final String userId;
-  final String name;
-  final String breed;
-  final bool vaccine;
+  final String? name;
+  final String? breed;
+  final bool? vaccine;
   final String description;
-  final DateTime age;
+  final int? age;
+  final YearOrMonth? yearOrMonth;
   final String city;
   final String state;
-  final String petImage;
+  final String? petImage;
+  final File? petImageFile;
   final DateTime createdAt;
 
   final PetCategory category;
@@ -18,14 +23,16 @@ class PetEntity {
   PetEntity({
     required this.id,
     required this.userId,
-    required this.name,
+    this.name,
     required this.breed,
-    required this.vaccine,
+    this.vaccine,
     required this.description,
-    required this.age,
+    this.age,
+    this.yearOrMonth,
     required this.city,
     required this.state,
-    required this.petImage,
+    this.petImage,
+    this.petImageFile,
     required this.category,
     required this.createdAt,
   });

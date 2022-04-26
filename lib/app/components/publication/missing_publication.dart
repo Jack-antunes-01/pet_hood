@@ -19,18 +19,15 @@ class MissingPublication extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Container(
-        color: base,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _header(context),
-            _content(),
-            _footer(),
-          ],
-        ),
+    return Container(
+      color: base,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _header(context),
+          _content(context),
+          _footer(),
+        ],
       ),
     );
   }
@@ -73,7 +70,7 @@ class MissingPublication extends StatelessWidget {
                           textOverflow: TextOverflow.ellipsis,
                         ),
                         CustomText(
-                          text: post.username,
+                          text: "@${post.username}",
                           color: grey600,
                           fontSize: 16,
                           textOverflow: TextOverflow.ellipsis,
@@ -113,7 +110,8 @@ class MissingPublication extends StatelessWidget {
     );
   }
 
-  Widget _content() {
+  Widget _content(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -130,24 +128,35 @@ class MissingPublication extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
-          child: CustomText(
-            text: post.description!,
-            color: grey800,
-          ),
-        ),
+        post.description != null && post.description!.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
+                child: CustomText(
+                  text: post.description!,
+                  color: grey800,
+                ),
+              )
+            : const SizedBox.shrink(),
         Stack(
           children: [
-            Container(
-              height: 300,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(post.postImage),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            post.postImage != null
+                ? Container(
+                    height: 300,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(post.postImage!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                : SizedBox(
+                    height: 300,
+                    width: width,
+                    child: Image.file(
+                      post.postImageFile!,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
             Positioned(
               bottom: 15,
               left: 15,
@@ -210,14 +219,14 @@ class MissingPublication extends StatelessWidget {
         post.dateMissing != null
             ? BuildPetFeature(value: post.dateMissing!, feature: "Desaparecido")
             : const SizedBox.shrink(),
-        post.petName != null
-            ? BuildPetFeature(value: post.petName!, feature: "Nome")
+        post.pet?.name != null
+            ? BuildPetFeature(value: post.pet!.name!, feature: "Nome")
             : const SizedBox.shrink(),
-        post.age != null
-            ? BuildPetFeature(value: "${post.age} anos", feature: "Idade")
+        post.pet?.age != null
+            ? BuildPetFeature(value: "${post.pet!.age} anos", feature: "Idade")
             : const SizedBox.shrink(),
-        post.breed != null
-            ? BuildPetFeature(value: post.breed!, feature: "Raça")
+        post.pet?.breed != null
+            ? BuildPetFeature(value: post.pet!.breed!, feature: "Raça")
             : const SizedBox.shrink(),
         const SizedBox(width: 8),
       ],

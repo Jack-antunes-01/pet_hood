@@ -44,7 +44,7 @@ class BottomTabNavigation extends StatelessWidget {
                 barrierLabel: 'Dialog',
                 transitionDuration: const Duration(milliseconds: 200),
                 pageBuilder: (_, __, ___) {
-                  return PublicationPage();
+                  return const PublicationPage();
                 },
               );
             } else {

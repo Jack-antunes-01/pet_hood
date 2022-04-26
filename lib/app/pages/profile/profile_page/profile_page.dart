@@ -440,7 +440,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         barrierLabel: 'Dialog',
                         transitionDuration: const Duration(milliseconds: 200),
                         pageBuilder: (_, __, ___) {
-                          return PublicationPage();
+                          return const PublicationPage();
                         },
                       );
                     }),

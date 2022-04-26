@@ -20,7 +20,7 @@ class SecondRegisterForm extends StatefulWidget {
 
 class _SecondRegisterFormState extends State<SecondRegisterForm> {
   final RegisterController _registerController = Get.find();
-  final UserController _userController = UserController();
+  final UserController _userController = Get.find();
 
   bool validation = false;
   double _strength = 0;

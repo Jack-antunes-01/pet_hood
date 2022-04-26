@@ -57,7 +57,9 @@ class PetWidget extends StatelessWidget {
               child: Stack(
                 children: [
                   Hero(
-                    tag: pet.petImage,
+                    tag: pet.petImage != null && pet.petImage!.isNotEmpty
+                        ? pet.petImage!
+                        : pet.petImageFile!.path,
                     child: Container(
                       decoration: const BoxDecoration(
                         image: DecorationImage(
@@ -93,14 +95,14 @@ class PetWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    pet.name,
+                    pet.name!,
                     style: const TextStyle(
                       color: grey800,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    pet.breed,
+                    pet.breed!,
                     style: const TextStyle(
                       color: grey600,
                       fontWeight: FontWeight.bold,

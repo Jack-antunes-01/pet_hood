@@ -19,18 +19,15 @@ class FoundPublication extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Container(
-        color: base,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _header(context),
-            _content(),
-            _footer(),
-          ],
-        ),
+    return Container(
+      color: base,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _header(context),
+          _content(context),
+          _footer(),
+        ],
       ),
     );
   }
@@ -65,15 +62,15 @@ class FoundPublication extends StatelessWidget {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         CustomText(
-                          text: "Jackson Antunes Batista",
+                          text: post.name,
                           color: grey800,
                           fontSize: 18,
                           textOverflow: TextOverflow.ellipsis,
                         ),
                         CustomText(
-                          text: "@Jack_antunes01",
+                          text: "@${post.username}",
                           color: grey600,
                           fontSize: 16,
                           textOverflow: TextOverflow.ellipsis,
@@ -113,7 +110,8 @@ class FoundPublication extends StatelessWidget {
     );
   }
 
-  Widget _content() {
+  Widget _content(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -130,24 +128,35 @@ class FoundPublication extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
-          child: CustomText(
-            text: post.description!,
-            color: grey800,
-          ),
-        ),
+        post.description != null && post.description!.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
+                child: CustomText(
+                  text: post.description!,
+                  color: grey800,
+                ),
+              )
+            : const SizedBox.shrink(),
         Stack(
           children: [
-            Container(
-              height: 300,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(post.postImage),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            post.postImage != null
+                ? Container(
+                    height: 300,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(post.postImage!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                : SizedBox(
+                    height: 300,
+                    width: width,
+                    child: Image.file(
+                      post.postImageFile!,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
             Positioned(
               bottom: 15,
               left: 15,
@@ -207,11 +216,14 @@ class FoundPublication extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(width: 8),
-        post.dateFound != null
-            ? BuildPetFeature(value: post.dateFound!, feature: "Encontrado")
+        post.pet?.breed != null
+            ? BuildPetFeature(value: post.pet!.breed!, feature: "Raça")
             : const SizedBox.shrink(),
-        post.breed != null
-            ? BuildPetFeature(value: post.breed!, feature: "Raça")
+        post.pet?.city != null
+            ? BuildPetFeature(value: post.pet!.city, feature: "Cidade")
+            : const SizedBox.shrink(),
+        post.pet?.state != null
+            ? BuildPetFeature(value: post.pet!.state, feature: "Estado")
             : const SizedBox.shrink(),
         const SizedBox(width: 8),
       ],

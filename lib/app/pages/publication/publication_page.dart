@@ -1,90 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/components/publication_create/create_adoption_publication.dart';
+import 'package:pet_hood/app/components/publication_create/create_found_publication.dart';
+import 'package:pet_hood/app/components/publication_create/create_missing_publication.dart';
+import 'package:pet_hood/app/components/publication_create/create_normal_publication.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
-class PublicationPage extends StatelessWidget {
-  PublicationPage({Key? key}) : super(key: key);
+class PublicationPage extends StatefulWidget {
+  const PublicationPage({Key? key}) : super(key: key);
 
-  final PublicationPageController _publicationPageController = Get.put(
-    PublicationPageController(),
-  );
+  @override
+  State<PublicationPage> createState() => _PublicationPageState();
+}
+
+class _PublicationPageState extends State<PublicationPage> {
+  final PublicationPageController _publicationPageController = Get.find();
+
+  Future<bool> _onWillPop() async {
+    exitPublication() {
+      goBack();
+      return false;
+    }
+
+    return exitPublication();
+  }
+
+  goBack() {
+    Get.back();
+    _publicationPageController.reset();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarHeader(
-        appBar: AppBar(),
-        title: "Criar publicação",
-        onBackPress: () {
-          Get.back();
-          _publicationPageController.selectedOption = 0;
-        },
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                right: 20,
-                left: 20,
-              ),
-              child: Row(
-                children: [
-                  const CustomText(
-                    text: "Selecione o tipo da publicação",
-                    color: grey800,
-                    fontSize: 17,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10,
-                      right: 10,
-                      bottom: 16,
-                      top: 16,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBarHeader(
+          appBar: AppBar(),
+          title: "Criar publicação",
+          onBackPress: () => goBack(),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  right: 20,
+                  left: 20,
+                ),
+                child: Row(
+                  children: [
+                    const CustomText(
+                      text: "Selecione o tipo da publicação",
+                      color: grey800,
+                      fontSize: 17,
                     ),
-                    child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              _buildPopupDialog(context),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.info_outline,
-                        color: grey800,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        bottom: 16,
+                        top: 16,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                _buildPopupDialog(context),
+                          );
+                        },
+                        child: const Icon(
+                          Icons.info_outline,
+                          color: grey800,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5, right: 20),
-                child: Obx(
-                  () => Row(
-                    children: List.generate(
-                      _publicationPageController.items.length,
-                      (index) => _publicationTypeCard(
-                        index: index,
-                        text: _publicationPageController.items[index],
-                        selected:
-                            index == _publicationPageController.selectedOption,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 20),
+                  child: Obx(
+                    () => Row(
+                      children: List.generate(
+                        _publicationPageController.items.length,
+                        (index) => _publicationTypeCard(
+                          index: index,
+                          text: _publicationPageController.items[index],
+                          selected: index ==
+                              _publicationPageController.selectedOption,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Obx(() => Padding(
-                  padding: const EdgeInsets.only(right: 20, left: 20),
+              Obx(
+                () => Padding(
+                  padding: const EdgeInsets.only(),
                   child: _buildContainer(context),
-                )),
-          ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -95,225 +118,26 @@ class PublicationPage extends StatelessWidget {
       case 0:
         return _emptyWidget();
       case 1:
-        return _normalPublication(context);
+        return const CreateNormalPublication();
       case 2:
-        return _adoptionPublication(context);
+        return const CreateAdoptionPublication();
       case 3:
-        return _missingPublication(context);
+        return const CreateMissingPublication();
       case 4:
-        return _foundPublication(context);
+        return const CreateFoundPublication();
       default:
         return _emptyWidget();
     }
   }
 
-  Widget _foundPublication(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 16, bottom: 16),
-          child: CustomText(
-              text: "Data que o pet foi encontrado:", color: grey800),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-            bottom: 16,
-          ),
-          child: Row(children: const [
-            Flexible(
-              child: CustomInput(
-                // controller: _firstRegisterFormController.dateController,
-                placeholderText: "01/01/2022",
-                labelActive: false,
-              ),
-            ),
-            SizedBox(width: 16),
-            Flexible(child: CustomInput(placeholderText: "Raça")),
-          ]),
-        ),
-        Row(
-          children: const [
-            Flexible(child: CustomInput(placeholderText: "Cidade/Estado")),
-            SizedBox(width: 16),
-            Flexible(child: CustomInput(placeholderText: "Bairro")),
-          ],
-        ),
-        _normalPublication(context),
-      ],
-    );
-  }
-
-  Widget _missingPublication(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 16, top: 16),
-          child: CustomInput(placeholderText: "Nome do pet"),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Row(
-            children: const [
-              Flexible(child: CustomInput(placeholderText: "Raça")),
-              SizedBox(width: 16),
-              Flexible(child: CustomInput(placeholderText: "Idade")),
-              SizedBox(width: 16),
-              CustomSelect(),
-            ],
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(bottom: 16),
-          child:
-              CustomText(text: "Data que o pet desapareceu: ", color: grey800),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Row(
-            children: const [
-              Flexible(
-                child: CustomInput(
-                  placeholderText: "01/01/2022",
-                  labelActive: false,
-                ),
-              ),
-              Spacer(),
-            ],
-          ),
-        ),
-        const CustomText(
-          text: "Seu pet possui problemas de saúde?",
-          color: grey800,
-          fontSize: 17,
-        ),
-        const CustomRadioButton(),
-        Row(
-          children: const [
-            Flexible(child: CustomInput(placeholderText: "Cidade/Estado")),
-            SizedBox(width: 16),
-            Flexible(child: CustomInput(placeholderText: "Bairro")),
-          ],
-        ),
-        _normalPublication(context),
-      ],
-    );
-  }
-
-  Widget _adoptionPublication(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 16, top: 16),
-          child: CustomInput(placeholderText: "Nome do pet"),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Row(
-            children: const [
-              Flexible(child: CustomInput(placeholderText: "Raça")),
-              SizedBox(width: 16),
-              Flexible(child: CustomInput(placeholderText: "Idade")),
-              SizedBox(width: 16),
-              CustomSelect(),
-            ],
-          ),
-        ),
-        const CustomText(
-          text: "Seu pet é vacinado?",
-          color: grey800,
-          fontSize: 17,
-        ),
-        const CustomRadioButton(),
-        const CustomText(
-          text: "Seu pet possui problemas de saúde?",
-          color: grey800,
-          fontSize: 17,
-        ),
-        const CustomRadioButton(),
-        Row(
-          children: const [
-            Flexible(child: CustomInput(placeholderText: "Cidade/Estado")),
-            SizedBox(width: 16),
-            Flexible(child: CustomInput(placeholderText: "Bairro")),
-          ],
-        ),
-        _normalPublication(context),
-      ],
-    );
-  }
-
-  Widget _normalPublication(BuildContext context) {
-    var safePaddingBottom = MediaQuery.of(context).padding.bottom;
-    var height = MediaQuery.of(context).size.height;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 16, top: 16),
-          child: CustomText(text: "Descrição", color: grey800),
-        ),
-        TextField(
-          maxLines: 4,
-          decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: grey200,
-                width: 2,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: primary,
-                width: 2,
-              ),
-            ),
-          ),
-        ),
-        Container(
-          alignment: Alignment.topRight,
-          child: GestureDetector(
-            onTap: () {
-              openBottomSheetModalImage(context);
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Icon(Icons.collections_outlined, color: grey800),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                  child: CustomText(text: "Anexar imagem", color: grey800),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(bottom: safePaddingBottom + height * 0.05),
-          child: CustomButton(
-            child: const CustomText(
-              text: "Publicar",
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: base,
-            ),
-            onPress: () {
-              Get.back();
-              _publicationPageController.selectedOption = 0;
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _emptyWidget() {
     return const SizedBox.shrink();
+  }
+
+  selectTypePublication(int index) {
+    if (!_publicationPageController.loadingPublication) {
+      _publicationPageController.selectedOption = index;
+    }
   }
 
   Widget _publicationTypeCard({
@@ -325,7 +149,7 @@ class PublicationPage extends StatelessWidget {
         ? Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
-              onTap: () => _publicationPageController.selectedOption = index,
+              onTap: () => selectTypePublication(index),
               child: Container(
                 decoration: BoxDecoration(
                   color: selected ? primary : base,
@@ -391,85 +215,6 @@ class PublicationPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  openBottomSheetModalImage(context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext buildContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(buildContext).padding.bottom,
-          ),
-          child: Theme(
-            data: ThemeData(
-              splashColor: grey200,
-              highlightColor: grey200,
-            ),
-            child: Wrap(
-              children: [
-                _header(),
-                _content(),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _header() {
-    return Column(
-      children: [
-        Row(
-          children: const [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: CustomText(
-                text: "Selecione",
-                color: grey800,
-              ),
-            ),
-          ],
-        ),
-        const Divider(thickness: 1, color: grey200, height: 0),
-      ],
-    );
-  }
-
-  Widget _content() {
-    return Column(
-      children: [
-        _buildButton(
-          icon: const Icon(
-            Icons.photo_camera_outlined,
-            color: grey800,
-          ),
-          text: "Tirar foto",
-          onTap: () {},
-        ),
-        _buildButton(
-          icon: const Icon(
-            Icons.collections_outlined,
-            color: grey800,
-          ),
-          text: "Galeria",
-          onTap: () {},
-        ),
-      ],
-    );
-  }
-
-  Widget _buildButton({
-    required Icon icon,
-    required String text,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: icon,
-      title: CustomText(text: text, color: grey800),
-      onTap: onTap,
     );
   }
 }
