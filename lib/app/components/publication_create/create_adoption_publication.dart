@@ -87,7 +87,7 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
         _feedController.addPost(postEntity);
         _userController.addNewPost(postEntity);
         _userController.addNewAdoptionPet(postEntity.pet!);
-        _adoptionController.addNewAdoptionPet(postEntity.pet!);
+        _adoptionController.addNewPet(postEntity.pet!);
 
         _publicationPageController.reset();
         Get.back();

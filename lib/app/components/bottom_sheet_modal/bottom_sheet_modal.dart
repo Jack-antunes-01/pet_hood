@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
@@ -41,7 +42,16 @@ openBottomSheetModal(BuildContext context, bool owner) {
                       ),
                       title:
                           const CustomText(text: 'Denunciar', color: grey800),
-                      onTap: () => {},
+                      onTap: () {
+                        Get.snackbar(
+                          "Denúncia",
+                          "Denúncia feita com sucesso.",
+                          backgroundColor: primary,
+                          colorText: base,
+                          duration: const Duration(seconds: 2),
+                        );
+                        Navigator.of(context).pop();
+                      },
                     ),
             ],
           ),

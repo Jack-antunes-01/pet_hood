@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/post_entity.dart';
 import "package:pet_hood/utils/utils.dart";
@@ -100,7 +101,7 @@ class NormalPublication extends StatelessWidget {
                 splashColor: grey200,
                 highlightColor: grey200,
                 onTap: () {
-                  openBottomSheetModal(context, true);
+                  openBottomSheetModal(context, post.isOwner);
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(8),
@@ -141,27 +142,25 @@ class NormalPublication extends StatelessWidget {
           onDoubleTap: () {
             likeKey.currentState!.onTap();
           },
-          child: Stack(
-            children: [
-              post.postImage != null
-                  ? Container(
-                      height: height * 0.4,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(post.postImage!),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                  : SizedBox(
-                      height: height * 0.4,
-                      width: width,
-                      child: Image.file(
-                        post.postImageFile!,
+          child: PinchToZoom(
+            child: post.postImage != null
+                ? Container(
+                    height: height * 0.4,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(post.postImage!),
                         fit: BoxFit.cover,
                       ),
                     ),
-            ],
+                  )
+                : SizedBox(
+                    height: height * 0.4,
+                    width: width,
+                    child: Image.file(
+                      post.postImageFile!,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
           ),
         ),
       ],

@@ -7,6 +7,7 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/city_state_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/description_create_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/name_breed_publication.dart';
+import 'package:pet_hood/app/controllers/adoption_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/feed/feed_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
@@ -25,6 +26,7 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
   final PublicationPageController _publicationPageController = Get.find();
   final UserController _userController = Get.find();
   final FeedController _feedController = Get.find();
+  final AdoptionController _adoptionController = Get.find();
 
   final formKey = GlobalKey<FormState>();
 
@@ -78,6 +80,7 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
         );
 
         _feedController.addPost(postEntity);
+        _adoptionController.addNewPet(postEntity.pet!);
 
         _publicationPageController.reset();
         Get.back();

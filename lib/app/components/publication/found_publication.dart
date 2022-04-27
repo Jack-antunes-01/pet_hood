@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -129,15 +130,18 @@ class FoundPublication extends StatelessWidget {
             ),
           ),
         ),
-        post.description != null && post.description!.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
-                child: CustomText(
-                  text: post.description!,
-                  color: grey800,
-                ),
-              )
-            : const SizedBox.shrink(),
+        PinchToZoom(
+          child: post.description != null && post.description!.isNotEmpty
+              ? Padding(
+                  padding:
+                      const EdgeInsets.only(right: 15, left: 15, bottom: 15),
+                  child: CustomText(
+                    text: post.description!,
+                    color: grey800,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
         Stack(
           children: [
             post.postImage != null

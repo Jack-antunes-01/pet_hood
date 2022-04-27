@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -138,24 +137,26 @@ class AdoptionPublication extends StatelessWidget {
         ),
         Stack(
           children: [
-            post.postImage != null
-                ? Container(
-                    height: height * 0.4,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(post.postImage!),
+            PinchToZoom(
+              child: post.postImage != null
+                  ? Container(
+                      height: height * 0.4,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(post.postImage!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : SizedBox(
+                      height: height * 0.4,
+                      width: width,
+                      child: Image.file(
+                        post.postImageFile!,
                         fit: BoxFit.cover,
                       ),
                     ),
-                  )
-                : SizedBox(
-                    height: height * 0.4,
-                    width: width,
-                    child: Image.file(
-                      post.postImageFile!,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+            ),
             Positioned(
               bottom: 15,
               left: 15,
