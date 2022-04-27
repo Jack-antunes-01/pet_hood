@@ -17,6 +17,10 @@ class AdoptionController extends GetxController {
   List<PetEntity> get petList => _petList;
   set petList(List<PetEntity> pets) => _petList.value = pets;
 
+  addNewAdoptionPet(PetEntity pet) {
+    petList.insert(0, pet);
+  }
+
   final RxList<PetEntity> _filteredPetList = RxList<PetEntity>();
   List<PetEntity> get filteredPetList => _filteredPetList;
   set filteredPetList(List<PetEntity> pets) => _filteredPetList.value = pets;

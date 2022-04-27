@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/components/expandable_text/expandable_text.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -40,23 +41,33 @@ class PetDetails extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: _appBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _petImage(context),
-            Container(
-              color: base,
+      body: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _header(),
-                  _content(),
-                  _footer(context),
+                  _petImage(context),
+                  Expanded(
+                    child: Container(
+                      color: base,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _header(),
+                          _content(),
+                          const Spacer(),
+                          _footer(context),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -115,7 +126,7 @@ class PetDetails extends StatelessWidget {
                   ),
                 )
               : SizedBox(
-                  height: 300,
+                  height: height * 0.5,
                   width: width,
                   child: Image.file(
                     pet.petImageFile!,
@@ -234,18 +245,14 @@ class PetDetails extends StatelessWidget {
             fontSize: 20,
           ),
         ),
-        pet.description.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: CustomText(
-                  text: pet.description,
-                  color: grey600,
-                ),
-              )
-            : const CustomText(
-                text: "Não há informações adicionais sobre esse pet",
-                color: grey800,
-              ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ExpandableText(
+            text: pet.description.isNotEmpty
+                ? pet.description
+                : "Não há informações adicionais sobre esse pet.",
+          ),
+        )
       ],
     );
   }

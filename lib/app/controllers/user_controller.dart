@@ -57,7 +57,23 @@ class UserController extends GetxController {
   List<PetEntity> get petList => _petList;
   set petList(List<PetEntity> pets) => _petList.value = pets;
 
+  addNewPet(PetEntity pet) {
+    petList.add(pet);
+  }
+
+  final RxList<PetEntity> _adoptionPetList = RxList<PetEntity>();
+  List<PetEntity> get adoptionPetList => _adoptionPetList;
+  set adoptionPetList(List<PetEntity> pets) => _adoptionPetList.value = pets;
+
+  addNewAdoptionPet(PetEntity pet) {
+    adoptionPetList.add(pet);
+  }
+
   final RxList<PostEntity> _postList = RxList<PostEntity>();
   List<PostEntity> get postList => _postList;
   set postList(List<PostEntity> posts) => _postList.value = posts;
+
+  addNewPost(PostEntity post) {
+    postList.add(post);
+  }
 }

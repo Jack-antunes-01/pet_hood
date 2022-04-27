@@ -17,37 +17,20 @@ class PetWidgetProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         Get.toNamed(
           Routes.petDetails,
-          arguments: PetEntity(
-            id: pet.id,
-            userId: pet.userId,
-            name: pet.name,
-            breed: pet.breed,
-            vaccine: pet.vaccine,
-            description: pet.description,
-            age: pet.age,
-            yearOrMonth: pet.yearOrMonth,
-            city: pet.city,
-            state: pet.state,
-            petImage: "assets/images/dog_image.png",
-            category: pet.category,
-            createdAt: DateTime.now(),
-          ),
+          arguments: pet,
         );
       },
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: base,
-          borderRadius: const BorderRadius.only(
+          borderRadius: BorderRadius.only(
             topLeft: Radius.circular(4),
             topRight: Radius.circular(4),
-          ),
-          border: Border.all(
-            color: grey200,
-            width: 1,
           ),
         ),
         width: 230,
@@ -63,55 +46,79 @@ class PetWidgetProfile extends StatelessWidget {
               child: Stack(
                 children: [
                   Hero(
-                    tag: '$pet.imageUrl$index',
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                            "assets/images/dog_image.png",
+                    tag: pet.petImage != null && pet.petImage!.isNotEmpty
+                        ? pet.petImage!
+                        : pet.petImageFile!.path,
+                    child: pet.petImage != null
+                        ? Container(
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image:
+                                    AssetImage("assets/images/dog_image.png"),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              ),
+                            ),
+                          )
+                        : SizedBox(
+                            height: 300,
+                            width: width,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              ),
+                              child: Image.file(
+                                pet.petImageFile!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4),
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 16,
-                      left: 16,
-                      top: 8,
-                      bottom: 8,
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: grey200,
+                  width: 1,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 16,
+                        left: 16,
+                        top: 8,
+                        bottom: 8,
+                      ),
+                      child: CustomText(
+                        text: pet.name!,
+                        color: grey800,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    child: CustomText(
-                      text: pet.name!,
-                      color: grey800,
-                      fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(width: 8),
+                        buildPetFeature(value: "4 anos", feature: "Idade"),
+                        const SizedBox(width: 8),
+                        buildPetFeature(value: "Vira-lata", feature: "Raça"),
+                        const SizedBox(width: 8),
+                      ],
                     ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(width: 8),
-                      buildPetFeature(value: "4 anos", feature: "Idade"),
-                      const SizedBox(width: 8),
-                      buildPetFeature(value: "Vira-lata", feature: "Raça"),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

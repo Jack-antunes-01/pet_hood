@@ -333,7 +333,7 @@ class _ProfilePageState extends State<ProfilePage> {
             fontSize: 18,
           ),
         ),
-        _userController.petList.isNotEmpty
+        Obx(() => _userController.petList.isNotEmpty
             ? SizedBox(
                 height: 280,
                 child: ListView(
@@ -342,7 +342,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: buildMyPets(),
                 ),
               )
-            : _noPets(),
+            : _noPets()),
         widget.isOwner
             ? Padding(
                 padding: const EdgeInsets.only(
@@ -392,14 +392,14 @@ class _ProfilePageState extends State<ProfilePage> {
             fontSize: 18,
           ),
         ),
-        _userController.petList.isNotEmpty
+        Obx(() => _userController.adoptionPetList.isNotEmpty
             ? SizedBox(
                 height: 280,
                 child: ListView(
                   padding: const EdgeInsets.only(left: 20, right: 4),
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  children: _userController.petList
+                  children: _userController.adoptionPetList
                       .where(
                           (element) => element.category == PetCategory.adoption)
                       .map((item) {
@@ -407,7 +407,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   }).toList(),
                 ),
               )
-            : _noAdoptionPets(),
+            : _noAdoptionPets()),
         widget.isOwner
             ? Padding(
                 padding: const EdgeInsets.only(
@@ -467,7 +467,9 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         _userController.postList.isNotEmpty
             ? ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(top: 10),
+                shrinkWrap: true,
                 itemBuilder: (context, index) =>
                     _buildFeed(_userController.postList[index]),
                 itemCount: _userController.postList.length,

@@ -9,7 +9,7 @@ List<Widget> _pages(ScrollController controller) => [
       FeedPage(controller: controller),
       SearchPage(),
       const SizedBox.shrink(),
-      AdoptionPage(),
+      const AdoptionPage(),
       const ProfilePage(isOwner: true),
     ];
 

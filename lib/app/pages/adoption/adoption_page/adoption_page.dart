@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/data/data.dart';
 import 'package:pet_hood/app/controllers/adoption_controller.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/utils.dart';
 
-class AdoptionPage extends StatelessWidget {
-  final List<PetEntity> pets = getPetList();
+class AdoptionPage extends StatefulWidget {
+  const AdoptionPage({Key? key}) : super(key: key);
 
-  AdoptionPage({Key? key}) : super(key: key);
+  @override
+  State<AdoptionPage> createState() => _AdoptionPageState();
+}
 
+class _AdoptionPageState extends State<AdoptionPage> {
   final AdoptionController _adoptionPageController = Get.find();
+
+  late List<PetEntity> pets;
+
+  @override
+  void initState() {
+    super.initState();
+    pets = _adoptionPageController.petList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +77,7 @@ class AdoptionPage extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 280,
+          height: 300,
           child: ListView(
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,

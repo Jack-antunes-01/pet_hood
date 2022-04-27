@@ -25,6 +25,8 @@ class PetWidget extends StatelessWidget {
     var year = createdAtDate.year;
     String createdAt = "$day/$month/$year";
 
+    final width = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         Get.toNamed(
@@ -60,18 +62,31 @@ class PetWidget extends StatelessWidget {
                     tag: pet.petImage != null && pet.petImage!.isNotEmpty
                         ? pet.petImage!
                         : pet.petImageFile!.path,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/dog_image.png"),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4),
-                        ),
-                      ),
-                    ),
+                    child: pet.petImage != null
+                        ? Container(
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image:
+                                    AssetImage("assets/images/dog_image.png"),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                topRight: Radius.circular(4),
+                              ),
+                            ),
+                          )
+                        : SizedBox(
+                            height: 300,
+                            width: width,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: Image.file(
+                                pet.petImageFile!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -88,40 +103,34 @@ class PetWidget extends StatelessWidget {
                       CustomText(
                         text: createdAt,
                         color: grey800,
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    pet.name!,
-                    style: const TextStyle(
-                      color: grey800,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  CustomText(
+                    text: pet.name!,
+                    color: grey800,
+                    fontWeight: FontWeight.bold,
+                    textOverflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    pet.breed!,
-                    style: const TextStyle(
-                      color: grey600,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  CustomText(
+                    text: pet.breed!,
+                    color: grey600,
+                    textOverflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
                   Row(
                     children: [
                       const Icon(
                         Icons.location_on,
                         color: grey600,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        pet.city,
-                        style: const TextStyle(
-                          color: grey600,
-                          fontSize: 12,
-                        ),
+                      CustomText(
+                        text: pet.city,
+                        color: grey600,
+                        fontSize: 14,
+                        textOverflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
