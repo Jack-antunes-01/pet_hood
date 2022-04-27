@@ -189,7 +189,7 @@ class PetDetails extends StatelessWidget {
                   color: primary,
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () => Get.toNamed(Routes.chatPeople),
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
                       padding: const EdgeInsets.symmetric(

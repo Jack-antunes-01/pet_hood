@@ -39,19 +39,26 @@ class _NameBreedPublicationState extends State<NameBreedPublication> {
                   placeholderText: "Raça",
                   validator: (breed) => breed != null && breed.isNotEmpty
                       ? null
-                      : "Digite a raça",
+                      : "Digite a raça do pet",
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(onlyLetters),
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Row(
+            children: [
               Flexible(
                 child: CustomInput(
                   controller: _publicationPageController.ageController,
                   placeholderText: "Idade",
-                  validator: (age) =>
-                      age != null && age.isNotEmpty ? null : "Digite a idade",
+                  validator: (age) => age != null && age.isNotEmpty
+                      ? null
+                      : "Digite a idade do pet",
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                   ],

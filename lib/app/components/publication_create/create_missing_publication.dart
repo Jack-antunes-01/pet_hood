@@ -72,7 +72,7 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
             name: petName,
             description: description,
             createdAt: DateTime.now(),
-            category: PetCategory.adoption,
+            category: PetCategory.disappear,
             petImageFile: petImage,
             state: state,
             city: city,
@@ -106,13 +106,15 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
     }
   }
 
+  bool validation = false;
+
   @override
   Widget build(BuildContext context) {
     var safePaddingBottom = MediaQuery.of(context).padding.bottom;
     var height = MediaQuery.of(context).size.height;
     return Form(
       key: formKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.disabled,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -122,35 +124,6 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 NameBreedPublication(),
-                // const Padding(
-                //   padding: EdgeInsets.only(bottom: 16),
-                //   child: CustomText(
-                //     text: "Data que o pet desapareceu: ",
-                //     color: grey800,
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 16),
-                //   child: Row(
-                //     children: [
-                //       Flexible(
-                //         child: CustomInput(
-                //           controller:
-                //               _publicationPageController.dateMissingController,
-                //           placeholderText: "01/01/2022",
-                //           labelActive: false,
-                //           validator: (date) => dateValidator(value: date),
-                //           inputFormatters: [
-                //             MaskTextInputFormatter(mask: "##/##/####"),
-                //           ],
-                //           keyboardType: TextInputType.number,
-                //         ),
-                //       ),
-                //       const SizedBox(width: 16),
-                //       const Spacer(),
-                //     ],
-                //   ),
-                // ),
                 CityStatePublication(),
               ],
             ),

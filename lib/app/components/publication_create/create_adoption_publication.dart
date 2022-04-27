@@ -119,7 +119,7 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
     var height = MediaQuery.of(context).size.height;
     return Form(
       key: formKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.disabled,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

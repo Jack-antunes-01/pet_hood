@@ -24,6 +24,7 @@ class _CityStatePublicationState extends State<CityStatePublication> {
             validator: (state) =>
                 state != null && state.length > 2 ? null : "Cidade Inválida",
             maxLength: 30,
+            textCapitalization: TextCapitalization.characters,
           ),
         ),
         const SizedBox(width: 16),
@@ -34,6 +35,7 @@ class _CityStatePublicationState extends State<CityStatePublication> {
             validator: (state) =>
                 state != null && state.length == 2 ? null : "Estado Inválido",
             maxLength: 2,
+            textCapitalization: TextCapitalization.characters,
           ),
         ),
       ],

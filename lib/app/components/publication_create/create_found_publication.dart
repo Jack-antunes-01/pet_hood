@@ -60,7 +60,7 @@ class _CreateFoundPublicationState extends State<CreateFoundPublication> {
             id: Random().nextInt(9999).toString(),
             description: description,
             createdAt: DateTime.now(),
-            category: PetCategory.adoption,
+            category: PetCategory.found,
             petImageFile: petImage,
             state: state,
             city: city,
@@ -94,13 +94,15 @@ class _CreateFoundPublicationState extends State<CreateFoundPublication> {
     }
   }
 
+  bool validation = false;
+
   @override
   Widget build(BuildContext context) {
     var safePaddingBottom = MediaQuery.of(context).padding.bottom;
     var height = MediaQuery.of(context).size.height;
     return Form(
       key: formKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.disabled,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,37 +129,9 @@ class _CreateFoundPublicationState extends State<CreateFoundPublication> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      const Spacer()
                     ],
                   ),
                 ),
-                // const Padding(
-                //   padding: EdgeInsets.only(bottom: 16),
-                //   child: CustomText(
-                //     text: "Data que o pet foi encontrado:",
-                //     color: grey800,
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.only(
-                //     bottom: 16,
-                //   ),
-                //   child: Row(
-                //     children: [
-                //       Flexible(
-                //         child: CustomInput(
-                //           controller:
-                //               _publicationPageController.dateFoundController,
-                //           placeholderText: "01/01/2022",
-                //           labelActive: false,
-                //         ),
-                //       ),
-                //       const SizedBox(width: 16),
-                //       const Spacer()
-                //     ],
-                //   ),
-                // ),
                 const CityStatePublication(),
               ],
             ),
