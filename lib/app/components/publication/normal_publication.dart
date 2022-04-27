@@ -119,6 +119,7 @@ class NormalPublication extends StatelessWidget {
 
   Widget _content(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -144,7 +145,7 @@ class NormalPublication extends StatelessWidget {
             children: [
               post.postImage != null
                   ? Container(
-                      height: 300,
+                      height: height * 0.4,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage(post.postImage!),
@@ -153,7 +154,7 @@ class NormalPublication extends StatelessWidget {
                       ),
                     )
                   : SizedBox(
-                      height: 300,
+                      height: height * 0.4,
                       width: width,
                       child: Image.file(
                         post.postImageFile!,

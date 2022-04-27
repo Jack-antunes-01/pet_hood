@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/routes/routes.dart';
@@ -117,6 +119,8 @@ class AdoptionPublication extends StatelessWidget {
 
   Widget _content(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return Column(
       children: [
         Padding(
@@ -136,7 +140,7 @@ class AdoptionPublication extends StatelessWidget {
           children: [
             post.postImage != null
                 ? Container(
-                    height: 300,
+                    height: height * 0.4,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(post.postImage!),
@@ -145,7 +149,7 @@ class AdoptionPublication extends StatelessWidget {
                     ),
                   )
                 : SizedBox(
-                    height: 300,
+                    height: height * 0.4,
                     width: width,
                     child: Image.file(
                       post.postImageFile!,
