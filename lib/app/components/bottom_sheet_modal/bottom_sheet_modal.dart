@@ -4,12 +4,12 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 openBottomSheetModal(BuildContext context, bool owner) {
-  var height = MediaQuery.of(context).size.height;
   showModalBottomSheet(
     context: context,
     builder: (BuildContext buildContext) {
       return Padding(
-        padding: EdgeInsets.only(bottom: height * 0.05),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(buildContext).padding.bottom),
         child: Theme(
           data: ThemeData(
             splashColor: grey200,

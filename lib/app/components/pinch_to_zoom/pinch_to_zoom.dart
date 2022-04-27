@@ -80,10 +80,7 @@ class _PinchToZoomState extends State<PinchToZoom>
         },
         // clipBehavior: Clip.none,
         panEnabled: false,
-        child: AspectRatio(
-          aspectRatio: 1.2,
-          child: widget.child,
-        ),
+        child: widget.child,
       ),
     );
   }

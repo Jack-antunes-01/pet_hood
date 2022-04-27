@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -9,9 +10,10 @@ import 'package:pet_hood/core/entities/post_entity.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class MissingPublication extends StatelessWidget {
+  final UserController _userController = Get.find();
   final PostEntity post;
 
-  const MissingPublication({
+  MissingPublication({
     Key? key,
     required this.post,
   }) : super(key: key);
@@ -50,10 +52,18 @@ class MissingPublication extends StatelessWidget {
                     top: 15,
                     left: 15,
                   ),
-                  child: UserAvatar(
-                    size: 56,
-                    avatar: post.avatar,
-                  ),
+                  child: post.isOwner
+                      ? Obx(
+                          () => UserAvatar(
+                            size: 56,
+                            avatarFile: _userController.profileImage,
+                            avatar: _userController.userEntity.profileImage,
+                          ),
+                        )
+                      : UserAvatar(
+                          size: 56,
+                          avatar: post.avatar,
+                        ),
                 ),
                 Expanded(
                   child: Padding(

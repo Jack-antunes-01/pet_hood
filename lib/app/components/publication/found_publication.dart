@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -9,9 +10,10 @@ import 'package:pet_hood/core/entities/post_entity.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class FoundPublication extends StatelessWidget {
+  final UserController _userController = Get.find();
   final PostEntity post;
 
-  const FoundPublication({
+  FoundPublication({
     Key? key,
     required this.post,
   }) : super(key: key);
@@ -50,10 +52,18 @@ class FoundPublication extends StatelessWidget {
                     top: 15,
                     left: 15,
                   ),
-                  child: UserAvatar(
-                    size: 56,
-                    avatar: post.avatar,
-                  ),
+                  child: post.isOwner
+                      ? Obx(
+                          () => UserAvatar(
+                            size: 56,
+                            avatarFile: _userController.profileImage,
+                            avatar: _userController.userEntity.profileImage,
+                          ),
+                        )
+                      : UserAvatar(
+                          size: 56,
+                          avatar: post.avatar,
+                        ),
                 ),
                 Expanded(
                   child: Padding(
@@ -130,38 +140,37 @@ class FoundPublication extends StatelessWidget {
             ),
           ),
         ),
-        PinchToZoom(
-          child: post.description != null && post.description!.isNotEmpty
-              ? Padding(
-                  padding:
-                      const EdgeInsets.only(right: 15, left: 15, bottom: 15),
-                  child: CustomText(
-                    text: post.description!,
-                    color: grey800,
-                  ),
-                )
-              : const SizedBox.shrink(),
-        ),
+        post.description != null && post.description!.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
+                child: CustomText(
+                  text: post.description!,
+                  color: grey800,
+                ),
+              )
+            : const SizedBox.shrink(),
         Stack(
           children: [
-            post.postImage != null
-                ? Container(
-                    height: height * 0.4,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(post.postImage!),
+            PinchToZoom(
+              child: post.postImage != null && post.postImage!.isNotEmpty
+                  ? Container(
+                      height: height * 0.4,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(post.postImage!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : SizedBox(
+                      height: height * 0.4,
+                      width: width,
+                      child: Image.file(
+                        post.postImageFile!,
                         fit: BoxFit.cover,
                       ),
                     ),
-                  )
-                : SizedBox(
-                    height: height * 0.4,
-                    width: width,
-                    child: Image.file(
-                      post.postImageFile!,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+            ),
             Positioned(
               bottom: 15,
               left: 15,

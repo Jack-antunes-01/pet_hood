@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/constants/app_constants.dart';
 import 'package:pet_hood/app/controllers/register_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
@@ -119,6 +120,7 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
           String name = _registerController.nameController.text;
           String username = name.split(" ").join("_").toLowerCase();
 
+          userEntity.id = userId;
           userEntity.name = name;
           userEntity.userName = username;
           userEntity.email = _registerController.emailController.text;

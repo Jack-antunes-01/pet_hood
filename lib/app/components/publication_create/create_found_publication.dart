@@ -64,6 +64,8 @@ class _CreateFoundPublicationState extends State<CreateFoundPublication> {
             petImageFile: petImage,
             state: state,
             city: city,
+            petOwnerName: user.name,
+            petOwnerImage: user.profileImage,
           ),
         );
 

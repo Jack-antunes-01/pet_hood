@@ -76,6 +76,8 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
             petImageFile: petImage,
             state: state,
             city: city,
+            petOwnerName: user.name,
+            petOwnerImage: user.profileImage,
           ),
         );
 

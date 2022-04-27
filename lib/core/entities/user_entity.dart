@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class UserEntity {
-  final String id;
+  String id;
   String email;
   String name;
   String userName;

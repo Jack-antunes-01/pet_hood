@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/expandable_text/expandable_text.dart';
+import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
@@ -32,6 +33,8 @@ class PetDetails extends StatelessWidget {
     petImageFile: Get.arguments.petImageFile,
     category: Get.arguments.category,
     createdAt: Get.arguments.createdAt,
+    petOwnerName: Get.arguments.petOwnerName,
+    petOwnerImage: Get.arguments.petOwnerImage,
   );
 
   void openExternalProfile() => Get.toNamed(Routes.externalProfile);
@@ -115,24 +118,26 @@ class PetDetails extends StatelessWidget {
           tag: pet.petImage != null && pet.petImage!.isNotEmpty
               ? pet.petImage!
               : pet.petImageFile!.path,
-          child: pet.petImage != null
-              ? Container(
-                  height: height * 0.5,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/dog_image.png"),
+          child: PinchToZoom(
+            child: pet.petImage != null
+                ? Container(
+                    height: height * 0.5,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/dog_image.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                : SizedBox(
+                    height: height * 0.5,
+                    width: width,
+                    child: Image.file(
+                      pet.petImageFile!,
                       fit: BoxFit.cover,
                     ),
                   ),
-                )
-              : SizedBox(
-                  height: height * 0.5,
-                  width: width,
-                  child: Image.file(
-                    pet.petImageFile!,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+          ),
         ),
       ],
     );
@@ -224,8 +229,10 @@ class PetDetails extends StatelessWidget {
               const SizedBox(width: 12),
               BuildPetFeature(value: pet.age.toString(), feature: "Idade"),
               BuildPetFeature(value: pet.breed!, feature: "Raça"),
-              BuildPetFeature(
-                  value: pet.vaccine!.toText(), feature: "Vacinado"),
+              pet.vaccine != null
+                  ? BuildPetFeature(
+                      value: pet.vaccine!.toText(), feature: "Vacinado")
+                  : const SizedBox.shrink(),
               // BuildPetFeature(value: "6 Kg", feature: "Peso"),
               const SizedBox(width: 12),
             ],
@@ -271,20 +278,25 @@ class PetDetails extends StatelessWidget {
           GestureDetector(
             onTap: () => openExternalProfile(),
             child: UserAvatar(
-              avatarFile: _userController.profileImage,
+              avatarFile: pet.userId == _userController.userEntity.id
+                  ? pet.petOwnerImageFile
+                  : _userController.profileImage,
+              avatar: pet.userId == _userController.userEntity.id
+                  ? pet.petOwnerImage
+                  : _userController.userEntity.profileImage,
             ),
           ),
           const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              CustomText(
+            children: [
+              const CustomText(
                 text: "Publicação feita por",
                 color: grey800,
                 fontWeight: FontWeight.bold,
               ),
               CustomText(
-                text: "Jackson Antunes",
+                text: pet.petOwnerName,
                 color: grey600,
               ),
             ],

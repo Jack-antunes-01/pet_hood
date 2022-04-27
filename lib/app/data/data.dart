@@ -73,6 +73,8 @@ List<PetEntity> getPetList() {
       id: Random().nextInt(10000).toString(),
       vaccine: Random().nextBool(),
       userId: Random().nextInt(10000).toString(),
+      petOwnerName: "Juliano Nogueira",
+      petOwnerImage: "assets/images/dog_image.png",
     ),
     PetEntity(
       name: "Mel",
@@ -88,6 +90,8 @@ List<PetEntity> getPetList() {
       id: Random().nextInt(10000).toString(),
       vaccine: Random().nextBool(),
       userId: Random().nextInt(10000).toString(),
+      petOwnerName: "Edilberto Bets",
+      petOwnerImage: "assets/images/dog_image.png",
     ),
     PetEntity(
       name: "Tim",
@@ -103,6 +107,8 @@ List<PetEntity> getPetList() {
       id: Random().nextInt(10000).toString(),
       vaccine: Random().nextBool(),
       userId: Random().nextInt(10000).toString(),
+      petOwnerName: "Hugo Barbosa",
+      petOwnerImage: "assets/images/dog_image.png",
     ),
     PetEntity(
       name: "Thomas",
@@ -118,6 +124,8 @@ List<PetEntity> getPetList() {
       id: Random().nextInt(10000).toString(),
       vaccine: Random().nextBool(),
       userId: Random().nextInt(10000).toString(),
+      petOwnerName: "Vitor Niederauer",
+      petOwnerImage: "assets/images/dog_image.png",
     ),
     PetEntity(
       name: "American Shorthair",
@@ -133,6 +141,8 @@ List<PetEntity> getPetList() {
       id: Random().nextInt(10000).toString(),
       vaccine: Random().nextBool(),
       userId: Random().nextInt(10000).toString(),
+      petOwnerName: "Cesar Rodrigues",
+      petOwnerImage: "assets/images/dog_image.png",
     ),
     PetEntity(
       name: "British Shorthair",
@@ -148,6 +158,8 @@ List<PetEntity> getPetList() {
       id: Random().nextInt(10000).toString(),
       vaccine: Random().nextBool(),
       userId: Random().nextInt(10000).toString(),
+      petOwnerName: "Tamires Pereira",
+      petOwnerImage: "assets/images/dog_image.png",
     ),
     PetEntity(
       name: "Abyssinian Cats",
@@ -163,6 +175,8 @@ List<PetEntity> getPetList() {
       id: Random().nextInt(10000).toString(),
       vaccine: Random().nextBool(),
       userId: Random().nextInt(10000).toString(),
+      petOwnerName: "Jefferson Mihael",
+      petOwnerImage: "assets/images/dog_image.png",
     ),
     PetEntity(
       name: "Scottish Fold",
@@ -178,6 +192,8 @@ List<PetEntity> getPetList() {
       id: Random().nextInt(10000).toString(),
       vaccine: Random().nextBool(),
       userId: Random().nextInt(10000).toString(),
+      petOwnerName: "Samuel Barbosa",
+      petOwnerImage: "assets/images/dog_image.png",
     ),
     // PetEntity(
     //   name: "Ragdoll",

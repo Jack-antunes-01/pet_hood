@@ -81,6 +81,8 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
             petImageFile: petImage,
             state: state,
             city: city,
+            petOwnerName: user.name,
+            petOwnerImage: user.profileImage,
           ),
         );
 

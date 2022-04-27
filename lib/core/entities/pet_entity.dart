@@ -17,24 +17,30 @@ class PetEntity {
   final String? petImage;
   final File? petImageFile;
   final DateTime createdAt;
+  final String petOwnerName;
+  final File? petOwnerImageFile;
+  final String? petOwnerImage;
 
   final PetCategory category;
 
   PetEntity({
     required this.id,
     required this.userId,
-    this.name,
     required this.breed,
-    this.vaccine,
     required this.description,
-    this.age,
-    this.yearOrMonth,
     required this.city,
     required this.state,
-    this.petImage,
-    this.petImageFile,
     required this.category,
     required this.createdAt,
+    required this.petOwnerName,
+    required this.petOwnerImage,
+    this.petOwnerImageFile,
+    this.name,
+    this.vaccine,
+    this.age,
+    this.yearOrMonth,
+    this.petImage,
+    this.petImageFile,
   });
 
   // PetCategory.values.firstWhere((element) => element == category),

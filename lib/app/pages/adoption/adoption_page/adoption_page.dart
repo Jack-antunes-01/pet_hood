@@ -78,10 +78,12 @@ class _AdoptionPageState extends State<AdoptionPage> {
         ),
         SizedBox(
           height: 300,
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            children: _buildList(),
+          child: Obx(
+            () => ListView(
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              children: _buildList(),
+            ),
           ),
         ),
       ],
