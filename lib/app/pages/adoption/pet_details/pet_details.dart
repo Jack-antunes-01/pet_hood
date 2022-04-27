@@ -28,6 +28,7 @@ class PetDetails extends StatelessWidget {
     city: Get.arguments.city,
     state: Get.arguments.state,
     petImage: Get.arguments.petImage,
+    petImageFile: Get.arguments.petImageFile,
     category: Get.arguments.category,
     createdAt: Get.arguments.createdAt,
   );
@@ -96,21 +97,31 @@ class PetDetails extends StatelessWidget {
 
   Widget _petImage(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Stack(
       children: [
         Hero(
           tag: pet.petImage != null && pet.petImage!.isNotEmpty
               ? pet.petImage!
               : pet.petImageFile!.path,
-          child: Container(
-            height: height * 0.5,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/dog_image.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          child: pet.petImage != null
+              ? Container(
+                  height: height * 0.5,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/dog_image.png"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              : SizedBox(
+                  height: 300,
+                  width: width,
+                  child: Image.file(
+                    pet.petImageFile!,
+                    fit: BoxFit.cover,
+                  ),
+                ),
         ),
       ],
     );
@@ -223,13 +234,18 @@ class PetDetails extends StatelessWidget {
             fontSize: 20,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: CustomText(
-            text: pet.description,
-            color: grey600,
-          ),
-        ),
+        pet.description.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: CustomText(
+                  text: pet.description,
+                  color: grey600,
+                ),
+              )
+            : const CustomText(
+                text: "Não há informações adicionais sobre esse pet",
+                color: grey800,
+              ),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -7,6 +8,7 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/register_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:pet_hood/utils/regex/only_letters.dart';
 import 'package:pet_hood/utils/validators/birth_date_validator.dart';
 import 'package:pet_hood/utils/validators/name_validator.dart';
 
@@ -73,6 +75,11 @@ class _FirstRegisterFormState extends State<FirstRegisterForm> {
                     textInputAction: TextInputAction.next,
                     textCapitalization: TextCapitalization.words,
                     maxLength: 50,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        onlyLettersWithBlank,
+                      ),
+                    ],
                   ),
                 ),
                 Padding(

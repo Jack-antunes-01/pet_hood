@@ -18,21 +18,7 @@ class AdoptionPublication extends StatelessWidget {
   void seeMore() {
     Get.toNamed(
       Routes.petDetails,
-      arguments: PetEntity(
-        name: "Abyssinian Cats",
-        city: "California",
-        state: "US",
-        category: PetCategory.adoption,
-        petImage: "assets/images/cats/cat_1.jpg",
-        createdAt: DateTime.now(),
-        age: 3,
-        yearOrMonth: YearOrMonth.years,
-        breed: "Vira-lata",
-        description: "Animal maravilhoso de fofo demais jentiiiiii",
-        id: 'akosdopka',
-        vaccine: true,
-        userId: 'okasdpkosss',
-      ),
+      arguments: post.pet,
     );
   }
 
