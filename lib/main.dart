@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/route_manager.dart';
-import 'package:pet_hood/constants/app_constants.dart';
-import 'package:pet_hood/pages/terms_of_use/terms_of_use.dart';
-import 'package:pet_hood/theme/colors.dart';
+import 'package:pet_hood/app/bindings/initial_binding.dart';
+import 'package:pet_hood/app/routes/routes.dart';
+import 'package:pet_hood/app/routes/routes_list.dart';
+import 'package:pet_hood/app/theme/colors.dart';
 
-import 'pages/pages.dart';
+import 'app/constants/constants.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -31,20 +34,17 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [Locale('pt', 'BR')],
       debugShowCheckedModeBanner: false,
       title: appTitle,
+      initialBinding: InitialBinding(),
       theme: ThemeData(
+        splashColor: base.withOpacity(0.1),
+        highlightColor: base.withOpacity(0.1),
         fontFamily: 'Nunito',
         scaffoldBackgroundColor: base,
       ),
       defaultTransition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 150),
-      getPages: [
-        GetPage(name: "/welcome", page: () => const WelcomePage()),
-        GetPage(name: "/login", page: () => LoginPage()),
-        GetPage(name: "/register", page: () => FirstRegisterForm()),
-        GetPage(name: "/register_2", page: () => SecondRegisterForm()),
-        GetPage(name: "/terms_of_use", page: () => const TermsOfUsePage()),
-      ],
-      initialRoute: "/welcome",
+      getPages: RoutesList.routes,
+      initialRoute: Routes.welcome,
     );
   }
 }
