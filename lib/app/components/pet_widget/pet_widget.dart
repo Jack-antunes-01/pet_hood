@@ -31,7 +31,10 @@ class PetWidget extends StatelessWidget {
       onTap: () {
         Get.toNamed(
           Routes.petDetails,
-          arguments: pet,
+          arguments: {
+            "pet": pet,
+            "adoption": false,
+          },
         );
       },
       child: Container(

@@ -21,7 +21,10 @@ class AdoptionPublication extends StatelessWidget {
   void seeMore() {
     Get.toNamed(
       Routes.petDetails,
-      arguments: post.pet,
+      arguments: {
+        "pet": post.pet,
+        "adoption": !post.isOwner,
+      },
     );
   }
 

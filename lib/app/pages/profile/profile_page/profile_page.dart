@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
+import 'package:pet_hood/app/pages/profile/add_pet_page/add_pet_page.dart';
 import 'package:pet_hood/app/pages/publication/publication_page.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/core/entities/entities.dart';
@@ -351,13 +352,32 @@ class _ProfilePageState extends State<ProfilePage> {
                   bottom: 16,
                 ),
                 child: CustomButton(
-                    child: const CustomText(
-                      text: "Adicionar pet",
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: base,
-                    ),
-                    onPress: () {}),
+                  child: const CustomText(
+                    text: "Adicionar pet",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: base,
+                  ),
+                  onPress: () => showGeneralDialog(
+                    transitionBuilder: (context, anim1, anim2, child) {
+                      return SlideTransition(
+                        position: Tween(
+                                begin: const Offset(0, 1),
+                                end: const Offset(0, 0))
+                            .animate(anim1),
+                        child: child,
+                      );
+                    },
+                    context: context,
+                    barrierColor: base, // Background color
+                    barrierDismissible: false,
+                    barrierLabel: 'Dialog',
+                    transitionDuration: const Duration(milliseconds: 200),
+                    pageBuilder: (_, __, ___) {
+                      return const AddPetPage();
+                    },
+                  ),
+                ),
               )
             : const SizedBox.shrink()
       ],

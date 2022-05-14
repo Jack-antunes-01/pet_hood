@@ -17,24 +17,24 @@ class PetDetails extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final showAdoption = true;
+  final showAdoption = Get.arguments['adoption'];
   final PetEntity pet = PetEntity(
-    id: Get.arguments.id,
-    userId: Get.arguments.userId,
-    name: Get.arguments.name,
-    breed: Get.arguments.breed,
-    vaccine: Get.arguments.vaccine,
-    description: Get.arguments.description,
-    age: Get.arguments.age,
-    yearOrMonth: Get.arguments.yearOrMonth,
-    city: Get.arguments.city,
-    state: Get.arguments.state,
-    petImage: Get.arguments.petImage,
-    petImageFile: Get.arguments.petImageFile,
-    category: Get.arguments.category,
-    createdAt: Get.arguments.createdAt,
-    petOwnerName: Get.arguments.petOwnerName,
-    petOwnerImage: Get.arguments.petOwnerImage,
+    id: Get.arguments['pet'].id,
+    userId: Get.arguments['pet'].userId,
+    name: Get.arguments['pet'].name,
+    breed: Get.arguments['pet'].breed,
+    vaccine: Get.arguments['pet'].vaccine,
+    description: Get.arguments['pet'].description,
+    age: Get.arguments['pet'].age,
+    yearOrMonth: Get.arguments['pet'].yearOrMonth,
+    city: Get.arguments['pet'].city,
+    state: Get.arguments['pet'].state,
+    petImage: Get.arguments['pet'].petImage,
+    petImageFile: Get.arguments['pet'].petImageFile,
+    category: Get.arguments['pet'].category,
+    createdAt: Get.arguments['pet'].createdAt,
+    petOwnerName: Get.arguments['pet'].petOwnerName,
+    petOwnerImage: Get.arguments['pet'].petOwnerImage,
   );
 
   void openExternalProfile() => Get.toNamed(Routes.externalProfile);

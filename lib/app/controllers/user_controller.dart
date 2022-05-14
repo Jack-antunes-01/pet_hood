@@ -59,6 +59,7 @@ class UserController extends GetxController {
 
   addNewPet(PetEntity pet) {
     petList.add(pet);
+    _petList.refresh();
   }
 
   final RxList<PetEntity> _adoptionPetList = RxList<PetEntity>();
