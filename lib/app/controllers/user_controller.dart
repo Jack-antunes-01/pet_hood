@@ -67,6 +67,7 @@ class UserController extends GetxController {
 
   addNewAdoptionPet(PetEntity pet) {
     adoptionPetList.add(pet);
+    _adoptionPetList.refresh();
   }
 
   final RxList<PostEntity> _postList = RxList<PostEntity>();
@@ -75,5 +76,6 @@ class UserController extends GetxController {
 
   addNewPost(PostEntity post) {
     postList.add(post);
+    _postList.refresh();
   }
 }

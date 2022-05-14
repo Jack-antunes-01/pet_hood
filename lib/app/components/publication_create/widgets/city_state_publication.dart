@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/custom_input/custom_input.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
+import 'package:pet_hood/utils/regex/only_letters.dart';
 
 class CityStatePublication extends StatefulWidget {
   const CityStatePublication({Key? key}) : super(key: key);
@@ -36,6 +38,9 @@ class _CityStatePublicationState extends State<CityStatePublication> {
                 state != null && state.length == 2 ? null : "Estado Inválido",
             maxLength: 2,
             textCapitalization: TextCapitalization.characters,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(onlyLettersSample),
+            ],
           ),
         ),
       ],

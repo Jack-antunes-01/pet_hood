@@ -41,7 +41,7 @@ class _NameBreedPublicationState extends State<NameBreedPublication> {
                       ? null
                       : "Digite a raça do pet",
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(onlyLetters),
+                    FilteringTextInputFormatter.allow(onlyLettersWithBlank),
                   ],
                 ),
               ),

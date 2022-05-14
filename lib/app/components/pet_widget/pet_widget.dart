@@ -110,7 +110,7 @@ class PetWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   CustomText(
-                    text: pet.name!,
+                    text: pet.name != null ? pet.name! : "Pet encontrado",
                     color: grey800,
                     fontWeight: FontWeight.bold,
                     textOverflow: TextOverflow.ellipsis,

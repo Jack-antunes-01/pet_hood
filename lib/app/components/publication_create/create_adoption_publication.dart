@@ -9,6 +9,7 @@ import 'package:pet_hood/app/components/publication_create/widgets/name_breed_pu
 import 'package:pet_hood/app/controllers/adoption_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/feed/feed_controller.dart';
+import 'package:pet_hood/app/pages/home/home_page_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/entities.dart';
@@ -26,6 +27,7 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
   final UserController _userController = Get.find();
   final FeedController _feedController = Get.find();
   final AdoptionController _adoptionController = Get.find();
+  final HomePageController _homePageController = Get.find();
 
   final formKey = GlobalKey<FormState>();
 
@@ -86,6 +88,7 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
           ),
         );
 
+        _homePageController.selectedIndex = 0;
         _feedController.addPost(postEntity);
         _userController.addNewPost(postEntity);
         _userController.addNewAdoptionPet(postEntity.pet!);

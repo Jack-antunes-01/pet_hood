@@ -6,6 +6,7 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/description_create_publication.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/feed/feed_controller.dart';
+import 'package:pet_hood/app/pages/home/home_page_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/entities.dart';
@@ -22,6 +23,7 @@ class _CreateNormalPublicationState extends State<CreateNormalPublication> {
   final PublicationPageController _publicationPageController = Get.find();
   final UserController _userController = Get.find();
   final FeedController _feedController = Get.find();
+  final HomePageController _homePageController = Get.find();
 
   validateForm() async {
     if (_publicationPageController.petImage.path.isNotEmpty) {
@@ -45,6 +47,8 @@ class _CreateNormalPublicationState extends State<CreateNormalPublication> {
         isLiked: false,
       );
 
+      _homePageController.selectedIndex = 0;
+      _userController.addNewPost(postEntity);
       _feedController.addPost(postEntity);
 
       _publicationPageController.reset();
