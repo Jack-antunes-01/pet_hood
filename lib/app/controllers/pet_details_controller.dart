@@ -34,7 +34,9 @@ class PetDetailsController extends GetxController {
   bool get isOwner => _isOwner.value;
   set isOwner(bool isPetOwner) => _isOwner.value = isPetOwner;
 
-  void resetPet() {
+  void resetPet() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+
     petDetail = emptyEntity;
   }
 

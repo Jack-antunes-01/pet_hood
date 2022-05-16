@@ -175,25 +175,27 @@ class PetDetails extends StatelessWidget {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () => openBottomSheetModalEditOrRemove(context),
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: base,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(6.0),
-                  child: Icon(
-                    Icons.more_horiz,
-                    color: grey800,
+          _petDetailsController.isOwner
+              ? GestureDetector(
+                  onTap: () => openBottomSheetModalEditOrRemove(context),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: base,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Icon(
+                          Icons.more_horiz,
+                          color: grey800,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );
