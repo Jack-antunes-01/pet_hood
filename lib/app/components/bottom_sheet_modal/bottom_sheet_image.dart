@@ -5,12 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 Future pickImage({
   required ImageSource source,
   required BuildContext context,
+  required bool isPublication,
 }) async {
   try {
     Navigator.of(context).pop();
@@ -19,9 +21,13 @@ Future pickImage({
 
     final imageTemporary = File(image.path);
 
-    final PublicationPageController _publicationPageController = Get.find();
-
-    _publicationPageController.petImage = imageTemporary;
+    if (isPublication) {
+      final PublicationPageController _publicationPageController = Get.find();
+      _publicationPageController.petImage = imageTemporary;
+    } else {
+      final PetDetailsController _petDetailsController = Get.find();
+      _petDetailsController.petImage = imageTemporary;
+    }
   } on PlatformException {
     Get.snackbar(
       "Permissão negada",
@@ -32,7 +38,10 @@ Future pickImage({
   }
 }
 
-openBottomSheetModalImage(BuildContext context) {
+openBottomSheetModalImage({
+  required BuildContext context,
+  bool isPublication = true,
+}) {
   showModalBottomSheet(
     context: context,
     builder: (BuildContext buildContext) {
@@ -48,7 +57,7 @@ openBottomSheetModalImage(BuildContext context) {
           child: Wrap(
             children: [
               _header(),
-              _content(context),
+              _content(context, isPublication),
             ],
           ),
         ),
@@ -76,7 +85,7 @@ Widget _header() {
   );
 }
 
-Widget _content(BuildContext context) {
+Widget _content(BuildContext context, bool isPublication) {
   return Column(
     children: [
       _buildButton(
@@ -85,7 +94,10 @@ Widget _content(BuildContext context) {
           color: grey800,
         ),
         text: "Tirar foto",
-        onTap: () => pickImage(source: ImageSource.camera, context: context),
+        onTap: () => pickImage(
+            source: ImageSource.camera,
+            context: context,
+            isPublication: isPublication),
       ),
       _buildButton(
         icon: const Icon(
@@ -93,7 +105,10 @@ Widget _content(BuildContext context) {
           color: grey800,
         ),
         text: "Galeria",
-        onTap: () => pickImage(source: ImageSource.gallery, context: context),
+        onTap: () => pickImage(
+            source: ImageSource.gallery,
+            context: context,
+            isPublication: isPublication),
       ),
     ],
   );

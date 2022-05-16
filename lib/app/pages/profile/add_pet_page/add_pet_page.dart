@@ -7,13 +7,15 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/city_state_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/description_create_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/name_breed_publication.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
-import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/entities.dart';
 
 class AddPetPage extends StatefulWidget {
-  const AddPetPage({Key? key}) : super(key: key);
+  const AddPetPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<AddPetPage> createState() => _AddPetPageState();
@@ -22,62 +24,112 @@ class AddPetPage extends StatefulWidget {
 class _AddPetPageState extends State<AddPetPage> {
   final formKey = GlobalKey<FormState>();
 
-  final PublicationPageController _publicationPageController = Get.find();
   final UserController _userController = Get.find();
+  final PetDetailsController _petDetailsController = Get.find();
 
-  goBack() {
-    Get.back();
-    _publicationPageController.reset();
+  @override
+  void initState() {
+    super.initState();
+
+    _petDetailsController.setFormValues();
   }
 
-  validateForm() async {
+  void goBack() {
+    Get.back();
+    _petDetailsController.reset();
+  }
+
+  void savePet() {
+    final UserEntity user = _userController.userEntity;
+    final String petName = _petDetailsController.petNameController.text;
+    final String breed = _petDetailsController.breedController.text;
+    final int? age = int.tryParse(_petDetailsController.ageController.text);
+    final YearOrMonth yearOrMonth =
+        _petDetailsController.dropdownValue == "Anos"
+            ? YearOrMonth.years
+            : YearOrMonth.months;
+    final bool vaccine =
+        _petDetailsController.radioValue == RadioEnum.yes ? true : false;
+    final String city = _petDetailsController.cityController.text;
+    final String state = _petDetailsController.stateController.text;
+    final String description =
+        _petDetailsController.descriptionController.text.trim();
+    final File petImage = _petDetailsController.petImage;
+
+    final PetEntity petEntity = PetEntity(
+      breed: breed,
+      userId: _userController.userEntity.id,
+      age: age,
+      yearOrMonth:
+          YearOrMonth.values.firstWhere((element) => element == yearOrMonth),
+      vaccine: vaccine,
+      id: Random().nextInt(9999).toString(),
+      name: petName,
+      description: description,
+      createdAt: DateTime.now(),
+      category: PetCategory.normal,
+      petImageFile: petImage,
+      state: state,
+      city: city,
+      petOwnerName: user.name,
+      petOwnerImage: user.profileImage,
+    );
+
+    _userController.addNewPet(petEntity);
+  }
+
+  void updatePet() {
+    final String petName = _petDetailsController.petNameController.text;
+    final String breed = _petDetailsController.breedController.text;
+    final int? age = int.tryParse(_petDetailsController.ageController.text);
+    final YearOrMonth yearOrMonth =
+        _petDetailsController.dropdownValue == "Anos"
+            ? YearOrMonth.years
+            : YearOrMonth.months;
+    final bool vaccine =
+        _petDetailsController.radioValue == RadioEnum.yes ? true : false;
+    final String city = _petDetailsController.cityController.text;
+    final String state = _petDetailsController.stateController.text;
+    final String description =
+        _petDetailsController.descriptionController.text.trim();
+    final File petImage = _petDetailsController.petImage;
+
+    final PetEntity petEntity = PetEntity(
+      breed: breed,
+      userId: _petDetailsController.petDetail.userId,
+      age: age,
+      yearOrMonth:
+          YearOrMonth.values.firstWhere((element) => element == yearOrMonth),
+      vaccine: vaccine,
+      id: _petDetailsController.petDetail.id,
+      name: petName,
+      description: description,
+      createdAt: _petDetailsController.petDetail.createdAt,
+      category: _petDetailsController.petDetail.category,
+      petImageFile: petImage,
+      state: state,
+      city: city,
+      petOwnerName: _petDetailsController.petDetail.petOwnerName,
+      petOwnerImage: _petDetailsController.petDetail.petOwnerImage,
+    );
+
+    _petDetailsController.petDetail = petEntity;
+    _userController.updatePet(petEntity);
+  }
+
+  void validateForm() async {
     final isValid = formKey.currentState!.validate();
 
-    if (isValid &&
-        _publicationPageController.radioValue != RadioEnum.unselected) {
-      if (_publicationPageController.petImage.path.isNotEmpty) {
-        _publicationPageController.loadingPublication = true;
+    if (isValid && _petDetailsController.radioValue != RadioEnum.unselected) {
+      if (_petDetailsController.petImage.path.isNotEmpty) {
+        _petDetailsController.loadingPublication = true;
         await Future.delayed(const Duration(seconds: 2), () {});
-        final UserEntity user = _userController.userEntity;
-        final String petName =
-            _publicationPageController.petNameController.text;
-        final String breed = _publicationPageController.breedController.text;
-        final int? age =
-            int.tryParse(_publicationPageController.ageController.text);
-        final YearOrMonth yearOrMonth =
-            _publicationPageController.dropdownValue == "Anos"
-                ? YearOrMonth.years
-                : YearOrMonth.months;
-        final bool vaccine =
-            _publicationPageController.radioValue == RadioEnum.yes
-                ? true
-                : false;
-        final String city = _publicationPageController.cityController.text;
-        final String state = _publicationPageController.stateController.text;
-        final String description =
-            _publicationPageController.descriptionController.text.trim();
-        final File petImage = _publicationPageController.petImage;
 
-        final PetEntity petEntity = PetEntity(
-          breed: breed,
-          userId: "12312",
-          age: age,
-          yearOrMonth: YearOrMonth.values
-              .firstWhere((element) => element == yearOrMonth),
-          vaccine: vaccine,
-          id: Random().nextInt(9999).toString(),
-          name: petName,
-          description: description,
-          createdAt: DateTime.now(),
-          category: PetCategory.adoption,
-          petImageFile: petImage,
-          state: state,
-          city: city,
-          petOwnerName: user.name,
-          petOwnerImage: user.profileImage,
-        );
-
-        _userController.addNewPet(petEntity);
+        if (_petDetailsController.petDetail.id.isNotEmpty) {
+          updatePet();
+        } else {
+          savePet();
+        }
 
         goBack();
       } else {
@@ -107,7 +159,9 @@ class _AddPetPageState extends State<AddPetPage> {
     return Scaffold(
       appBar: AppBarHeader(
         appBar: AppBar(),
-        title: "Adicionar pet",
+        title: _petDetailsController.petDetail.id.isNotEmpty
+            ? "Editar pet"
+            : "Adicionar pet",
         onBackPress: () => goBack(),
       ),
       body: SingleChildScrollView(
@@ -122,18 +176,26 @@ class _AddPetPageState extends State<AddPetPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    NameBreedPublication(),
+                    NameBreedPublication(
+                      isPublication: false,
+                    ),
                     CustomText(
                       text: "Seu pet é vacinado?",
                       color: grey800,
                       fontSize: 17,
                     ),
-                    CustomRadioButton(),
-                    CityStatePublication()
+                    CustomRadioButton(
+                      isPublication: false,
+                    ),
+                    CityStatePublication(
+                      isPublication: false,
+                    ),
                   ],
                 ),
               ),
-              DescriptionCreatePublication(),
+              DescriptionCreatePublication(
+                isPublication: false,
+              ),
               Padding(
                 padding: EdgeInsets.only(
                   bottom: safePaddingBottom + height * 0.05,
@@ -153,7 +215,7 @@ class _AddPetPageState extends State<AddPetPage> {
   }
 
   Widget _buildButtonOrLoading() {
-    if (_publicationPageController.loadingPublication) {
+    if (_petDetailsController.loadingPublication) {
       return const SizedBox(
         width: 20,
         height: 20,
@@ -163,8 +225,9 @@ class _AddPetPageState extends State<AddPetPage> {
       );
     }
 
-    return const CustomText(
-      text: "Publicar",
+    return CustomText(
+      text:
+          _petDetailsController.petDetail.id.isNotEmpty ? "Salvar" : "Publicar",
       fontWeight: FontWeight.bold,
       fontSize: 16,
       color: base,

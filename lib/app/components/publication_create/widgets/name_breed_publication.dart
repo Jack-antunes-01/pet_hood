@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/regex/only_letters.dart';
 
 class NameBreedPublication extends StatefulWidget {
-  const NameBreedPublication({Key? key}) : super(key: key);
+  final bool isPublication;
+
+  const NameBreedPublication({
+    Key? key,
+    this.isPublication = true,
+  }) : super(key: key);
 
   @override
   State<NameBreedPublication> createState() => _NameBreedPublicationState();
@@ -15,6 +21,7 @@ class NameBreedPublication extends StatefulWidget {
 
 class _NameBreedPublicationState extends State<NameBreedPublication> {
   final PublicationPageController _publicationPageController = Get.find();
+  final PetDetailsController _petDetailsController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +30,9 @@ class _NameBreedPublicationState extends State<NameBreedPublication> {
         Padding(
           padding: const EdgeInsets.only(bottom: 16, top: 16),
           child: CustomInput(
-            controller: _publicationPageController.petNameController,
+            controller: widget.isPublication
+                ? _publicationPageController.petNameController
+                : _petDetailsController.petNameController,
             placeholderText: "Nome do pet",
             validator: (name) =>
                 name != null && name.isNotEmpty ? null : "Digite o nome do pet",
@@ -35,7 +44,9 @@ class _NameBreedPublicationState extends State<NameBreedPublication> {
             children: [
               Flexible(
                 child: CustomInput(
-                  controller: _publicationPageController.breedController,
+                  controller: widget.isPublication
+                      ? _publicationPageController.breedController
+                      : _petDetailsController.breedController,
                   placeholderText: "Raça",
                   validator: (breed) => breed != null && breed.isNotEmpty
                       ? null
@@ -54,7 +65,9 @@ class _NameBreedPublicationState extends State<NameBreedPublication> {
             children: [
               Flexible(
                 child: CustomInput(
-                  controller: _publicationPageController.ageController,
+                  controller: widget.isPublication
+                      ? _publicationPageController.ageController
+                      : _petDetailsController.ageController,
                   placeholderText: "Idade",
                   validator: (age) => age != null && age.isNotEmpty
                       ? null
@@ -76,12 +89,18 @@ class _NameBreedPublicationState extends State<NameBreedPublication> {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 10, left: 10),
                       child: DropdownButton<String>(
-                        value: _publicationPageController.dropdownValue,
+                        value: widget.isPublication
+                            ? _publicationPageController.dropdownValue
+                            : _petDetailsController.dropdownValue,
                         style: const TextStyle(color: grey800, fontSize: 15),
                         dropdownColor: base,
                         onChanged: (String? newValue) {
                           if (newValue != null) {
-                            _publicationPageController.dropdownValue = newValue;
+                            // widget.isPublication
+                            //     ? _publicationPageController.dropdownValue =
+                            //         newValue
+                            //     : _petDetailsController.dropdownValue =
+                            //         newValue;
                           }
                         },
                         underline: const SizedBox.shrink(),

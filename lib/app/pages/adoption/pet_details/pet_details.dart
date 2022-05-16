@@ -4,46 +4,116 @@ import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/expandable_text/expandable_text.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
+import 'package:pet_hood/app/pages/profile/add_pet_page/add_pet_page.dart';
 import 'package:pet_hood/app/routes/routes.dart';
-import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class PetDetails extends StatelessWidget {
   final UserController _userController = Get.find();
+  final PetDetailsController _petDetailsController = Get.find();
 
   PetDetails({
     Key? key,
   }) : super(key: key);
 
-  final showAdoption = Get.arguments['adoption'];
-  final PetEntity pet = PetEntity(
-    id: Get.arguments['pet'].id,
-    userId: Get.arguments['pet'].userId,
-    name: Get.arguments['pet'].name,
-    breed: Get.arguments['pet'].breed,
-    vaccine: Get.arguments['pet'].vaccine,
-    description: Get.arguments['pet'].description,
-    age: Get.arguments['pet'].age,
-    yearOrMonth: Get.arguments['pet'].yearOrMonth,
-    city: Get.arguments['pet'].city,
-    state: Get.arguments['pet'].state,
-    petImage: Get.arguments['pet'].petImage,
-    petImageFile: Get.arguments['pet'].petImageFile,
-    category: Get.arguments['pet'].category,
-    createdAt: Get.arguments['pet'].createdAt,
-    petOwnerName: Get.arguments['pet'].petOwnerName,
-    petOwnerImage: Get.arguments['pet'].petOwnerImage,
-  );
-
   void openExternalProfile() => Get.toNamed(Routes.externalProfile);
+
+  void goBack() {
+    Get.back();
+    _petDetailsController.resetPet();
+  }
+
+  void openEditMenu(BuildContext context) {
+    Navigator.of(context).pop();
+
+    showGeneralDialog(
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
+              .animate(anim1),
+          child: child,
+        );
+      },
+      context: context,
+      barrierColor: base, // Background color
+      barrierDismissible: false,
+      barrierLabel: 'Dialog',
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (_, __, ___) {
+        return const AddPetPage();
+      },
+    );
+  }
+
+  void removePetDialog(BuildContext context) {
+    Navigator.of(context).pop();
+    // set up the buttons
+    Widget cancelButton = Flexible(
+      child: CustomButton(
+        backgroundColor: base,
+        onPress: () {
+          Navigator.of(context).pop();
+        },
+        child: const CustomText(text: "Não", color: grey800),
+      ),
+    );
+    Widget continueButton = Flexible(
+      child: CustomButton(
+        backgroundColor: red,
+        onPress: () {
+          _userController.removePet(_petDetailsController.petDetail);
+          Navigator.of(context).pop();
+          Get.back();
+        },
+        child: const CustomText(text: "Sim", color: base),
+      ),
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const CustomText(
+        text: "Remover pet",
+        color: red,
+      ),
+      content: const CustomText(
+        text: "Você quer remover esse pet?",
+        color: grey800,
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 16,
+          ),
+          child: Row(
+            children: [
+              cancelButton,
+              const SizedBox(
+                width: 8,
+              ),
+              continueButton,
+            ],
+          ),
+        )
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: _appBar(),
+      appBar: _appBar(context),
       body: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           child: ConstrainedBox(
@@ -59,8 +129,8 @@ class PetDetails extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _header(),
-                          _content(),
+                          Obx(() => _header()),
+                          Obx(() => _content()),
                           const Spacer(),
                           _footer(context),
                         ],
@@ -76,7 +146,7 @@ class PetDetails extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _appBar() {
+  PreferredSizeWidget _appBar(BuildContext context) {
     return AppBar(
       systemOverlayStyle: SystemUiOverlayStyle.light,
       backgroundColor: Colors.transparent,
@@ -84,9 +154,10 @@ class PetDetails extends StatelessWidget {
       titleSpacing: 0,
       automaticallyImplyLeading: false,
       title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
-            onTap: () => Get.back(),
+            onTap: () => goBack(),
             child: Padding(
               padding: const EdgeInsets.only(left: 16),
               child: Container(
@@ -104,6 +175,25 @@ class PetDetails extends StatelessWidget {
               ),
             ),
           ),
+          GestureDetector(
+            onTap: () => openBottomSheetModalEditOrRemove(context),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: base,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(6.0),
+                  child: Icon(
+                    Icons.more_horiz,
+                    color: grey800,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -115,11 +205,12 @@ class PetDetails extends StatelessWidget {
     return Stack(
       children: [
         Hero(
-          tag: pet.petImage != null && pet.petImage!.isNotEmpty
-              ? pet.petImage!
-              : pet.petImageFile!.path,
+          tag: _petDetailsController.petDetail.petImage != null &&
+                  _petDetailsController.petDetail.petImage!.isNotEmpty
+              ? _petDetailsController.petDetail.petImage!
+              : _petDetailsController.petDetail.petImageFile!.path,
           child: PinchToZoom(
-            child: pet.petImage != null
+            child: _petDetailsController.petDetail.petImage != null
                 ? Container(
                     height: height * 0.5,
                     decoration: const BoxDecoration(
@@ -133,7 +224,7 @@ class PetDetails extends StatelessWidget {
                     height: height * 0.5,
                     width: width,
                     child: Image.file(
-                      pet.petImageFile!,
+                      _petDetailsController.petDetail.petImageFile!,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -158,7 +249,7 @@ class PetDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                pet.name!,
+                _petDetailsController.petDetail.name!,
                 style: const TextStyle(
                   color: grey800,
                   fontWeight: FontWeight.bold,
@@ -174,7 +265,7 @@ class PetDetails extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    "${pet.city}/${pet.state}",
+                    "${_petDetailsController.petDetail.city}/${_petDetailsController.petDetail.state}",
                     style: const TextStyle(
                       color: grey600,
                       fontSize: 16,
@@ -184,8 +275,9 @@ class PetDetails extends StatelessWidget {
               ),
             ],
           ),
-          showAdoption
-              ? Material(
+          _petDetailsController.isOwner
+              ? const SizedBox.shrink()
+              : Material(
                   color: primary,
                   borderRadius: BorderRadius.circular(20),
                   child: InkWell(
@@ -211,8 +303,7 @@ class PetDetails extends StatelessWidget {
                       ),
                     ),
                   ),
-                )
-              : const SizedBox.shrink(),
+                ),
         ],
       ),
     );
@@ -227,11 +318,16 @@ class PetDetails extends StatelessWidget {
           child: Row(
             children: [
               const SizedBox(width: 12),
-              BuildPetFeature(value: pet.age.toString(), feature: "Idade"),
-              BuildPetFeature(value: pet.breed!, feature: "Raça"),
-              pet.vaccine != null
+              BuildPetFeature(
+                  value: _petDetailsController.petDetail.age.toString(),
+                  feature: "Idade"),
+              BuildPetFeature(
+                  value: _petDetailsController.petDetail.breed!,
+                  feature: "Raça"),
+              _petDetailsController.petDetail.vaccine != null
                   ? BuildPetFeature(
-                      value: pet.vaccine!.toText(), feature: "Vacinado")
+                      value: _petDetailsController.petDetail.vaccine!.toText(),
+                      feature: "Vacinado")
                   : const SizedBox.shrink(),
               // BuildPetFeature(value: "6 Kg", feature: "Peso"),
               const SizedBox(width: 12),
@@ -255,8 +351,8 @@ class PetDetails extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: ExpandableText(
-            text: pet.description.isNotEmpty
-                ? pet.description
+            text: _petDetailsController.petDetail.description.isNotEmpty
+                ? _petDetailsController.petDetail.description
                 : "Não há informações adicionais sobre esse pet.",
           ),
         )
@@ -278,11 +374,11 @@ class PetDetails extends StatelessWidget {
           GestureDetector(
             onTap: () => openExternalProfile(),
             child: UserAvatar(
-              avatarFile: pet.userId == _userController.userEntity.id
-                  ? pet.petOwnerImageFile
+              avatarFile: _petDetailsController.isOwner
+                  ? _petDetailsController.petDetail.petOwnerImageFile
                   : _userController.profileImage,
-              avatar: pet.userId == _userController.userEntity.id
-                  ? pet.petOwnerImage
+              avatar: _petDetailsController.isOwner
+                  ? _petDetailsController.petDetail.petOwnerImage
                   : _userController.userEntity.profileImage,
             ),
           ),
@@ -296,13 +392,61 @@ class PetDetails extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               CustomText(
-                text: pet.petOwnerName,
+                text: _petDetailsController.petDetail.petOwnerName,
                 color: grey600,
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  openBottomSheetModalEditOrRemove(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext buildContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(buildContext).padding.bottom),
+          child: Theme(
+            data: ThemeData(
+              splashColor: grey200,
+              highlightColor: grey200,
+            ),
+            child: Wrap(
+              children: [
+                Row(
+                  children: const [
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      child: CustomText(text: "Opções", color: grey800),
+                    ),
+                  ],
+                ),
+                const Divider(thickness: 1, color: grey200, height: 0),
+                ListTile(
+                  leading: const Icon(
+                    Icons.edit_outlined,
+                    color: grey800,
+                  ),
+                  title: const CustomText(text: 'Editar', color: grey800),
+                  onTap: () => openEditMenu(context),
+                ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.delete_forever,
+                    color: red,
+                  ),
+                  title: const CustomText(text: 'Remover', color: red),
+                  onTap: () => removePetDialog(context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

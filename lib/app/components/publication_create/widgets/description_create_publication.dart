@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/bottom_sheet_modal/bottom_sheet_image.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class DescriptionCreatePublication extends StatelessWidget {
-  DescriptionCreatePublication({Key? key}) : super(key: key);
+  final bool isPublication;
+
+  DescriptionCreatePublication({
+    Key? key,
+    this.isPublication = true,
+  }) : super(key: key);
 
   final PublicationPageController _publicationPageController = Get.find();
+  final PetDetailsController _petDetailsController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,9 @@ class DescriptionCreatePublication extends StatelessWidget {
                 child: CustomText(text: "Descrição", color: grey800),
               ),
               TextField(
-                controller: _publicationPageController.descriptionController,
+                controller: isPublication
+                    ? _publicationPageController.descriptionController
+                    : _petDetailsController.descriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
@@ -49,7 +58,10 @@ class DescriptionCreatePublication extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: GestureDetector(
                   onTap: () {
-                    openBottomSheetModalImage(context);
+                    openBottomSheetModalImage(
+                      context: context,
+                      isPublication: isPublication,
+                    );
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -70,14 +82,18 @@ class DescriptionCreatePublication extends StatelessWidget {
           ),
         ),
         Obx(
-          () => _publicationPageController.petImage.path.isNotEmpty
+          () => (isPublication
+                  ? _publicationPageController.petImage.path.isNotEmpty
+                  : _petDetailsController.petImage.path.isNotEmpty)
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: SizedBox(
                     height: 250,
                     width: width,
                     child: Image.file(
-                      _publicationPageController.petImage,
+                      isPublication
+                          ? _publicationPageController.petImage
+                          : _petDetailsController.petImage,
                       fit: BoxFit.cover,
                     ),
                   ),

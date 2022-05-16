@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/custom_input/custom_input.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/utils/regex/only_letters.dart';
 
 class CityStatePublication extends StatefulWidget {
-  const CityStatePublication({Key? key}) : super(key: key);
+  final bool isPublication;
+  const CityStatePublication({
+    Key? key,
+    this.isPublication = true,
+  }) : super(key: key);
 
   @override
   State<CityStatePublication> createState() => _CityStatePublicationState();
@@ -14,6 +19,7 @@ class CityStatePublication extends StatefulWidget {
 
 class _CityStatePublicationState extends State<CityStatePublication> {
   final PublicationPageController _publicationPageController = Get.find();
+  final PetDetailsController _petDetailsController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +28,9 @@ class _CityStatePublicationState extends State<CityStatePublication> {
         Flexible(
           child: CustomInput(
             placeholderText: "Cidade",
-            controller: _publicationPageController.cityController,
+            controller: widget.isPublication
+                ? _publicationPageController.cityController
+                : _petDetailsController.cityController,
             validator: (state) =>
                 state != null && state.length > 2 ? null : "Cidade Inválida",
             maxLength: 30,
@@ -33,7 +41,9 @@ class _CityStatePublicationState extends State<CityStatePublication> {
         Flexible(
           child: CustomInput(
             placeholderText: "Estado",
-            controller: _publicationPageController.stateController,
+            controller: widget.isPublication
+                ? _publicationPageController.stateController
+                : _petDetailsController.stateController,
             validator: (state) =>
                 state != null && state.length == 2 ? null : "Estado Inválido",
             maxLength: 2,

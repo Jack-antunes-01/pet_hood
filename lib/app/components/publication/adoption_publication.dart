@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
@@ -11,6 +12,7 @@ import 'package:pet_hood/utils/utils.dart';
 
 class AdoptionPublication extends StatelessWidget {
   final UserController _userController = Get.find();
+  final PetDetailsController _petDetailsController = Get.find();
   final PostEntity post;
 
   AdoptionPublication({
@@ -19,13 +21,11 @@ class AdoptionPublication extends StatelessWidget {
   }) : super(key: key);
 
   void seeMore() {
-    Get.toNamed(
-      Routes.petDetails,
-      arguments: {
-        "pet": post.pet,
-        "adoption": !post.isOwner,
-      },
+    _petDetailsController.setPet(
+      pet: post.pet!,
+      userId: _userController.userEntity.id,
     );
+    Get.toNamed(Routes.petDetails);
   }
 
   @override

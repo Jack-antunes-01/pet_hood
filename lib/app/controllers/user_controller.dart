@@ -57,8 +57,19 @@ class UserController extends GetxController {
   List<PetEntity> get petList => _petList;
   set petList(List<PetEntity> pets) => _petList.value = pets;
 
-  addNewPet(PetEntity pet) {
+  void addNewPet(PetEntity pet) {
     petList.add(pet);
+    _petList.refresh();
+  }
+
+  void removePet(PetEntity pet) {
+    petList.removeWhere((p) => p.id == pet.id);
+    _petList.refresh();
+  }
+
+  void updatePet(PetEntity pet) {
+    int index = petList.indexWhere((p) => p.id == pet.id);
+    petList[index] = pet;
     _petList.refresh();
   }
 

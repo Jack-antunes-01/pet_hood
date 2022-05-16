@@ -1,6 +1,6 @@
 import 'dart:io';
 
-enum PetCategory { adoption, disappear, found }
+enum PetCategory { normal, adoption, disappear, found }
 enum YearOrMonth { years, months }
 
 class PetEntity {

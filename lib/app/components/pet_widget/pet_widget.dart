@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class PetWidget extends StatelessWidget {
-  const PetWidget({
+  final PetDetailsController _petDetailsController = Get.find();
+  final UserController _userController = Get.find();
+
+  PetWidget({
     Key? key,
     required this.pet,
     required this.index,
@@ -29,13 +34,11 @@ class PetWidget extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed(
-          Routes.petDetails,
-          arguments: {
-            "pet": pet,
-            "adoption": false,
-          },
+        _petDetailsController.setPet(
+          pet: pet,
+          userId: _userController.userEntity.id,
         );
+        Get.toNamed(Routes.petDetails);
       },
       child: Container(
         decoration: BoxDecoration(
