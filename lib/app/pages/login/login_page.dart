@@ -21,6 +21,15 @@ class LoginPage extends StatelessWidget {
   validateLogin() async {
     final isValidForm = formKey.currentState!.validate();
 
+    // try {
+    //   var response = await _apiAdapter.post('/users/', data: {
+    //     "email": "teste@teste.com",
+    //   });
+    //   print(response);
+    // } catch (e) {
+    //   print(e);
+    // }
+
     if (isValidForm) {
       _loginPageController.loading = true;
       await Future.delayed(const Duration(seconds: 2), () {

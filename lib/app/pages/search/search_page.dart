@@ -40,7 +40,7 @@ class SearchPage extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(8),
       onTap: () {
-        Get.toNamed(Routes.externalProfile);
+        // Get.toNamed(Routes.externalProfile);
       },
       splashColor: grey200,
       highlightColor: grey200,
