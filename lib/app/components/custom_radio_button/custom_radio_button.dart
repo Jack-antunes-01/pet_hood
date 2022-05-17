@@ -75,7 +75,7 @@ class _CustomRadioButtonState extends State<CustomRadioButton> {
                       : _petDetailsController.radioValue,
                   onChanged: (RadioEnum? value) {
                     widget.isPublication
-                        ? _publicationPageController.radioValue
+                        ? _publicationPageController.radioValue = value!
                         : _petDetailsController.radioValue = value!;
                   },
                 ),

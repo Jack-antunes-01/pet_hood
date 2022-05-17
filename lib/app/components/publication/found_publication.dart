@@ -104,7 +104,11 @@ class FoundPublication extends StatelessWidget {
                 splashColor: grey200,
                 highlightColor: grey200,
                 onTap: () {
-                  openBottomSheetModal(context, true);
+                  openBottomSheetModal(
+                    context: context,
+                    owner: post.isOwner,
+                    post: post,
+                  );
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(8),

@@ -7,8 +7,10 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/city_state_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/description_create_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/name_breed_publication.dart';
+import 'package:pet_hood/app/controllers/adoption_controller.dart';
 import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
+import 'package:pet_hood/app/pages/feed/feed_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/entities.dart';
 
@@ -26,6 +28,8 @@ class _AddPetPageState extends State<AddPetPage> {
 
   final UserController _userController = Get.find();
   final PetDetailsController _petDetailsController = Get.find();
+  final FeedController _feedController = Get.find();
+  final AdoptionController _adoptionController = Get.find();
 
   @override
   void initState() {
@@ -111,10 +115,19 @@ class _AddPetPageState extends State<AddPetPage> {
       city: city,
       petOwnerName: _petDetailsController.petDetail.petOwnerName,
       petOwnerImage: _petDetailsController.petDetail.petOwnerImage,
+      postId: _petDetailsController.petDetail.postId,
     );
 
     _petDetailsController.petDetail = petEntity;
-    _userController.updatePet(petEntity);
+
+    if (petEntity.category == PetCategory.adoption) {
+      _feedController.updatePostById(petEntity.postId!, petEntity);
+      _userController.updatePostById(petEntity.postId!, petEntity);
+      _userController.updateAdoptionPet(petEntity);
+      _adoptionController.updatePet(petEntity);
+    } else {
+      _userController.updatePet(petEntity);
+    }
   }
 
   void validateForm() async {

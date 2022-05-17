@@ -59,40 +59,66 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
             _publicationPageController.descriptionController.text.trim();
         final File petImage = _publicationPageController.petImage;
 
+        final bool isSavingPublication =
+            _publicationPageController.isChangePublicationTypeEnabled;
+
+        final postId = Random().nextInt(9999).toString();
+
         final PostEntity postEntity = PostEntity(
+          id: isSavingPublication
+              ? postId
+              : _publicationPageController.postEntityTemp.id,
           type: PostTypeEnum.adoption,
           name: user.name,
           avatar: user.profileImage,
           username: user.userName,
-          isOwner: true,
+          isOwner: isSavingPublication
+              ? true
+              : _publicationPageController.postEntityTemp.isOwner,
           postImageFile: petImage,
           description: description,
-          postedAt: DateTime.now(),
+          postedAt: isSavingPublication
+              ? DateTime.now()
+              : _publicationPageController.postEntityTemp.postedAt,
           pet: PetEntity(
             breed: breed,
-            userId: "12312",
+            userId: _userController.userEntity.id,
             age: age,
             yearOrMonth: YearOrMonth.values
                 .firstWhere((element) => element == yearOrMonth),
             vaccine: vaccine,
-            id: Random().nextInt(9999).toString(),
+            id: isSavingPublication
+                ? Random().nextInt(9999).toString()
+                : _publicationPageController.postEntityTemp.pet!.id,
             name: petName,
             description: description,
-            createdAt: DateTime.now(),
+            createdAt: isSavingPublication
+                ? DateTime.now()
+                : _publicationPageController.postEntityTemp.pet!.createdAt,
             category: PetCategory.adoption,
             petImageFile: petImage,
             state: state,
             city: city,
             petOwnerName: user.name,
             petOwnerImage: user.profileImage,
+            postId: isSavingPublication
+                ? postId
+                : _publicationPageController.postEntityTemp.id,
           ),
         );
 
+        if (isSavingPublication) {
+          _feedController.addPost(postEntity);
+          _userController.addNewPost(postEntity);
+          _userController.addNewAdoptionPet(postEntity.pet!);
+          _adoptionController.addNewPet(postEntity.pet!);
+        } else {
+          _feedController.updatePost(postEntity);
+          _userController.updatePost(postEntity);
+          _userController.updateAdoptionPet(postEntity.pet!);
+          _adoptionController.updatePet(postEntity.pet!);
+        }
         _homePageController.selectedIndex = 0;
-        _feedController.addPost(postEntity);
-        _userController.addNewPost(postEntity);
-        _userController.addNewAdoptionPet(postEntity.pet!);
-        _adoptionController.addNewPet(postEntity.pet!);
 
         _publicationPageController.reset();
         Get.back();
@@ -170,8 +196,10 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
       );
     }
 
-    return const CustomText(
-      text: "Publicar",
+    return CustomText(
+      text: _publicationPageController.isChangePublicationTypeEnabled
+          ? "Publicar"
+          : "Salvar",
       fontWeight: FontWeight.bold,
       fontSize: 16,
       color: base,

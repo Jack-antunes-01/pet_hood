@@ -39,7 +39,9 @@ class _PublicationPageState extends State<PublicationPage> {
       child: Scaffold(
         appBar: AppBarHeader(
           appBar: AppBar(),
-          title: "Criar publicação",
+          title: _publicationPageController.isChangePublicationTypeEnabled
+              ? "Criar publicação"
+              : "Editar publicação",
           onBackPress: () => goBack(),
         ),
         body: SingleChildScrollView(
@@ -135,7 +137,8 @@ class _PublicationPageState extends State<PublicationPage> {
   }
 
   selectTypePublication(int index) {
-    if (!_publicationPageController.loadingPublication) {
+    if (!_publicationPageController.loadingPublication &&
+        _publicationPageController.isChangePublicationTypeEnabled) {
       _publicationPageController.selectedOption = index;
     }
   }
@@ -156,7 +159,12 @@ class _PublicationPageState extends State<PublicationPage> {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     width: 2,
-                    color: selected ? primary : grey200,
+                    color: selected
+                        ? primary
+                        : _publicationPageController
+                                .isChangePublicationTypeEnabled
+                            ? grey200
+                            : grey200,
                   ),
                 ),
                 child: Padding(
@@ -164,7 +172,12 @@ class _PublicationPageState extends State<PublicationPage> {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   child: CustomText(
                     text: text,
-                    color: selected ? base : grey800,
+                    color: selected
+                        ? base
+                        : _publicationPageController
+                                .isChangePublicationTypeEnabled
+                            ? grey800
+                            : grey200,
                   ),
                 ),
               ),

@@ -77,8 +77,19 @@ class UserController extends GetxController {
   List<PetEntity> get adoptionPetList => _adoptionPetList;
   set adoptionPetList(List<PetEntity> pets) => _adoptionPetList.value = pets;
 
-  addNewAdoptionPet(PetEntity pet) {
+  void addNewAdoptionPet(PetEntity pet) {
     adoptionPetList.add(pet);
+    _adoptionPetList.refresh();
+  }
+
+  void removeAdoptionPet(String petId) {
+    adoptionPetList.removeWhere((pet) => pet.id == petId);
+    _adoptionPetList.refresh();
+  }
+
+  void updateAdoptionPet(PetEntity pet) {
+    int index = adoptionPetList.indexWhere((p) => p.id == pet.id);
+    adoptionPetList[index] = pet;
     _adoptionPetList.refresh();
   }
 
@@ -88,6 +99,36 @@ class UserController extends GetxController {
 
   addNewPost(PostEntity post) {
     postList.add(post);
+    _postList.refresh();
+  }
+
+  removePublication(String postId) {
+    postList.removeWhere((post) => post.id == postId);
+    _postList.refresh();
+  }
+
+  void updatePost(PostEntity post) {
+    int index = postList.indexWhere((p) => p.id == post.id);
+    postList[index] = post;
+    _postList.refresh();
+  }
+
+  void updatePostById(String postId, PetEntity pet) {
+    int index = postList.indexWhere((p) => p.id == postId);
+    PostEntity post = postList.firstWhere((element) => element.id == postId);
+    PostEntity newPost = PostEntity(
+      id: post.id,
+      type: post.type,
+      name: post.name,
+      avatar: post.avatar,
+      username: post.username,
+      isOwner: post.isOwner,
+      postedAt: post.postedAt,
+      postImageFile: post.postImageFile,
+      description: post.description,
+      pet: pet,
+    );
+    postList[index] = newPost;
     _postList.refresh();
   }
 }

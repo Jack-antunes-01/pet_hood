@@ -11,6 +11,7 @@ enum PostTypeEnum {
 class PostEntity {
   final PostTypeEnum type;
 
+  final String id;
   final String avatar;
   final String name;
   final String username;
@@ -29,6 +30,7 @@ class PostEntity {
   final String? dateFound;
 
   PostEntity({
+    required this.id,
     required this.type,
     required this.name,
     required this.avatar,

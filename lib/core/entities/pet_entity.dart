@@ -6,6 +6,7 @@ enum YearOrMonth { years, months }
 class PetEntity {
   final String id;
   final String userId;
+  final String? postId;
   final String? name;
   final String? breed;
   final bool? vaccine;
@@ -41,6 +42,7 @@ class PetEntity {
     this.yearOrMonth,
     this.petImage,
     this.petImageFile,
+    this.postId,
   });
 
   // PetCategory.values.firstWhere((element) => element == category),

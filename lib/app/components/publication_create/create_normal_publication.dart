@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +36,7 @@ class _CreateNormalPublicationState extends State<CreateNormalPublication> {
       final File petImage = _publicationPageController.petImage;
 
       final PostEntity postEntity = PostEntity(
+        id: Random().nextInt(9999).toString(),
         type: PostTypeEnum.normal,
         name: user.name,
         avatar: user.profileImage,
@@ -98,8 +100,10 @@ class _CreateNormalPublicationState extends State<CreateNormalPublication> {
       );
     }
 
-    return const CustomText(
-      text: "Publicar",
+    return CustomText(
+      text: _publicationPageController.isChangePublicationTypeEnabled
+          ? "Publicar"
+          : "Salvar",
       fontWeight: FontWeight.bold,
       fontSize: 16,
       color: base,

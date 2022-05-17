@@ -4,6 +4,7 @@ import 'package:pet_hood/core/entities/entities.dart';
 
 List<PostEntity> getPostList() => [
       PostEntity(
+        id: "petHoodOficcialImage",
         type: PostTypeEnum.normal,
         name: "Pet Hood",
         avatar: "assets/images/profile_image.png",

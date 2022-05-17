@@ -21,6 +21,17 @@ class AdoptionController extends GetxController {
     petList.insert(0, pet);
   }
 
+  removePet(String petId) {
+    petList.removeWhere((element) => element.id == petId);
+    _petList.refresh();
+  }
+
+  void updatePet(PetEntity pet) {
+    int index = petList.indexWhere((p) => p.id == pet.id);
+    petList[index] = pet;
+    _petList.refresh();
+  }
+
   final RxList<PetEntity> _filteredPetList = RxList<PetEntity>();
   List<PetEntity> get filteredPetList => _filteredPetList;
   set filteredPetList(List<PetEntity> pets) => _filteredPetList.value = pets;
