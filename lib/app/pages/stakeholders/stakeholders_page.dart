@@ -11,10 +11,49 @@ class StakeholdersPage extends StatelessWidget {
       appBar: AppBarHeader(
         appBar: AppBar(),
       ),
-      body: const Center(
-        child: CustomText(
-          text: "Parcerias - Não implementado",
-          color: grey800,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 15, bottom: 15),
+                child: CustomText(
+                  text: "Nossos parceiros estão listados aqui: ",
+                  color: grey800,
+                ),
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: Image.asset(
+                      "assets/images/uniube_logo.png",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 15),
+                      child: CustomText(
+                        text: "Universidade de Uberaba - UNIUBE",
+                        color: grey800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 15, bottom: 15),
+                child: CustomText(
+                  text: "Seja um parceiro você também!",
+                  color: grey800,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

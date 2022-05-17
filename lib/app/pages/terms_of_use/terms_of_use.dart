@@ -33,7 +33,7 @@ class TermsOfUsePage extends StatelessWidget {
                 ),
                 child: const CustomText(
                   text: termsOfUse,
-                  color: grey600,
+                  color: grey800,
                   fontSize: 16,
                 ),
               )

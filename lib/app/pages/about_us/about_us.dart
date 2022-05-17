@@ -32,8 +32,8 @@ class AboutUsPage extends StatelessWidget {
                   bottom: safePaddingBottom + 20,
                 ),
                 child: const CustomText(
-                  text: termsOfUse,
-                  color: grey600,
+                  text: aboutCompany,
+                  color: grey800,
                   fontSize: 16,
                 ),
               )
