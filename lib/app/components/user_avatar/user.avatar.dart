@@ -68,8 +68,8 @@ class UserAvatar extends StatelessWidget {
             Colors.black.withOpacity(isLoading ? 0.4 : 0),
             BlendMode.darken,
           ),
-          child: Image.asset(
-            avatar!,
+          child: Image.network(
+            'http://192.168.1.8:3333/uploads/$avatar',
             fit: BoxFit.cover,
           ),
         ),

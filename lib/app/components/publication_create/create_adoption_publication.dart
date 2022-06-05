@@ -70,7 +70,7 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
               : _publicationPageController.postEntityTemp.id,
           type: PostTypeEnum.adoption,
           name: user.name,
-          avatar: user.profileImage,
+          avatar: user.profileImage!,
           username: user.userName,
           isOwner: isSavingPublication
               ? true

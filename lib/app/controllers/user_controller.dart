@@ -51,8 +51,6 @@ class UserController extends GetxController {
     _userEntity.refresh();
   }
 
-  String password = "";
-
   final RxList<PetEntity> _petList = RxList<PetEntity>();
   List<PetEntity> get petList => _petList;
   set petList(List<PetEntity> pets) => _petList.value = pets;

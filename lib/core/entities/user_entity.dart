@@ -5,11 +5,11 @@ class UserEntity {
   String email;
   String name;
   String userName;
-  String phoneNumber;
-  String profileImage;
-  String backgroundImage;
-  String birthDate;
-  String bio;
+  String? phoneNumber;
+  String? profileImage;
+  String? backgroundImage;
+  String? birthDate;
+  String? bio;
 
   UserEntity({
     required this.id,

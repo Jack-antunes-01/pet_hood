@@ -3,12 +3,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/constants/app_constants.dart';
 import 'package:pet_hood/app/controllers/register_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/user_entity.dart';
+import 'package:pet_hood/database/api_adapter.dart';
 import 'package:pet_hood/utils/validators/confirm_password_validator.dart';
 import 'package:pet_hood/utils/validators/email_validator.dart';
 
@@ -22,6 +22,7 @@ class SecondRegisterForm extends StatefulWidget {
 class _SecondRegisterFormState extends State<SecondRegisterForm> {
   final RegisterController _registerController = Get.find();
   final UserController _userController = Get.find();
+  final ApiAdapter _apiAdapter = Get.find();
 
   bool validation = false;
   double _strength = 0;
@@ -114,23 +115,39 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
     if (isValidForm) {
       if (_strength == _maxStrength) {
         _registerController.loading = true;
-        await Future.delayed(const Duration(seconds: 2), () {
-          UserEntity userEntity = _userController.userEntity;
 
-          String name = _registerController.nameController.text;
-          String username = name.split(" ").join("_").toLowerCase();
+        try {
+          var response = await _apiAdapter.post('/users', data: {
+            "email": _registerController.emailController.text,
+            "password": _registerController.passwordController.text,
+            "name": _registerController.nameController.text,
+            "type": "user",
+          });
 
-          userEntity.id = userId;
-          userEntity.name = name;
-          userEntity.userName = username;
-          userEntity.email = _registerController.emailController.text;
+          UserEntity userEntity = UserEntity(
+            id: response.data['id'],
+            email: _registerController.emailController.text,
+            name: _registerController.nameController.text,
+            userName: response.data['user_name'],
+            phoneNumber: "",
+            profileImage: "",
+            backgroundImage: "",
+            birthDate: "99/99/9999",
+            bio: "",
+          );
 
           _userController.userEntity = userEntity;
-          _userController.password =
-              _registerController.passwordController.text;
 
           Get.offAllNamed(Routes.home);
-        });
+        } catch (e) {
+          Get.snackbar(
+            "Utilize outro email",
+            "Email já cadastrado",
+            backgroundColor: primary,
+            colorText: base,
+          );
+        }
+
         _registerController.loading = false;
       } else {
         showDialog(

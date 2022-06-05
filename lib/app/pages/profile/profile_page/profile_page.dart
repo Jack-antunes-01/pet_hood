@@ -1,7 +1,9 @@
-import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
+import 'package:get/route_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
@@ -11,6 +13,8 @@ import 'package:pet_hood/app/pages/publication/publication_page_controller.dart'
 import 'package:pet_hood/core/entities/entities.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:pet_hood/database/api_adapter.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ProfilePage extends StatefulWidget {
   final bool isOwner;
@@ -27,6 +31,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final UserController _userController = Get.find();
   final PublicationPageController _publicationPageController = Get.find();
+  final ApiAdapter _apiAdapter = Get.find();
 
   Future pickImage({
     required ImageSource source,
@@ -38,19 +43,97 @@ class _ProfilePageState extends State<ProfilePage> {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
-      final imageTemporary = File(image.path);
-
       if (isProfileImage) {
         _userController.loadingProfileImage = true;
-        await Future.delayed(const Duration(seconds: 2), () {
-          _userController.profileImage = imageTemporary;
-        });
+
+        try {
+          String fileName = image.path.split('/').last;
+          FormData formData = FormData.fromMap({
+            "image": await MultipartFile.fromFile(
+              image.path,
+              filename: fileName,
+              contentType: MediaType('image', 'png'),
+            )
+          });
+          var imagePath = await _apiAdapter.post(
+            "/uploads",
+            data: formData,
+            options: Options(
+              headers: {
+                "requiresToken": true,
+                "Content-Type": "multipart/form-data",
+              },
+            ),
+          );
+          await _apiAdapter.put(
+            "/users/profileImage",
+            data: {
+              'id': _userController.userEntity.id,
+              'profile_image': imagePath.data,
+            },
+            options: Options(
+              headers: {
+                "requiresToken": true,
+              },
+            ),
+          );
+
+          _userController.userEntity.profileImage = imagePath.data;
+        } catch (e) {
+          Get.snackbar(
+            "Erro",
+            "Ocorreu um erro ao efetuar a troca da imagem de perfil",
+            backgroundColor: primary,
+            colorText: base,
+          );
+        }
+
         _userController.loadingProfileImage = false;
       } else {
         _userController.loadingBackgroundImage = true;
-        await Future.delayed(const Duration(seconds: 2), () {
-          _userController.backgroundImage = imageTemporary;
-        });
+
+        try {
+          String fileName = image.path.split('/').last;
+          FormData formData = FormData.fromMap({
+            "image": await MultipartFile.fromFile(
+              image.path,
+              filename: fileName,
+              contentType: MediaType('image', 'png'),
+            )
+          });
+          var imagePath = await _apiAdapter.post(
+            "/uploads",
+            data: formData,
+            options: Options(
+              headers: {
+                "requiresToken": true,
+                "Content-Type": "multipart/form-data",
+              },
+            ),
+          );
+          await _apiAdapter.put(
+            "/users/backgroundImage",
+            data: {
+              'id': _userController.userEntity.id,
+              'background_image': imagePath.data,
+            },
+            options: Options(
+              headers: {
+                "requiresToken": true,
+              },
+            ),
+          );
+
+          _userController.userEntity.backgroundImage = imagePath.data;
+        } catch (e) {
+          Get.snackbar(
+            "Erro",
+            "Ocorreu um erro ao efetuar a troca da imagem de capa",
+            backgroundColor: primary,
+            colorText: base,
+          );
+        }
+
         _userController.loadingBackgroundImage = false;
       }
     } on PlatformException {
@@ -95,7 +178,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 () => Stack(
                   children: [
                     UserBackgroundImage(
-                      backgroundImage: _userController.backgroundImage,
+                      backgroundImageFile: _userController.backgroundImage,
+                      backgroundImage:
+                          _userController.userEntity.backgroundImage,
                       isLoading: _userController.loadingBackgroundImage,
                     ),
                     _userController.loadingBackgroundImage
@@ -156,6 +241,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           UserAvatar(
                             size: 100,
                             avatarFile: _userController.profileImage,
+                            avatar: _userController.userEntity.profileImage,
                             isLoading: _userController.loadingProfileImage,
                           ),
                           _userController.loadingProfileImage
@@ -308,8 +394,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 expandedAlignment: Alignment.centerLeft,
                 children: [
                   Obx(() => CustomText(
-                        text: _userController.userEntity.bio.isNotEmpty
-                            ? _userController.userEntity.bio
+                        text: _userController.userEntity.bio != null
+                            ? _userController.userEntity.bio!
                             : "Não há nada aqui! Altere sua bio.",
                         color: grey600,
                       )),

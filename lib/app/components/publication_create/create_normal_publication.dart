@@ -39,7 +39,7 @@ class _CreateNormalPublicationState extends State<CreateNormalPublication> {
         id: Random().nextInt(9999).toString(),
         type: PostTypeEnum.normal,
         name: user.name,
-        avatar: user.profileImage,
+        avatar: user.profileImage!,
         username: user.userName,
         isOwner: true,
         postImageFile: petImage,

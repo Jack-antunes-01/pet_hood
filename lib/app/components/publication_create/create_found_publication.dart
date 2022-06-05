@@ -51,7 +51,7 @@ class _CreateFoundPublicationState extends State<CreateFoundPublication> {
           id: Random().nextInt(9999).toString(),
           type: PostTypeEnum.found,
           name: user.name,
-          avatar: user.profileImage,
+          avatar: user.profileImage!,
           username: user.userName,
           isOwner: true,
           postImageFile: petImage,

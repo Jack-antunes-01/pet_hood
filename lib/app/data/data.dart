@@ -7,7 +7,7 @@ List<PostEntity> getPostList() => [
         id: "petHoodOficcialImage",
         type: PostTypeEnum.normal,
         name: "Pet Hood",
-        avatar: "assets/images/profile_image.png",
+        avatar: "profile_image.png",
         username: "pet_hood",
         isOwner: false,
         postImage: "assets/images/presentation.png",
