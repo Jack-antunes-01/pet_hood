@@ -78,7 +78,7 @@ class ChatPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: UserAvatar(
                 size: 55,
-                avatarFile: _userController.profileImage,
+                avatar: _userController.userEntity.profileImage,
               ),
             ),
             Expanded(

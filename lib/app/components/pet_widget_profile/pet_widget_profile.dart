@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/pet_details_controller.dart';
@@ -52,37 +53,21 @@ class PetWidgetProfile extends StatelessWidget {
               child: Stack(
                 children: [
                   Hero(
-                    tag: pet.petImage != null && pet.petImage!.isNotEmpty
-                        ? pet.petImage!
-                        : pet.petImageFile!.path,
-                    child: pet.petImage != null
-                        ? Container(
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image:
-                                    AssetImage("assets/images/dog_image.png"),
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                topRight: Radius.circular(4),
-                              ),
-                            ),
-                          )
-                        : SizedBox(
-                            height: 300,
-                            width: width,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                topRight: Radius.circular(4),
-                              ),
-                              child: Image.file(
-                                pet.petImageFile!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
+                    tag: pet.petImage!,
+                    child: SizedBox(
+                      height: 300,
+                      width: width,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        ),
+                        child: Image.network(
+                          '${dotenv.env["API_IMAGE"]}${pet.petImage}',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
 
@@ -9,6 +10,12 @@ import '../../theme/colors.dart';
 
 class DrawerNavigation extends StatelessWidget {
   const DrawerNavigation({Key? key}) : super(key: key);
+
+  void logout() {
+    Get.offAllNamed(Routes.login);
+    Get.deleteAll(force: true);
+    ApiController().logout();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,24 +75,6 @@ class DrawerNavigation extends StatelessWidget {
                   ),
                 ),
                 _divider(),
-                // _listTileItem(
-                //   text: "Meu perfil",
-                //   icons: Icons.account_circle_outlined,
-                //   onPress: () {
-                //     Navigator.of(context).pop();
-                //     _homePageController.selectedIndex = 4;
-                //   },
-                // ),
-                // _divider(),
-                // _listTileItem(
-                //   text: "Animais para adoção",
-                //   imagePath: "assets/images/app_logo_outline.svg",
-                //   onPress: () {
-                //     Navigator.of(context).pop();
-                //     _homePageController.selectedIndex = 3;
-                //   },
-                // ),
-                // _divider(),
                 _listTileItem(
                   text: "Parcerias",
                   icons: Icons.handshake_outlined,
@@ -113,9 +102,7 @@ class DrawerNavigation extends StatelessWidget {
                 _listTileItem(
                   text: "Sair",
                   icons: Icons.exit_to_app,
-                  onPress: () {
-                    Get.offAllNamed(Routes.login);
-                  },
+                  onPress: () => logout(),
                 ),
                 _divider(),
               ],

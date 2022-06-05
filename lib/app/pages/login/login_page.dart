@@ -1,25 +1,18 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/controllers/user_controller.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/pages/login/login_page_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
-import 'package:pet_hood/core/entities/user_entity.dart';
-import 'package:pet_hood/database/api_adapter.dart';
 import 'package:pet_hood/utils/validators/email_validator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
 
   final LoginPageController _loginPageController =
       Get.put(LoginPageController());
-
-  final UserController _userController = Get.find();
-  final ApiAdapter _apiAdapter = Get.find();
 
   final formKey = GlobalKey<FormState>();
 
@@ -28,48 +21,16 @@ class LoginPage extends StatelessWidget {
 
     if (isValidForm) {
       _loginPageController.loading = true;
-      try {
-        var response = await _apiAdapter.post(
-          '/sessions',
-          data: {
-            "email": _loginPageController.emailController.text,
-            "password": _loginPageController.passwordController.text,
-          },
-          options: Options(
-            headers: {
-              "requiresToken": false,
-            },
-          ),
-        );
 
-        UserEntity userEntity = UserEntity(
-          id: response.data['user']['id'],
-          email: response.data['user']['email'],
-          name: response.data['user']['name'],
-          userName: response.data['user']['user_name'],
-          phoneNumber: response.data['user']['phone_number'],
-          profileImage: response.data['user']['profile_image'],
-          backgroundImage: response.data['user']['background_image'],
-          birthDate: response.data['user']['date_birth'],
-          bio: response.data['user']['bio'],
-        );
+      final String email = _loginPageController.emailController.text;
+      final String password = _loginPageController.passwordController.text;
 
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('token', response.data['token']);
+      var responseLogin = await ApiController().loginAttempt(email, password);
 
-        _userController.userEntity = userEntity;
+      if (responseLogin) {
         Get.offAllNamed("/");
-      } catch (e) {
-        Get.snackbar(
-          "Erro",
-          "Email ou senha incorretos",
-          duration: const Duration(
-            seconds: 2,
-          ),
-          backgroundColor: primary,
-          colorText: base,
-        );
       }
+
       _loginPageController.loading = false;
     }
   }

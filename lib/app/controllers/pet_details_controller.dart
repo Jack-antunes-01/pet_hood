@@ -34,6 +34,23 @@ class PetDetailsController extends GetxController {
   bool get isOwner => _isOwner.value;
   set isOwner(bool isPetOwner) => _isOwner.value = isPetOwner;
 
+  final RxBool _loadingPublication = RxBool(false);
+  bool get loadingPublication => _loadingPublication.value;
+  set loadingPublication(bool isLoadingPublication) =>
+      _loadingPublication.value = isLoadingPublication;
+
+  final RxString _dropdownValue = RxString("Anos");
+  String get dropdownValue => _dropdownValue.value;
+  set dropdownValue(String value) => _dropdownValue.value = value;
+
+  final Rx<RadioEnum> _radioValue = Rx<RadioEnum>(RadioEnum.unselected);
+  RadioEnum get radioValue => _radioValue.value;
+  set radioValue(RadioEnum radioEnum) => _radioValue.value = radioEnum;
+
+  final Rx<File> _petImage = Rx<File>(File(''));
+  File get petImage => _petImage.value;
+  set petImage(File image) => _petImage.value = image;
+
   void resetPet() async {
     await Future.delayed(const Duration(milliseconds: 500));
 
@@ -57,30 +74,12 @@ class PetDetailsController extends GetxController {
       cityController.text = petDetail.city;
       stateController.text = petDetail.state;
 
-      petImage = petDetail.petImageFile!;
       loadingPublication = false;
       dropdownValue =
           petDetail.yearOrMonth == YearOrMonth.years ? "Anos" : "Meses";
       radioValue = petDetail.vaccine! ? RadioEnum.yes : RadioEnum.no;
     }
   }
-
-  final RxBool _loadingPublication = RxBool(false);
-  bool get loadingPublication => _loadingPublication.value;
-  set loadingPublication(bool isLoadingPublication) =>
-      _loadingPublication.value = isLoadingPublication;
-
-  final RxString _dropdownValue = RxString("Anos");
-  String get dropdownValue => _dropdownValue.value;
-  set dropdownValue(String value) => _dropdownValue.value = value;
-
-  final Rx<RadioEnum> _radioValue = Rx<RadioEnum>(RadioEnum.unselected);
-  RadioEnum get radioValue => _radioValue.value;
-  set radioValue(RadioEnum radioEnum) => _radioValue.value = radioEnum;
-
-  final Rx<File> _petImage = Rx<File>(File(''));
-  File get petImage => _petImage.value;
-  set petImage(File image) => _petImage.value = image;
 
   reset() {
     descriptionController.text = "";

@@ -69,7 +69,7 @@ class ChatPeoplePage extends StatelessWidget {
                       UserAvatar(
                         size: 40,
                         useBorder: false,
-                        avatarFile: _userController.profileImage,
+                        avatar: _userController.userEntity.profileImage,
                       ),
                       const Padding(
                         padding: EdgeInsets.only(

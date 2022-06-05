@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -6,6 +5,7 @@ import 'package:get/instance_manager.dart';
 import 'package:get/route_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/profile/add_pet_page/add_pet_page.dart';
 import 'package:pet_hood/app/pages/publication/publication_page.dart';
@@ -13,8 +13,6 @@ import 'package:pet_hood/app/pages/publication/publication_page_controller.dart'
 import 'package:pet_hood/core/entities/entities.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
-import 'package:pet_hood/database/api_adapter.dart';
-import 'package:http_parser/http_parser.dart';
 
 class ProfilePage extends StatefulWidget {
   final bool isOwner;
@@ -31,7 +29,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final UserController _userController = Get.find();
   final PublicationPageController _publicationPageController = Get.find();
-  final ApiAdapter _apiAdapter = Get.find();
 
   Future pickImage({
     required ImageSource source,
@@ -44,97 +41,9 @@ class _ProfilePageState extends State<ProfilePage> {
       if (image == null) return;
 
       if (isProfileImage) {
-        _userController.loadingProfileImage = true;
-
-        try {
-          String fileName = image.path.split('/').last;
-          FormData formData = FormData.fromMap({
-            "image": await MultipartFile.fromFile(
-              image.path,
-              filename: fileName,
-              contentType: MediaType('image', 'png'),
-            )
-          });
-          var imagePath = await _apiAdapter.post(
-            "/uploads",
-            data: formData,
-            options: Options(
-              headers: {
-                "requiresToken": true,
-                "Content-Type": "multipart/form-data",
-              },
-            ),
-          );
-          await _apiAdapter.put(
-            "/users/profileImage",
-            data: {
-              'id': _userController.userEntity.id,
-              'profile_image': imagePath.data,
-            },
-            options: Options(
-              headers: {
-                "requiresToken": true,
-              },
-            ),
-          );
-
-          _userController.userEntity.profileImage = imagePath.data;
-        } catch (e) {
-          Get.snackbar(
-            "Erro",
-            "Ocorreu um erro ao efetuar a troca da imagem de perfil",
-            backgroundColor: primary,
-            colorText: base,
-          );
-        }
-
-        _userController.loadingProfileImage = false;
+        await ApiController().updateProfileImage(image);
       } else {
-        _userController.loadingBackgroundImage = true;
-
-        try {
-          String fileName = image.path.split('/').last;
-          FormData formData = FormData.fromMap({
-            "image": await MultipartFile.fromFile(
-              image.path,
-              filename: fileName,
-              contentType: MediaType('image', 'png'),
-            )
-          });
-          var imagePath = await _apiAdapter.post(
-            "/uploads",
-            data: formData,
-            options: Options(
-              headers: {
-                "requiresToken": true,
-                "Content-Type": "multipart/form-data",
-              },
-            ),
-          );
-          await _apiAdapter.put(
-            "/users/backgroundImage",
-            data: {
-              'id': _userController.userEntity.id,
-              'background_image': imagePath.data,
-            },
-            options: Options(
-              headers: {
-                "requiresToken": true,
-              },
-            ),
-          );
-
-          _userController.userEntity.backgroundImage = imagePath.data;
-        } catch (e) {
-          Get.snackbar(
-            "Erro",
-            "Ocorreu um erro ao efetuar a troca da imagem de capa",
-            backgroundColor: primary,
-            colorText: base,
-          );
-        }
-
-        _userController.loadingBackgroundImage = false;
+        await ApiController().updateBackgroundImage(image);
       }
     } on PlatformException {
       Get.snackbar(
@@ -178,7 +87,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 () => Stack(
                   children: [
                     UserBackgroundImage(
-                      backgroundImageFile: _userController.backgroundImage,
                       backgroundImage:
                           _userController.userEntity.backgroundImage,
                       isLoading: _userController.loadingBackgroundImage,
@@ -240,7 +148,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           UserAvatar(
                             size: 100,
-                            avatarFile: _userController.profileImage,
                             avatar: _userController.userEntity.profileImage,
                             isLoading: _userController.loadingProfileImage,
                           ),
@@ -394,7 +301,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 expandedAlignment: Alignment.centerLeft,
                 children: [
                   Obx(() => CustomText(
-                        text: _userController.userEntity.bio != null
+                        text: _userController.userEntity.bio != null &&
+                                _userController.userEntity.bio!.isNotEmpty
                             ? _userController.userEntity.bio!
                             : "Não há nada aqui! Altere sua bio.",
                         color: grey600,

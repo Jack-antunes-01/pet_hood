@@ -64,7 +64,6 @@ class _CreateFoundPublicationState extends State<CreateFoundPublication> {
             description: description,
             createdAt: DateTime.now(),
             category: PetCategory.found,
-            petImageFile: petImage,
             state: state,
             city: city,
             petOwnerName: user.name,

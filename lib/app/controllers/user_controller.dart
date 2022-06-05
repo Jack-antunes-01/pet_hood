@@ -1,7 +1,17 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:pet_hood/core/entities/entities.dart';
+
+final UserEntity _emptyUserEntity = UserEntity(
+  id: "",
+  email: "",
+  name: "",
+  userName: "",
+  phoneNumber: "",
+  profileImage: "",
+  backgroundImage: "",
+  birthDate: "",
+  bio: "",
+);
 
 class UserController extends GetxController {
   /// Singleton
@@ -11,20 +21,10 @@ class UserController extends GetxController {
     return _instance;
   }
 
-  /// Profile Image
-  final Rx<File> _profileImage = Rx<File>(File(''));
-  File get profileImage => _profileImage.value;
-  set profileImage(File image) => _profileImage.value = image;
-
   final RxBool _loadingProfileImage = RxBool(false);
   bool get loadingProfileImage => _loadingProfileImage.value;
   set loadingProfileImage(bool isLoadingProfileImage) =>
       _loadingProfileImage.value = isLoadingProfileImage;
-
-  /// Background Image
-  final Rx<File> _backgroundImage = Rx<File>(File(''));
-  File get backgroundImage => _backgroundImage.value;
-  set backgroundImage(File image) => _backgroundImage.value = image;
 
   final RxBool _loadingBackgroundImage = RxBool(false);
   bool get loadingBackgroundImage => _loadingBackgroundImage.value;
@@ -32,19 +32,7 @@ class UserController extends GetxController {
       _loadingBackgroundImage.value = isLoadingBackgroundImage;
 
   /// User entity
-  final Rx<UserEntity> _userEntity = Rx<UserEntity>(
-    UserEntity(
-      id: "",
-      email: "",
-      name: "",
-      userName: "",
-      phoneNumber: "",
-      profileImage: "",
-      backgroundImage: "",
-      birthDate: "",
-      bio: "",
-    ),
-  );
+  final Rx<UserEntity> _userEntity = Rx<UserEntity>(_emptyUserEntity);
   UserEntity get userEntity => _userEntity.value;
   set userEntity(UserEntity entity) {
     _userEntity.value = entity;
@@ -54,6 +42,14 @@ class UserController extends GetxController {
   final RxList<PetEntity> _petList = RxList<PetEntity>();
   List<PetEntity> get petList => _petList;
   set petList(List<PetEntity> pets) => _petList.value = pets;
+
+  final RxList<PetEntity> _adoptionPetList = RxList<PetEntity>();
+  List<PetEntity> get adoptionPetList => _adoptionPetList;
+  set adoptionPetList(List<PetEntity> pets) => _adoptionPetList.value = pets;
+
+  final RxList<PostEntity> _postList = RxList<PostEntity>();
+  List<PostEntity> get postList => _postList;
+  set postList(List<PostEntity> posts) => _postList.value = posts;
 
   void addNewPet(PetEntity pet) {
     petList.add(pet);
@@ -71,10 +67,6 @@ class UserController extends GetxController {
     _petList.refresh();
   }
 
-  final RxList<PetEntity> _adoptionPetList = RxList<PetEntity>();
-  List<PetEntity> get adoptionPetList => _adoptionPetList;
-  set adoptionPetList(List<PetEntity> pets) => _adoptionPetList.value = pets;
-
   void addNewAdoptionPet(PetEntity pet) {
     adoptionPetList.add(pet);
     _adoptionPetList.refresh();
@@ -90,10 +82,6 @@ class UserController extends GetxController {
     adoptionPetList[index] = pet;
     _adoptionPetList.refresh();
   }
-
-  final RxList<PostEntity> _postList = RxList<PostEntity>();
-  List<PostEntity> get postList => _postList;
-  set postList(List<PostEntity> posts) => _postList.value = posts;
 
   addNewPost(PostEntity post) {
     postList.add(post);
@@ -128,5 +116,14 @@ class UserController extends GetxController {
     );
     postList[index] = newPost;
     _postList.refresh();
+  }
+
+  clear() {
+    userEntity = _emptyUserEntity;
+    petList = [];
+    postList = [];
+    adoptionPetList = [];
+    loadingProfileImage = false;
+    loadingBackgroundImage = false;
   }
 }

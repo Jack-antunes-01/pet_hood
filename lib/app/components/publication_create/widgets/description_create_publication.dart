@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/bottom_sheet_modal/bottom_sheet_image.dart';
 import 'package:pet_hood/app/components/components.dart';
@@ -16,6 +17,18 @@ class DescriptionCreatePublication extends StatelessWidget {
 
   final PublicationPageController _publicationPageController = Get.find();
   final PetDetailsController _petDetailsController = Get.find();
+
+  bool haveImage() {
+    if (isPublication && _publicationPageController.petImage.path.isNotEmpty) {
+      return true;
+    }
+
+    if (_petDetailsController.petImage.path.isNotEmpty ||
+        (_petDetailsController.petDetail.petImage != null &&
+            _petDetailsController.petDetail.petImage!.isNotEmpty)) return true;
+
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,20 +95,27 @@ class DescriptionCreatePublication extends StatelessWidget {
           ),
         ),
         Obx(
-          () => (isPublication
-                  ? _publicationPageController.petImage.path.isNotEmpty
-                  : _petDetailsController.petImage.path.isNotEmpty)
+          () => haveImage()
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: SizedBox(
                     height: 250,
                     width: width,
-                    child: Image.file(
-                      isPublication
-                          ? _publicationPageController.petImage
-                          : _petDetailsController.petImage,
-                      fit: BoxFit.cover,
-                    ),
+                    child: _petDetailsController.petDetail.id.isNotEmpty &&
+                            _petDetailsController.petImage.path.isEmpty
+                        // TODO: fix publication type
+                        ? Image.network(
+                            isPublication
+                                ? '${dotenv.env['API_IMAGE']}${_petDetailsController.petDetail.petImage}'
+                                : '${dotenv.env['API_IMAGE']}${_petDetailsController.petDetail.petImage}',
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            isPublication
+                                ? _publicationPageController.petImage
+                                : _petDetailsController.petImage,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 )
               : const SizedBox.shrink(),

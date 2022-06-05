@@ -1,16 +1,15 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
+import 'package:get/route_manager.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/city_state_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/description_create_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/name_breed_publication.dart';
-import 'package:pet_hood/app/controllers/adoption_controller.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/pet_details_controller.dart';
-import 'package:pet_hood/app/controllers/user_controller.dart';
-import 'package:pet_hood/app/pages/feed/feed_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/entities.dart';
 
@@ -26,10 +25,7 @@ class AddPetPage extends StatefulWidget {
 class _AddPetPageState extends State<AddPetPage> {
   final formKey = GlobalKey<FormState>();
 
-  final UserController _userController = Get.find();
   final PetDetailsController _petDetailsController = Get.find();
-  final FeedController _feedController = Get.find();
-  final AdoptionController _adoptionController = Get.find();
 
   @override
   void initState() {
@@ -43,46 +39,42 @@ class _AddPetPageState extends State<AddPetPage> {
     _petDetailsController.reset();
   }
 
-  void savePet() {
-    final UserEntity user = _userController.userEntity;
-    final String petName = _petDetailsController.petNameController.text;
+  void savePet() async {
     final String breed = _petDetailsController.breedController.text;
+    final String petName = _petDetailsController.petNameController.text;
     final int? age = int.tryParse(_petDetailsController.ageController.text);
+    final bool vaccine =
+        _petDetailsController.radioValue == RadioEnum.yes ? true : false;
     final YearOrMonth yearOrMonth =
         _petDetailsController.dropdownValue == "Anos"
             ? YearOrMonth.years
             : YearOrMonth.months;
-    final bool vaccine =
-        _petDetailsController.radioValue == RadioEnum.yes ? true : false;
-    final String city = _petDetailsController.cityController.text;
-    final String state = _petDetailsController.stateController.text;
     final String description =
         _petDetailsController.descriptionController.text.trim();
+    final String state = _petDetailsController.stateController.text;
+    final String city = _petDetailsController.cityController.text;
     final File petImage = _petDetailsController.petImage;
+    const PetCategory petCategory = PetCategory.profile;
 
-    final PetEntity petEntity = PetEntity(
+    final response = await ApiController().saveProfilePet(
       breed: breed,
-      userId: _userController.userEntity.id,
+      petName: petName,
       age: age,
-      yearOrMonth:
-          YearOrMonth.values.firstWhere((element) => element == yearOrMonth),
       vaccine: vaccine,
-      id: Random().nextInt(9999).toString(),
-      name: petName,
+      yearOrMonth: yearOrMonth,
       description: description,
-      createdAt: DateTime.now(),
-      category: PetCategory.normal,
-      petImageFile: petImage,
       state: state,
       city: city,
-      petOwnerName: user.name,
-      petOwnerImage: user.profileImage,
+      petImage: petImage,
+      petCategory: petCategory,
     );
 
-    _userController.addNewPet(petEntity);
+    if (response) {
+      goBack();
+    }
   }
 
-  void updatePet() {
+  void updatePet() async {
     final String petName = _petDetailsController.petNameController.text;
     final String breed = _petDetailsController.breedController.text;
     final int? age = int.tryParse(_petDetailsController.ageController.text);
@@ -97,36 +89,24 @@ class _AddPetPageState extends State<AddPetPage> {
     final String description =
         _petDetailsController.descriptionController.text.trim();
     final File petImage = _petDetailsController.petImage;
+    const PetCategory petCategory = PetCategory.profile;
 
-    final PetEntity petEntity = PetEntity(
-      breed: breed,
-      userId: _petDetailsController.petDetail.userId,
-      age: age,
-      yearOrMonth:
-          YearOrMonth.values.firstWhere((element) => element == yearOrMonth),
-      vaccine: vaccine,
+    final response = await ApiController().updateProfilePet(
       id: _petDetailsController.petDetail.id,
-      name: petName,
+      breed: breed,
+      petName: petName,
+      age: age,
+      vaccine: vaccine,
+      yearOrMonth: yearOrMonth,
       description: description,
-      createdAt: _petDetailsController.petDetail.createdAt,
-      category: _petDetailsController.petDetail.category,
-      petImageFile: petImage,
       state: state,
       city: city,
-      petOwnerName: _petDetailsController.petDetail.petOwnerName,
-      petOwnerImage: _petDetailsController.petDetail.petOwnerImage,
-      postId: _petDetailsController.petDetail.postId,
+      petImage: petImage,
+      petCategory: petCategory,
     );
 
-    _petDetailsController.petDetail = petEntity;
-
-    if (petEntity.category == PetCategory.adoption) {
-      _feedController.updatePostById(petEntity.postId!, petEntity);
-      _userController.updatePostById(petEntity.postId!, petEntity);
-      _userController.updateAdoptionPet(petEntity);
-      _adoptionController.updatePet(petEntity);
-    } else {
-      _userController.updatePet(petEntity);
+    if (response) {
+      goBack();
     }
   }
 
@@ -134,17 +114,17 @@ class _AddPetPageState extends State<AddPetPage> {
     final isValid = formKey.currentState!.validate();
 
     if (isValid && _petDetailsController.radioValue != RadioEnum.unselected) {
-      if (_petDetailsController.petImage.path.isNotEmpty) {
+      if (_petDetailsController.petImage.path.isNotEmpty ||
+          (_petDetailsController.petDetail.petImage != null &&
+              _petDetailsController.petDetail.petImage!.isNotEmpty)) {
         _petDetailsController.loadingPublication = true;
-        await Future.delayed(const Duration(seconds: 2), () {});
 
         if (_petDetailsController.petDetail.id.isNotEmpty) {
           updatePet();
         } else {
           savePet();
         }
-
-        goBack();
+        _petDetailsController.loadingPublication = false;
       } else {
         Get.snackbar(
           "Imagem",

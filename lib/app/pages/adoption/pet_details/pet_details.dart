@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/expandable_text/expandable_text.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/profile/add_pet_page/add_pet_page.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:pet_hood/core/entities/entities.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class PetDetails extends StatelessWidget {
@@ -24,6 +27,15 @@ class PetDetails extends StatelessWidget {
   void goBack() {
     Get.back();
     _petDetailsController.resetPet();
+  }
+
+  void removePet(BuildContext context) async {
+    final response =
+        await ApiController().removePet(_petDetailsController.petDetail.id);
+    if (response) {
+      Navigator.of(context).pop();
+      Get.back();
+    }
   }
 
   void openEditMenu(BuildContext context) {
@@ -63,11 +75,7 @@ class PetDetails extends StatelessWidget {
     Widget continueButton = Flexible(
       child: CustomButton(
         backgroundColor: red,
-        onPress: () {
-          _userController.removePet(_petDetailsController.petDetail);
-          Navigator.of(context).pop();
-          Get.back();
-        },
+        onPress: () => removePet(context),
         child: const CustomText(text: "Sim", color: base),
       ),
     );
@@ -206,30 +214,19 @@ class PetDetails extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     return Stack(
       children: [
-        Hero(
-          tag: _petDetailsController.petDetail.petImage != null &&
-                  _petDetailsController.petDetail.petImage!.isNotEmpty
-              ? _petDetailsController.petDetail.petImage!
-              : _petDetailsController.petDetail.petImageFile!.path,
-          child: PinchToZoom(
-            child: _petDetailsController.petDetail.petImage != null
-                ? Container(
-                    height: height * 0.5,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/dog_image.png"),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                : SizedBox(
-                    height: height * 0.5,
-                    width: width,
-                    child: Image.file(
-                      _petDetailsController.petDetail.petImageFile!,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+        Obx(
+          () => Hero(
+            tag: _petDetailsController.petDetail.petImage!,
+            child: PinchToZoom(
+              child: SizedBox(
+                height: height * 0.5,
+                width: width,
+                child: Image.network(
+                  '${dotenv.env["API_IMAGE"]}${_petDetailsController.petDetail.petImage}',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -311,6 +308,22 @@ class PetDetails extends StatelessWidget {
     );
   }
 
+  parseYearOrMonth(int age) {
+    if (age == 1 &&
+        _petDetailsController.petDetail.yearOrMonth == YearOrMonth.years) {
+      return "ano";
+    }
+    if (age > 1 &&
+        _petDetailsController.petDetail.yearOrMonth == YearOrMonth.years) {
+      return "anos";
+    }
+    if (age == 1 &&
+        _petDetailsController.petDetail.yearOrMonth == YearOrMonth.months) {
+      return "mês";
+    }
+    return "meses";
+  }
+
   Widget _content() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,15 +334,19 @@ class PetDetails extends StatelessWidget {
             children: [
               const SizedBox(width: 12),
               BuildPetFeature(
-                  value: _petDetailsController.petDetail.age.toString(),
-                  feature: "Idade"),
+                value:
+                    '${_petDetailsController.petDetail.age.toString()} ${parseYearOrMonth(_petDetailsController.petDetail.age!)}',
+                feature: "Idade",
+              ),
               BuildPetFeature(
-                  value: _petDetailsController.petDetail.breed!,
-                  feature: "Raça"),
+                value: _petDetailsController.petDetail.breed!,
+                feature: "Raça",
+              ),
               _petDetailsController.petDetail.vaccine != null
                   ? BuildPetFeature(
                       value: _petDetailsController.petDetail.vaccine!.toText(),
-                      feature: "Vacinado")
+                      feature: "Vacinado",
+                    )
                   : const SizedBox.shrink(),
               // BuildPetFeature(value: "6 Kg", feature: "Peso"),
               const SizedBox(width: 12),
@@ -376,12 +393,9 @@ class PetDetails extends StatelessWidget {
           GestureDetector(
             onTap: () => openExternalProfile(),
             child: UserAvatar(
-              avatarFile: _petDetailsController.isOwner
-                  ? _petDetailsController.petDetail.petOwnerImageFile
-                  : _userController.profileImage,
               avatar: _petDetailsController.isOwner
-                  ? _petDetailsController.petDetail.petOwnerImage
-                  : _userController.userEntity.profileImage,
+                  ? _userController.userEntity.profileImage
+                  : _petDetailsController.petDetail.petOwnerImage,
             ),
           ),
           const SizedBox(width: 12),

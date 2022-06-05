@@ -56,7 +56,6 @@ class MissingPublication extends StatelessWidget {
                       ? Obx(
                           () => UserAvatar(
                             size: 56,
-                            avatarFile: _userController.profileImage,
                             avatar: _userController.userEntity.profileImage,
                           ),
                         )

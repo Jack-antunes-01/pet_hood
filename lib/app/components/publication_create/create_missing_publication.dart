@@ -76,7 +76,6 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
             description: description,
             createdAt: DateTime.now(),
             category: PetCategory.disappear,
-            petImageFile: petImage,
             state: state,
             city: city,
             petOwnerName: user.name,

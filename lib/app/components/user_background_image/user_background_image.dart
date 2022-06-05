@@ -1,20 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class UserBackgroundImage extends StatelessWidget {
   final String? backgroundImage;
-  final File? backgroundImageFile;
   final bool isLoading;
-// Image.network(
-//             'http://192.168.1.8:3333/uploads/$avatar',
-//             fit: BoxFit.cover,
-//           ),
+
   const UserBackgroundImage({
     Key? key,
     this.backgroundImage,
-    this.backgroundImageFile,
     this.isLoading = false,
   }) : super(key: key);
 
@@ -24,25 +18,7 @@ class UserBackgroundImage extends StatelessWidget {
   }
 
   Widget _buildBackgroundImage() {
-    if (backgroundImageFile?.path != "") {
-      return Row(
-        children: [
-          Expanded(
-            child: ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(isLoading ? 0.4 : 0),
-                BlendMode.darken,
-              ),
-              child: Image.file(
-                backgroundImageFile!,
-                height: 120,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ],
-      );
-    } else if (backgroundImage != null) {
+    if (backgroundImage != null && backgroundImage!.isNotEmpty) {
       return Row(
         children: [
           Expanded(
@@ -52,7 +28,7 @@ class UserBackgroundImage extends StatelessWidget {
                 BlendMode.darken,
               ),
               child: Image.network(
-                'http://192.168.1.8:3333/uploads/$backgroundImage',
+                '${dotenv.env["API_IMAGE"]}$backgroundImage',
                 height: 120,
                 fit: BoxFit.cover,
               ),

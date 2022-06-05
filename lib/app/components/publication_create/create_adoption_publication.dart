@@ -96,7 +96,6 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
                 ? DateTime.now()
                 : _publicationPageController.postEntityTemp.pet!.createdAt,
             category: PetCategory.adoption,
-            petImageFile: petImage,
             state: state,
             city: city,
             petOwnerName: user.name,

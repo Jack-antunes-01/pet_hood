@@ -1,13 +1,11 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/profile/edit_profile_page/edit_profile_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
-import 'package:pet_hood/core/entities/user_entity.dart';
-import 'package:pet_hood/database/api_adapter.dart';
 import 'package:pet_hood/utils/validators/username_validator.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -21,7 +19,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final UserController _userController = Get.find();
   final EditProfilePageController _editProfilePageController =
       Get.put(EditProfilePageController());
-  final ApiAdapter _apiAdapter = Get.find();
 
   final formKey = GlobalKey<FormState>();
 
@@ -46,48 +43,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     if (isValidForm) {
       _editProfilePageController.loading = true;
-      try {
-        String username =
-            _editProfilePageController.usernameController.text.toLowerCase();
 
-        await _apiAdapter.put(
-          '/users',
-          data: {
-            "id": _userController.userEntity.id,
-            "email": _editProfilePageController.emailController.text,
-            "user_name": username,
-            "bio": _editProfilePageController.bioController.text,
-          },
-          options: Options(
-            headers: {
-              "requiresToken": true,
-            },
-          ),
-        );
+      String username =
+          _editProfilePageController.usernameController.text.toLowerCase();
+      String email = _userController.userEntity.email;
+      String bio = _editProfilePageController.bioController.text.trim();
 
-        UserEntity _userEntity = _userController.userEntity;
+      final response = await ApiController().updateUserInfo(
+        bio: bio,
+        email: email,
+        username: username,
+      );
 
-        _userEntity.email = _editProfilePageController.emailController.text;
-        _userEntity.userName = username;
-        _userEntity.bio = _editProfilePageController.bioController.text.trim();
-
-        _userController.userEntity = _userEntity;
+      if (response) {
         Get.back();
-      } on DioError catch (e) {
-        Get.snackbar(
-          "Erro",
-          e.response
-              .toString()
-              .split(":")[2]
-              .replaceAll("\"", "")
-              .replaceAll("}", ""),
-          duration: const Duration(
-            seconds: 2,
-          ),
-          backgroundColor: primary,
-          colorText: base,
-        );
       }
+
       _editProfilePageController.loading = false;
     }
   }

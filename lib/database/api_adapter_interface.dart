@@ -5,6 +5,7 @@ abstract class ApiAdapterInterface {
   Future<Response<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
+    Options? options,
   });
 
   // Put method
@@ -12,6 +13,7 @@ abstract class ApiAdapterInterface {
     String path, {
     data,
     Map<String, dynamic>? queryParameters,
+    Options? options,
   });
 
   // Post method
@@ -19,6 +21,7 @@ abstract class ApiAdapterInterface {
     String path, {
     data,
     Map<String, dynamic>? queryParameters,
+    Options? options,
   });
 
   // Delete method
@@ -26,5 +29,6 @@ abstract class ApiAdapterInterface {
     String path, {
     data,
     Map<String, dynamic>? queryParameters,
+    Options? options,
   });
 }
