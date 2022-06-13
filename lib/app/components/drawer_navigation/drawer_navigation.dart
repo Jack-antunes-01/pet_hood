@@ -74,22 +74,22 @@ class DrawerNavigation extends StatelessWidget {
                     ],
                   ),
                 ),
-                _divider(),
-                _listTileItem(
-                  text: "Parcerias",
-                  icons: Icons.handshake_outlined,
-                  onPress: () {
-                    Get.toNamed(Routes.stakeholders);
-                  },
-                ),
-                _divider(),
-                _listTileItem(
-                  text: "Ranking",
-                  icons: Icons.star_border_outlined,
-                  onPress: () {
-                    Get.toNamed(Routes.ranking);
-                  },
-                ),
+                // _divider(),
+                // _listTileItem(
+                //   text: "Parcerias",
+                //   icons: Icons.handshake_outlined,
+                //   onPress: () {
+                //     Get.toNamed(Routes.stakeholders);
+                //   },
+                // ),
+                // _divider(),
+                // _listTileItem(
+                //   text: "Ranking",
+                //   icons: Icons.star_border_outlined,
+                //   onPress: () {
+                //     Get.toNamed(Routes.ranking);
+                //   },
+                // ),
                 _divider(),
                 _listTileItem(
                   text: "Sobre nós",

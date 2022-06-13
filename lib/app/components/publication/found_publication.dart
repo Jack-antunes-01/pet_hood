@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
@@ -143,11 +144,11 @@ class FoundPublication extends StatelessWidget {
             ),
           ),
         ),
-        post.description != null && post.description!.isNotEmpty
+        post.pet?.description != null && post.pet!.description.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
                 child: CustomText(
-                  text: post.description!,
+                  text: post.pet!.description,
                   color: grey800,
                 ),
               )
@@ -155,24 +156,14 @@ class FoundPublication extends StatelessWidget {
         Stack(
           children: [
             PinchToZoom(
-              child: post.postImage != null && post.postImage!.isNotEmpty
-                  ? Container(
-                      height: height * 0.4,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(post.postImage!),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                  : SizedBox(
-                      height: height * 0.4,
-                      width: width,
-                      child: Image.file(
-                        post.postImageFile!,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+              child: SizedBox(
+                height: height * 0.4,
+                width: width,
+                child: Image.network(
+                  '${dotenv.env["API_IMAGE"]}${post.postImage}',
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             Positioned(
               bottom: 15,

@@ -13,7 +13,7 @@ class FeedPage extends StatelessWidget {
     required this.controller,
   }) : super(key: key);
 
-  final FeedController _feedController = Get.put(FeedController());
+  final FeedController _feedController = Get.find();
 
   @override
   Widget build(BuildContext context) {

@@ -129,10 +129,8 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
             email: _registerController.emailController.text,
             name: _registerController.nameController.text,
             userName: response.data['user_name'],
-            phoneNumber: "",
             profileImage: "",
             backgroundImage: "",
-            birthDate: "99/99/9999",
             bio: "",
           );
 

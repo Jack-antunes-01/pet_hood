@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
@@ -7,6 +6,7 @@ import 'package:pet_hood/app/components/publication_create/widgets/city_state_pu
 import 'package:pet_hood/app/components/publication_create/widgets/description_create_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/name_breed_publication.dart';
 import 'package:pet_hood/app/controllers/adoption_controller.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/feed/feed_controller.dart';
 import 'package:pet_hood/app/pages/home/home_page_controller.dart';
@@ -38,7 +38,7 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
         _publicationPageController.radioValue != RadioEnum.unselected) {
       if (_publicationPageController.petImage.path.isNotEmpty) {
         _publicationPageController.loadingPublication = true;
-        await Future.delayed(const Duration(seconds: 2), () {});
+
         final UserEntity user = _userController.userEntity;
         final String petName =
             _publicationPageController.petNameController.text;
@@ -62,65 +62,86 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
         final bool isSavingPublication =
             _publicationPageController.isChangePublicationTypeEnabled;
 
-        final postId = Random().nextInt(9999).toString();
-
-        final PostEntity postEntity = PostEntity(
-          id: isSavingPublication
-              ? postId
-              : _publicationPageController.postEntityTemp.id,
-          type: PostTypeEnum.adoption,
-          name: user.name,
-          avatar: user.profileImage!,
-          username: user.userName,
-          isOwner: isSavingPublication
-              ? true
-              : _publicationPageController.postEntityTemp.isOwner,
-          postImageFile: petImage,
-          description: description,
-          postedAt: isSavingPublication
-              ? DateTime.now()
-              : _publicationPageController.postEntityTemp.postedAt,
-          pet: PetEntity(
+        try {
+          final responsePet = await ApiController().savePet(
             breed: breed,
-            userId: _userController.userEntity.id,
+            petName: petName,
             age: age,
-            yearOrMonth: YearOrMonth.values
-                .firstWhere((element) => element == yearOrMonth),
             vaccine: vaccine,
-            id: isSavingPublication
-                ? Random().nextInt(9999).toString()
-                : _publicationPageController.postEntityTemp.pet!.id,
-            name: petName,
+            yearOrMonth: yearOrMonth,
             description: description,
-            createdAt: isSavingPublication
-                ? DateTime.now()
-                : _publicationPageController.postEntityTemp.pet!.createdAt,
-            category: PetCategory.adoption,
             state: state,
             city: city,
-            petOwnerName: user.name,
-            petOwnerImage: user.profileImage,
-            postId: isSavingPublication
-                ? postId
-                : _publicationPageController.postEntityTemp.id,
-          ),
-        );
+            petImage: petImage,
+            petCategory: PetCategory.adoption,
+          );
 
-        if (isSavingPublication) {
-          _feedController.addPost(postEntity);
-          _userController.addNewPost(postEntity);
-          _userController.addNewAdoptionPet(postEntity.pet!);
-          _adoptionController.addNewPet(postEntity.pet!);
-        } else {
-          _feedController.updatePost(postEntity);
-          _userController.updatePost(postEntity);
-          _userController.updateAdoptionPet(postEntity.pet!);
-          _adoptionController.updatePet(postEntity.pet!);
+          final responsePost = await ApiController().addPost(
+            imageId: responsePet['petImage'],
+            petId: responsePet['petId'],
+            postType: PostTypeEnum.adoption,
+          );
+
+          if (responsePost['postId'] != null &&
+              responsePet['petId'] != null &&
+              responsePet['petImage'] != null) {
+            final PostEntity temp = _publicationPageController.postEntityTemp;
+            final DateTime timeNow = DateTime.now();
+            final PostEntity postEntity = PostEntity(
+              id: isSavingPublication ? responsePost['postId'] : temp.id,
+              type: PostTypeEnum.adoption,
+              name: user.name,
+              avatar: user.profileImage != null ? user.profileImage! : '',
+              username: user.userName,
+              isOwner: isSavingPublication ? true : temp.isOwner,
+              postedAt: isSavingPublication ? timeNow : temp.postedAt,
+              pet: PetEntity(
+                userId: _userController.userEntity.id,
+                breed: breed,
+                age: age,
+                yearOrMonth: YearOrMonth.values
+                    .firstWhere((element) => element == yearOrMonth),
+                vaccine: vaccine,
+                id: isSavingPublication ? responsePet['petId'] : temp.pet!.id,
+                name: petName,
+                description: description,
+                createdAt: isSavingPublication ? timeNow : temp.pet!.createdAt,
+                category: PetCategory.adoption,
+                state: state,
+                city: city,
+                petImage: responsePet['petImage'],
+                petOwnerName: user.name,
+                petOwnerImage: user.profileImage,
+                postId: isSavingPublication ? responsePost['postId'] : temp.id,
+              ),
+            );
+
+            if (isSavingPublication) {
+              _feedController.addPost(postEntity);
+              _userController.addNewPost(postEntity);
+              _userController.addNewAdoptionPet(postEntity.pet!);
+              _adoptionController.addNewPet(postEntity.pet!);
+            } else {
+              _feedController.updatePost(postEntity);
+              _userController.updatePost(postEntity);
+              _userController.updateAdoptionPet(postEntity.pet!);
+              _adoptionController.updatePet(postEntity.pet!);
+            }
+
+            _homePageController.selectedIndex = 0;
+
+            _publicationPageController.reset();
+            Get.back();
+          }
+        } catch (e) {
+          Get.snackbar(
+            "Erro",
+            "Erro ao adicionar pet",
+            duration: const Duration(seconds: 2),
+            backgroundColor: primary,
+            colorText: base,
+          );
         }
-        _homePageController.selectedIndex = 0;
-
-        _publicationPageController.reset();
-        Get.back();
       } else {
         Get.snackbar(
           "Imagem",
@@ -139,6 +160,7 @@ class _CreateAdoptionPublicationState extends State<CreateAdoptionPublication> {
         colorText: base,
       );
     }
+    _publicationPageController.loadingPublication = false;
   }
 
   @override

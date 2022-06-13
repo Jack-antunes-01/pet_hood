@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/adoption_controller.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/feed/feed_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page.dart';
@@ -79,20 +80,35 @@ Future removePublication({
   final AdoptionController _adoptionController = Get.find();
   final FeedController _feedController = Get.find();
 
-  if (post.type == PostTypeEnum.adoption) {
-    _userController.removeAdoptionPet(post.pet!.id);
+  try {
+    var response =
+        await ApiController().removePost(petId: post.pet!.id, postId: post.id);
+
+    if (response) {
+      if (post.type == PostTypeEnum.adoption) {
+        _userController.removeAdoptionPet(post.pet!.id);
+      }
+
+      if (post.type == PostTypeEnum.adoption ||
+          post.type == PostTypeEnum.disappear ||
+          post.type == PostTypeEnum.found) {
+        _adoptionController.removePet(post.pet!.id);
+      }
+
+      _userController.removePublication(post.id);
+      _feedController.removePublication(post.id);
+
+      Navigator.of(context).pop();
+    }
+  } catch (e) {
+    Get.snackbar(
+      "Erro",
+      "Erro ao deletar post",
+      backgroundColor: primary,
+      colorText: base,
+      duration: const Duration(seconds: 2),
+    );
   }
-
-  if (post.type == PostTypeEnum.adoption ||
-      post.type == PostTypeEnum.disappear ||
-      post.type == PostTypeEnum.found) {
-    _adoptionController.removePet(post.pet!.id);
-  }
-
-  _userController.removePublication(post.id);
-  _feedController.removePublication(post.id);
-
-  Navigator.of(context).pop();
 }
 
 void editPublication({
@@ -134,7 +150,7 @@ void editPublication({
 
   _publicationPageController.petImage = post.postImageFile!;
   _publicationPageController.descriptionController.text =
-      post.description ?? "";
+      post.pet?.description ?? '';
 
   if (post.type != PostTypeEnum.normal) {
     _publicationPageController.breedController.text = pet.breed!;

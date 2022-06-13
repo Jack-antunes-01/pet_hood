@@ -16,7 +16,6 @@ class PostEntity {
   final String name;
   final String username;
   final bool isOwner;
-  final String? description;
   final String? postImage;
   final File? postImageFile;
   int? qtLikes;
@@ -24,10 +23,6 @@ class PostEntity {
   final DateTime postedAt;
 
   final PetEntity? pet;
-
-  final String? dateMissing;
-
-  final String? dateFound;
 
   PostEntity({
     required this.id,
@@ -41,9 +36,6 @@ class PostEntity {
     this.postImageFile,
     this.qtLikes,
     this.isLiked,
-    this.description,
-    this.dateMissing,
-    this.dateFound,
     this.pet,
   });
 }

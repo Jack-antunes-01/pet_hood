@@ -5,7 +5,10 @@ import 'package:pet_hood/core/entities/entities.dart';
 class FeedController extends GetxController {
   final RxList<PostEntity> _listPosts = RxList<PostEntity>(getPostList());
   List<PostEntity> get listPosts => _listPosts;
-  set listPosts(List<PostEntity> posts) => _listPosts.value = posts;
+  set listPosts(List<PostEntity> posts) => {
+        _listPosts.value = posts,
+        _listPosts.refresh(),
+      };
 
   addPost(PostEntity post) {
     listPosts.insert(0, post);
@@ -34,7 +37,6 @@ class FeedController extends GetxController {
       isOwner: post.isOwner,
       postedAt: post.postedAt,
       postImageFile: post.postImageFile,
-      description: post.description,
       pet: pet,
     );
     listPosts[index] = newPost;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/post_entity.dart';
@@ -23,8 +25,10 @@ class NormalPublication extends StatelessWidget {
     post.isLiked = !post.isLiked!;
     if (post.isLiked!) {
       post.qtLikes = post.qtLikes! + 1;
+      await ApiController().likePost(postId: post.id);
     } else {
       post.qtLikes = post.qtLikes! - 1;
+      await ApiController().deleteLikePost(postId: post.id);
     }
   }
 
@@ -138,7 +142,7 @@ class NormalPublication extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        post.description != null && post.description!.isNotEmpty
+        post.pet?.description != null && post.pet!.description.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.only(
                   left: 15,
@@ -146,7 +150,7 @@ class NormalPublication extends StatelessWidget {
                   bottom: 15,
                 ),
                 child: CustomText(
-                  text: post.description!,
+                  text: post.pet!.description,
                   color: grey800,
                   fontSize: 16,
                 ),
@@ -157,24 +161,14 @@ class NormalPublication extends StatelessWidget {
             likeKey.currentState!.onTap();
           },
           child: PinchToZoom(
-            child: post.postImage != null
-                ? Container(
-                    height: height * 0.4,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(post.postImage!),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                : SizedBox(
-                    height: height * 0.4,
-                    width: width,
-                    child: Image.file(
-                      post.postImageFile!,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+            child: SizedBox(
+              height: height * 0.4,
+              width: width,
+              child: Image.network(
+                '${dotenv.env["API_IMAGE"]}${post.postImage}',
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
         ),
       ],

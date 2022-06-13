@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
 import 'package:pet_hood/app/controllers/pet_details_controller.dart';
@@ -167,8 +168,8 @@ class AdoptionPublication extends StatelessWidget {
                   : SizedBox(
                       height: height * 0.4,
                       width: width,
-                      child: Image.file(
-                        post.postImageFile!,
+                      child: Image.network(
+                        '${dotenv.env["API_IMAGE"]}${post.pet!.petImage}',
                         fit: BoxFit.cover,
                       ),
                     ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +7,7 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/city_state_publication.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/description_create_publication.dart';
 import 'package:pet_hood/app/controllers/adoption_controller.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/feed/feed_controller.dart';
 import 'package:pet_hood/app/pages/home/home_page_controller.dart';
@@ -38,7 +38,6 @@ class _CreateFoundPublicationState extends State<CreateFoundPublication> {
     if (isValid) {
       if (_publicationPageController.petImage.path.isNotEmpty) {
         _publicationPageController.loadingPublication = true;
-        await Future.delayed(const Duration(seconds: 2), () {});
         final UserEntity user = _userController.userEntity;
         final String breed = _publicationPageController.breedController.text;
         final String city = _publicationPageController.cityController.text;
@@ -47,37 +46,77 @@ class _CreateFoundPublicationState extends State<CreateFoundPublication> {
             _publicationPageController.descriptionController.text.trim();
         final File petImage = _publicationPageController.petImage;
 
-        final PostEntity postEntity = PostEntity(
-          id: Random().nextInt(9999).toString(),
-          type: PostTypeEnum.found,
-          name: user.name,
-          avatar: user.profileImage!,
-          username: user.userName,
-          isOwner: true,
-          postImageFile: petImage,
-          description: description,
-          postedAt: DateTime.now(),
-          pet: PetEntity(
+        try {
+          final responsePet = await ApiController().savePet(
             breed: breed,
-            userId: _userController.userEntity.id,
-            id: Random().nextInt(9999).toString(),
+            petName: '',
+            age: null,
+            vaccine: false,
+            yearOrMonth: YearOrMonth.years,
             description: description,
-            createdAt: DateTime.now(),
-            category: PetCategory.found,
             state: state,
             city: city,
-            petOwnerName: user.name,
-            petOwnerImage: user.profileImage,
-          ),
-        );
+            petImage: petImage,
+            petCategory: PetCategory.found,
+          );
 
-        _homePageController.selectedIndex = 0;
-        _feedController.addPost(postEntity);
-        _adoptionController.addNewPet(postEntity.pet!);
-        _userController.addNewPost(postEntity);
+          final responsePost = await ApiController().addPost(
+            imageId: responsePet['petImage'],
+            petId: responsePet['petId'],
+            postType: PostTypeEnum.found,
+          );
 
-        _publicationPageController.reset();
-        Get.back();
+          if (responsePost['postId'] != null &&
+              responsePet['petId'] != null &&
+              responsePet['petImage'] != null) {
+            // final PostEntity temp = _publicationPageController.postEntityTemp;
+            final DateTime timeNow = DateTime.now();
+            final PostEntity postEntity = PostEntity(
+              id: responsePost['postId'],
+              type: PostTypeEnum.found,
+              name: user.name,
+              avatar: user.profileImage != null ? user.profileImage! : '',
+              username: user.userName,
+              isOwner: true,
+              postImage: responsePet['petImage'],
+              postedAt: timeNow,
+              pet: PetEntity(
+                userId: _userController.userEntity.id,
+                breed: breed,
+                age: null,
+                yearOrMonth: YearOrMonth.years,
+                vaccine: false,
+                id: responsePet['petId'],
+                name: '',
+                description: description,
+                createdAt: timeNow,
+                category: PetCategory.found,
+                state: state,
+                city: city,
+                petImage: responsePet['petImage'],
+                petOwnerName: user.name,
+                petOwnerImage: user.profileImage,
+                postId: responsePost['postId'],
+              ),
+            );
+
+            _homePageController.selectedIndex = 0;
+            _feedController.addPost(postEntity);
+            _adoptionController.addNewPet(postEntity.pet!);
+            _userController.addNewPost(postEntity);
+
+            _publicationPageController.reset();
+            Get.back();
+          }
+        } catch (e) {
+          Get.snackbar(
+            "Erro",
+            "Erro ao criar post",
+            duration: const Duration(seconds: 2),
+            backgroundColor: primary,
+            colorText: base,
+          );
+        }
       } else {
         Get.snackbar(
           "Imagem",

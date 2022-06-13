@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/components/publication_create/widgets/description_create_publication.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/feed/feed_controller.dart';
 import 'package:pet_hood/app/pages/home/home_page_controller.dart';
@@ -29,32 +29,66 @@ class _CreateNormalPublicationState extends State<CreateNormalPublication> {
   validateForm() async {
     if (_publicationPageController.petImage.path.isNotEmpty) {
       _publicationPageController.loadingPublication = true;
-      await Future.delayed(const Duration(seconds: 2), () {});
       final UserEntity user = _userController.userEntity;
       final String description =
           _publicationPageController.descriptionController.text.trim();
       final File petImage = _publicationPageController.petImage;
 
-      final PostEntity postEntity = PostEntity(
-        id: Random().nextInt(9999).toString(),
-        type: PostTypeEnum.normal,
-        name: user.name,
-        avatar: user.profileImage!,
-        username: user.userName,
-        isOwner: true,
-        postImageFile: petImage,
-        description: description,
-        postedAt: DateTime.now(),
-        qtLikes: 0,
-        isLiked: false,
-      );
+      try {
+        final response = await ApiController().savePetNormalPost(
+          image: petImage,
+          description: description,
+        );
 
-      _homePageController.selectedIndex = 0;
-      _userController.addNewPost(postEntity);
-      _feedController.addPost(postEntity);
+        final responsePost = await ApiController().addPost(
+          imageId: response['petImage'],
+          petId: response['petId'],
+          postType: PostTypeEnum.normal,
+        );
 
-      _publicationPageController.reset();
-      Get.back();
+        if (responsePost['postId'] != null) {
+          final PostEntity postEntity = PostEntity(
+            id: responsePost['postId'],
+            type: PostTypeEnum.normal,
+            name: user.name,
+            avatar: user.profileImage != null ? user.profileImage! : '',
+            username: user.userName,
+            isOwner: true,
+            postImage: response['petImage'],
+            pet: PetEntity(
+              userId: user.id,
+              breed: '',
+              state: '',
+              id: response['petId'],
+              category: PetCategory.normal,
+              city: '',
+              petOwnerImage:
+                  user.profileImage != null ? user.profileImage! : '',
+              createdAt: DateTime.now(),
+              petOwnerName: user.name,
+              description: description,
+            ),
+            postedAt: DateTime.now(),
+            qtLikes: 0,
+            isLiked: false,
+          );
+
+          _homePageController.selectedIndex = 0;
+          _userController.addNewPost(postEntity);
+          _feedController.addPost(postEntity);
+
+          _publicationPageController.reset();
+          Get.back();
+        }
+      } catch (e) {
+        Get.snackbar(
+          "Erro",
+          "Erro ao criar post",
+          duration: const Duration(seconds: 2),
+          backgroundColor: primary,
+          colorText: base,
+        );
+      }
     } else {
       Get.snackbar(
         "Imagem",

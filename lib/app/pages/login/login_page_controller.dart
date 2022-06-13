@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginPageController extends GetxController {
-  final TextEditingController emailController = TextEditingController(text: "");
-  final TextEditingController passwordController =
-      TextEditingController(text: "");
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   final RxBool _hidePassword = RxBool(true);
   bool get hidePassword => _hidePassword.value;

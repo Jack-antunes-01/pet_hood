@@ -6,10 +6,8 @@ final UserEntity _emptyUserEntity = UserEntity(
   email: "",
   name: "",
   userName: "",
-  phoneNumber: "",
   profileImage: "",
   backgroundImage: "",
-  birthDate: "",
   bio: "",
 );
 
@@ -111,7 +109,6 @@ class UserController extends GetxController {
       isOwner: post.isOwner,
       postedAt: post.postedAt,
       postImageFile: post.postImageFile,
-      description: post.description,
       pet: pet,
     );
     postList[index] = newPost;
