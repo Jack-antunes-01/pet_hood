@@ -1,9 +1,31 @@
 import 'package:get/get.dart';
-import 'package:pet_hood/app/data/data.dart';
 import 'package:pet_hood/core/entities/entities.dart';
 
 class FeedController extends GetxController {
-  final RxList<PostEntity> _listPosts = RxList<PostEntity>(getPostList());
+  FeedController._privateConstructor();
+  static final FeedController _instance = FeedController._privateConstructor();
+  factory FeedController() {
+    return _instance;
+  }
+
+  final RxInt _page = RxInt(0);
+  int get page => _page.value;
+  set page(int page) => _page.value = page;
+
+  final RxBool _maxPostsReached = RxBool(false);
+  bool get maxPostsReached => _maxPostsReached.value;
+  set maxPostsReached(bool isMaxPostsReached) =>
+      _maxPostsReached.value = isMaxPostsReached;
+
+  final RxBool _loadingFeed = RxBool(false);
+  bool get loadingFeed => _loadingFeed.value;
+  set loadingFeed(bool isLoadingFeed) => _loadingFeed.value = isLoadingFeed;
+
+  final RxBool _loadMoreFeed = RxBool(false);
+  bool get loadMoreFeed => _loadMoreFeed.value;
+  set loadMoreFeed(bool isLoadMoreFeed) => _loadMoreFeed.value = isLoadMoreFeed;
+
+  final RxList<PostEntity> _listPosts = RxList<PostEntity>();
   List<PostEntity> get listPosts => _listPosts;
   set listPosts(List<PostEntity> posts) => {
         _listPosts.value = posts,
@@ -27,19 +49,30 @@ class FeedController extends GetxController {
 
   void updatePostById(String postId, PetEntity pet) {
     int index = listPosts.indexWhere((p) => p.id == postId);
-    PostEntity post = listPosts.firstWhere((element) => element.id == postId);
-    PostEntity newPost = PostEntity(
-      id: post.id,
-      type: post.type,
-      name: post.name,
-      avatar: post.avatar,
-      username: post.username,
-      isOwner: post.isOwner,
-      postedAt: post.postedAt,
-      postImageFile: post.postImageFile,
-      pet: pet,
-    );
-    listPosts[index] = newPost;
-    _listPosts.refresh();
+    if (index != -1) {
+      PostEntity post = listPosts.firstWhere((element) => element.id == postId);
+      PostEntity newPost = PostEntity(
+        id: post.id,
+        userId: post.userId,
+        name: post.name,
+        avatar: post.avatar,
+        username: post.username,
+        isOwner: post.isOwner,
+        postedAt: post.postedAt,
+        pet: pet,
+        isLiked: post.isLiked,
+        qtLikes: post.qtLikes,
+      );
+      listPosts[index] = newPost;
+      _listPosts.refresh();
+    }
+  }
+
+  void clear() {
+    listPosts = [];
+    page = 0;
+    maxPostsReached = false;
+    loadingFeed = false;
+    loadMoreFeed = false;
   }
 }

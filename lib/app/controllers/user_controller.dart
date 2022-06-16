@@ -19,6 +19,19 @@ class UserController extends GetxController {
     return _instance;
   }
 
+  final RxInt _page = RxInt(0);
+  int get page => _page.value;
+  set page(int page) => _page.value = page;
+
+  final RxBool _maxPostsReached = RxBool(false);
+  bool get maxPostsReached => _maxPostsReached.value;
+  set maxPostsReached(bool isMaxPostsReached) =>
+      _maxPostsReached.value = isMaxPostsReached;
+
+  final RxBool _loadMoreFeed = RxBool(false);
+  bool get loadMoreFeed => _loadMoreFeed.value;
+  set loadMoreFeed(bool isLoadMoreFeed) => _loadMoreFeed.value = isLoadMoreFeed;
+
   final RxBool _loadingProfileImage = RxBool(false);
   bool get loadingProfileImage => _loadingProfileImage.value;
   set loadingProfileImage(bool isLoadingProfileImage) =>
@@ -29,7 +42,6 @@ class UserController extends GetxController {
   set loadingBackgroundImage(bool isLoadingBackgroundImage) =>
       _loadingBackgroundImage.value = isLoadingBackgroundImage;
 
-  /// User entity
   final Rx<UserEntity> _userEntity = Rx<UserEntity>(_emptyUserEntity);
   UserEntity get userEntity => _userEntity.value;
   set userEntity(UserEntity entity) {
@@ -66,7 +78,7 @@ class UserController extends GetxController {
   }
 
   void addNewAdoptionPet(PetEntity pet) {
-    adoptionPetList.add(pet);
+    adoptionPetList.insert(0, pet);
     _adoptionPetList.refresh();
   }
 
@@ -77,12 +89,14 @@ class UserController extends GetxController {
 
   void updateAdoptionPet(PetEntity pet) {
     int index = adoptionPetList.indexWhere((p) => p.id == pet.id);
-    adoptionPetList[index] = pet;
-    _adoptionPetList.refresh();
+    if (index != -1) {
+      adoptionPetList[index] = pet;
+      _adoptionPetList.refresh();
+    }
   }
 
   addNewPost(PostEntity post) {
-    postList.add(post);
+    postList.insert(0, post);
     _postList.refresh();
   }
 
@@ -99,20 +113,23 @@ class UserController extends GetxController {
 
   void updatePostById(String postId, PetEntity pet) {
     int index = postList.indexWhere((p) => p.id == postId);
-    PostEntity post = postList.firstWhere((element) => element.id == postId);
-    PostEntity newPost = PostEntity(
-      id: post.id,
-      type: post.type,
-      name: post.name,
-      avatar: post.avatar,
-      username: post.username,
-      isOwner: post.isOwner,
-      postedAt: post.postedAt,
-      postImageFile: post.postImageFile,
-      pet: pet,
-    );
-    postList[index] = newPost;
-    _postList.refresh();
+    if (index != -1) {
+      PostEntity post = postList.firstWhere((element) => element.id == postId);
+      PostEntity newPost = PostEntity(
+        id: post.id,
+        userId: post.userId,
+        name: post.name,
+        avatar: post.avatar,
+        username: post.username,
+        isOwner: post.isOwner,
+        postedAt: post.postedAt,
+        pet: pet,
+        isLiked: post.isLiked,
+        qtLikes: post.qtLikes,
+      );
+      postList[index] = newPost;
+      _postList.refresh();
+    }
   }
 
   clear() {
@@ -122,5 +139,8 @@ class UserController extends GetxController {
     adoptionPetList = [];
     loadingProfileImage = false;
     loadingBackgroundImage = false;
+    page = 0;
+    maxPostsReached = false;
+    loadMoreFeed = false;
   }
 }

@@ -17,16 +17,26 @@ import 'package:pet_hood/utils/utils.dart';
 class PetDetails extends StatelessWidget {
   final UserController _userController = Get.find();
   final PetDetailsController _petDetailsController = Get.find();
-
+  // static late bool test;
   PetDetails({
     Key? key,
   }) : super(key: key);
 
-  void openExternalProfile() => Get.toNamed(Routes.externalProfile);
+  void openExternalProfile() async {
+    if (_petDetailsController.isExternalProfile) {
+      goBack();
+    } else {
+      await ApiController().goToExternalProfileById(
+        userId: _petDetailsController.petDetail.userId,
+        goToMyProfile: true,
+      );
+    }
+  }
 
   void goBack() {
     Get.back();
-    _petDetailsController.resetPet();
+    _petDetailsController.resetPet(
+        isExternalProfile: _petDetailsController.isExternalProfile);
   }
 
   void removePet(BuildContext context) async {
@@ -38,7 +48,7 @@ class PetDetails extends StatelessWidget {
     }
   }
 
-  void openEditMenu(BuildContext context) {
+  void openEditMenu({required BuildContext context}) {
     Navigator.of(context).pop();
 
     showGeneralDialog(
@@ -183,9 +193,13 @@ class PetDetails extends StatelessWidget {
               ),
             ),
           ),
-          _petDetailsController.isOwner
+          !_petDetailsController.isExternalProfile &&
+                  _petDetailsController.isOwner &&
+                  _petDetailsController.petDetail.category.name == "profile"
               ? GestureDetector(
-                  onTap: () => openBottomSheetModalEditOrRemove(context),
+                  onTap: () => openBottomSheetModalEditOrRemove(
+                    context: context,
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.only(right: 16),
                     child: Container(
@@ -216,13 +230,15 @@ class PetDetails extends StatelessWidget {
       children: [
         Obx(
           () => Hero(
-            tag: _petDetailsController.petDetail.petImage!,
+            tag: _petDetailsController.isExternalProfile
+                ? 'p${_petDetailsController.petDetailExternal.petImage!}'
+                : _petDetailsController.petDetail.petImage!,
             child: PinchToZoom(
               child: SizedBox(
                 height: height * 0.5,
                 width: width,
                 child: Image.network(
-                  '${dotenv.env["API_IMAGE"]}${_petDetailsController.petDetail.petImage}',
+                  '${dotenv.env["API_IMAGE"]}${_petDetailsController.isExternalProfile ? _petDetailsController.petDetailExternal.petImage : _petDetailsController.petDetail.petImage}',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -230,6 +246,18 @@ class PetDetails extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  String renderPetName() {
+    if (_petDetailsController.isExternalProfile &&
+        _petDetailsController.petDetailExternal.name!.isNotEmpty) {
+      return _petDetailsController.petDetailExternal.name!;
+    } else if (_petDetailsController.petDetail.name!.isNotEmpty) {
+      return _petDetailsController.petDetail.name!;
+    }
+    return getPetNameWhenEmpty(
+      isExternalProfile: _petDetailsController.isExternalProfile,
     );
   }
 
@@ -248,7 +276,7 @@ class PetDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _petDetailsController.petDetail.name!,
+                renderPetName(),
                 style: const TextStyle(
                   color: grey800,
                   fontWeight: FontWeight.bold,
@@ -264,7 +292,7 @@ class PetDetails extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    "${_petDetailsController.petDetail.city}/${_petDetailsController.petDetail.state}",
+                    "${_petDetailsController.petDetail.city} / ${_petDetailsController.petDetail.state}",
                     style: const TextStyle(
                       color: grey600,
                       fontSize: 16,
@@ -274,7 +302,10 @@ class PetDetails extends StatelessWidget {
               ),
             ],
           ),
-          _petDetailsController.isOwner
+          !_petDetailsController.isExternalProfile ||
+                  _petDetailsController.isOwner ||
+                  _petDetailsController.petDetail.category !=
+                      PetCategory.adoption
               ? const SizedBox.shrink()
               : Material(
                   color: primary,
@@ -308,17 +339,38 @@ class PetDetails extends StatelessWidget {
     );
   }
 
-  parseYearOrMonth(int age) {
-    if (age == 1 &&
-        _petDetailsController.petDetail.yearOrMonth == YearOrMonth.years) {
+  String getPetNameWhenEmpty({
+    required bool isExternalProfile,
+  }) {
+    final PetCategory category = isExternalProfile
+        ? _petDetailsController.petDetailExternal.category
+        : _petDetailsController.petDetail.category;
+    switch (category) {
+      case PetCategory.adoption:
+        return "Pet para adoção";
+      case PetCategory.disappear:
+        return "Pet desaparecido";
+      case PetCategory.found:
+        return "Pet encontrado";
+      default:
+        return "Meu nome está vazio :(";
+    }
+  }
+
+  parseYearOrMonth({
+    required int age,
+    required bool isExternalProfile,
+  }) {
+    YearOrMonth yearOrMonth = isExternalProfile
+        ? _petDetailsController.petDetailExternal.yearOrMonth!
+        : _petDetailsController.petDetail.yearOrMonth!;
+    if (age == 1 && yearOrMonth == YearOrMonth.years) {
       return "ano";
     }
-    if (age > 1 &&
-        _petDetailsController.petDetail.yearOrMonth == YearOrMonth.years) {
+    if (age > 1 && yearOrMonth == YearOrMonth.years) {
       return "anos";
     }
-    if (age == 1 &&
-        _petDetailsController.petDetail.yearOrMonth == YearOrMonth.months) {
+    if (age == 1 && yearOrMonth == YearOrMonth.months) {
       return "mês";
     }
     return "meses";
@@ -333,22 +385,7 @@ class PetDetails extends StatelessWidget {
           child: Row(
             children: [
               const SizedBox(width: 12),
-              BuildPetFeature(
-                value:
-                    '${_petDetailsController.petDetail.age.toString()} ${parseYearOrMonth(_petDetailsController.petDetail.age!)}',
-                feature: "Idade",
-              ),
-              BuildPetFeature(
-                value: _petDetailsController.petDetail.breed!,
-                feature: "Raça",
-              ),
-              _petDetailsController.petDetail.vaccine != null
-                  ? BuildPetFeature(
-                      value: _petDetailsController.petDetail.vaccine!.toText(),
-                      feature: "Vacinado",
-                    )
-                  : const SizedBox.shrink(),
-              // BuildPetFeature(value: "6 Kg", feature: "Peso"),
+              renderFeatures(),
               const SizedBox(width: 12),
             ],
           ),
@@ -370,13 +407,80 @@ class PetDetails extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: ExpandableText(
-            text: _petDetailsController.petDetail.description.isNotEmpty
-                ? _petDetailsController.petDetail.description
-                : "Não há informações adicionais sobre esse pet.",
+            text: renderDescription(),
           ),
         )
       ],
     );
+  }
+
+  String renderDescription() {
+    if (_petDetailsController.isExternalProfile &&
+        _petDetailsController.petDetailExternal.description.isNotEmpty) {
+      return _petDetailsController.petDetailExternal.description;
+    } else if (_petDetailsController.petDetail.description.isNotEmpty) {
+      return _petDetailsController.petDetail.description;
+    }
+    return "Não há informações adicionais sobre esse pet.";
+  }
+
+  Widget renderFeatures() {
+    if (_petDetailsController.isExternalProfile) {
+      return Row(
+        children: [
+          _petDetailsController.petDetailExternal.age != null
+              ? BuildPetFeature(
+                  value:
+                      '${_petDetailsController.petDetailExternal.age.toString()} ${parseYearOrMonth(age: _petDetailsController.petDetailExternal.age!, isExternalProfile: _petDetailsController.isExternalProfile)}',
+                  feature: "Idade",
+                )
+              : const SizedBox.shrink(),
+          BuildPetFeature(
+            value: _petDetailsController.petDetailExternal.breed!,
+            feature: "Raça",
+          ),
+          _petDetailsController.petDetailExternal.vaccine != null
+              ? BuildPetFeature(
+                  value:
+                      _petDetailsController.petDetailExternal.vaccine!.toText(),
+                  feature: "Vacinado",
+                )
+              : const SizedBox.shrink()
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          _petDetailsController.petDetail.age != null
+              ? BuildPetFeature(
+                  value:
+                      '${_petDetailsController.petDetail.age.toString()} ${parseYearOrMonth(age: _petDetailsController.petDetail.age!, isExternalProfile: _petDetailsController.isExternalProfile)}',
+                  feature: "Idade",
+                )
+              : const SizedBox.shrink(),
+          BuildPetFeature(
+            value: _petDetailsController.petDetail.breed!,
+            feature: "Raça",
+          ),
+          _petDetailsController.petDetail.vaccine != null
+              ? BuildPetFeature(
+                  value: _petDetailsController.petDetail.vaccine!.toText(),
+                  feature: "Vacinado",
+                )
+              : const SizedBox.shrink()
+        ],
+      );
+    }
+  }
+
+  String renderUserImage() {
+    if (_petDetailsController.isExternalProfile) {
+      return _petDetailsController.petDetailExternal.petOwnerImage!;
+    } else {
+      return _petDetailsController.isOwner
+          ? _userController.userEntity.profileImage!
+          : _petDetailsController.petDetail.petOwnerImage!;
+    }
   }
 
   Widget _footer(context) {
@@ -393,9 +497,7 @@ class PetDetails extends StatelessWidget {
           GestureDetector(
             onTap: () => openExternalProfile(),
             child: UserAvatar(
-              avatar: _petDetailsController.isOwner
-                  ? _userController.userEntity.profileImage
-                  : _petDetailsController.petDetail.petOwnerImage,
+              avatar: renderUserImage(),
             ),
           ),
           const SizedBox(width: 12),
@@ -408,7 +510,9 @@ class PetDetails extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               CustomText(
-                text: _petDetailsController.petDetail.petOwnerName,
+                text: _petDetailsController.isExternalProfile
+                    ? _petDetailsController.petDetailExternal.petOwnerName
+                    : _petDetailsController.petDetail.petOwnerName,
                 color: grey600,
               ),
             ],
@@ -418,7 +522,9 @@ class PetDetails extends StatelessWidget {
     );
   }
 
-  openBottomSheetModalEditOrRemove(BuildContext context) {
+  openBottomSheetModalEditOrRemove({
+    required BuildContext context,
+  }) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext buildContext) {
@@ -448,7 +554,9 @@ class PetDetails extends StatelessWidget {
                     color: grey800,
                   ),
                   title: const CustomText(text: 'Editar', color: grey800),
-                  onTap: () => openEditMenu(context),
+                  onTap: () => openEditMenu(
+                    context: context,
+                  ),
                 ),
                 ListTile(
                   leading: const Icon(

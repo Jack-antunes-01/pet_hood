@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class ChatPage extends StatelessWidget {
-  final UserController _userController = Get.find();
-
-  ChatPage({Key? key}) : super(key: key);
+  const ChatPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +14,16 @@ class ChatPage extends StatelessWidget {
         appBar: AppBar(),
       ),
       body: _buildChatBody(),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.chat,
-          color: base,
-        ),
-        onPressed: () {},
-        elevation: 0,
-        backgroundColor: primary,
-        highlightElevation: 0,
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: const Icon(
+      //     Icons.chat,
+      //     color: base,
+      //   ),
+      //   onPressed: () {},
+      //   elevation: 0,
+      //   backgroundColor: primary,
+      //   highlightElevation: 0,
+      // ),
     );
   }
 
@@ -46,7 +43,7 @@ class ChatPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 150),
               child: Column(
-                children: List.generate(7, (index) => _chatPeople()),
+                children: List.generate(1, (index) => _chatPeople()),
               ),
             ),
           ),
@@ -74,11 +71,11 @@ class ChatPage extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
+            const Padding(
+              padding: EdgeInsets.all(16),
               child: UserAvatar(
                 size: 55,
-                avatar: _userController.userEntity.profileImage,
+                // avatar: _userController.userEntity.profileImage,
               ),
             ),
             Expanded(
@@ -89,14 +86,14 @@ class ChatPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: const [
                       CustomText(
-                        text: "Jackson Antunes",
+                        text: "Pet Hood",
                         color: grey800,
                         fontSize: 18,
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 8, right: 20),
                         child: CustomText(
-                          text: "17:10",
+                          text: "12:00",
                           color: grey800,
                           fontSize: 14,
                         ),
@@ -108,12 +105,12 @@ class ChatPage extends StatelessWidget {
                     children: [
                       Row(
                         children: const [
-                          Icon(
-                            Icons.done,
-                            color: primary,
-                            size: 14,
-                          ),
-                          CustomText(text: "Adorei seu pet :)", color: grey600),
+                          // Icon(
+                          //   Icons.done,
+                          //   color: primary,
+                          //   size: 14,
+                          // ),
+                          CustomText(text: "Bem vindo! :)", color: grey600),
                         ],
                       ),
                       Padding(

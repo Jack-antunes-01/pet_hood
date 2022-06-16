@@ -96,11 +96,11 @@ class _NameBreedPublicationState extends State<NameBreedPublication> {
                         dropdownColor: base,
                         onChanged: (String? newValue) {
                           if (newValue != null) {
-                            // widget.isPublication
-                            //     ? _publicationPageController.dropdownValue =
-                            //         newValue
-                            //     : _petDetailsController.dropdownValue =
-                            //         newValue;
+                            widget.isPublication
+                                ? _publicationPageController.dropdownValue =
+                                    newValue
+                                : _petDetailsController.dropdownValue =
+                                    newValue;
                           }
                         },
                         underline: const SizedBox.shrink(),

@@ -19,7 +19,11 @@ class DescriptionCreatePublication extends StatelessWidget {
   final PetDetailsController _petDetailsController = Get.find();
 
   bool haveImage() {
-    if (isPublication && _publicationPageController.petImage.path.isNotEmpty) {
+    if ((isPublication &&
+            _publicationPageController.petImage.path.isNotEmpty) ||
+        _publicationPageController.postEntityTemp.pet != null &&
+            _publicationPageController
+                .postEntityTemp.pet!.petImage!.isNotEmpty) {
       return true;
     }
 
@@ -98,29 +102,34 @@ class DescriptionCreatePublication extends StatelessWidget {
           () => haveImage()
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 16),
-                  child: SizedBox(
-                    height: 250,
-                    width: width,
-                    child: _petDetailsController.petDetail.id.isNotEmpty &&
-                            _petDetailsController.petImage.path.isEmpty
-                        // TODO: fix publication type
-                        ? Image.network(
-                            isPublication
-                                ? '${dotenv.env['API_IMAGE']}${_petDetailsController.petDetail.petImage}'
-                                : '${dotenv.env['API_IMAGE']}${_petDetailsController.petDetail.petImage}',
-                            fit: BoxFit.cover,
-                          )
-                        : Image.file(
-                            isPublication
-                                ? _publicationPageController.petImage
-                                : _petDetailsController.petImage,
-                            fit: BoxFit.cover,
-                          ),
-                  ),
+                  child: SizedBox(height: 250, width: width, child: getImage()),
                 )
               : const SizedBox.shrink(),
         ),
       ],
     );
+  }
+
+  Widget getImage() {
+    if (_petDetailsController.petDetail.id.isNotEmpty &&
+        _petDetailsController.petImage.path.isEmpty) {
+      return Image.network(
+        '${dotenv.env['API_IMAGE']}${_petDetailsController.petDetail.petImage}',
+        fit: BoxFit.cover,
+      );
+    } else if (!_publicationPageController.isChangePublicationTypeEnabled &&
+        _publicationPageController.petImage.path.isEmpty) {
+      return Image.network(
+        '${dotenv.env['API_IMAGE']}${_publicationPageController.postEntityTemp.pet!.petImage!}',
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.file(
+        isPublication
+            ? _publicationPageController.petImage
+            : _petDetailsController.petImage,
+        fit: BoxFit.cover,
+      );
+    }
   }
 }

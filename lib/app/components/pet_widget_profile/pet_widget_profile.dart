@@ -16,10 +16,12 @@ class PetWidgetProfile extends StatelessWidget {
     Key? key,
     required this.pet,
     required this.index,
+    this.isExternalProfile = false,
   }) : super(key: key);
 
   final PetEntity pet;
   final int index;
+  final bool isExternalProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class PetWidgetProfile extends StatelessWidget {
         _petDetailsController.setPet(
           pet: pet,
           userId: _userController.userEntity.id,
+          isExternalProfile: isExternalProfile,
         );
         Get.toNamed(Routes.petDetails);
       },
@@ -40,7 +43,7 @@ class PetWidgetProfile extends StatelessWidget {
             topRight: Radius.circular(4),
           ),
         ),
-        width: 230,
+        width: 240,
         margin: EdgeInsets.only(
           right: 16,
           left: index == 0 ? 16 : 0,
@@ -53,7 +56,8 @@ class PetWidgetProfile extends StatelessWidget {
               child: Stack(
                 children: [
                   Hero(
-                    tag: pet.petImage!,
+                    tag:
+                        isExternalProfile ? 'p${pet.petImage!}' : pet.petImage!,
                     child: SizedBox(
                       height: 300,
                       width: width,
@@ -102,7 +106,10 @@ class PetWidgetProfile extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const SizedBox(width: 8),
-                        buildPetFeature(value: "4 anos", feature: "Idade"),
+                        buildPetFeature(
+                            value:
+                                '${pet.age.toString()} ${getYearOrMonth(pet.yearOrMonth!)}',
+                            feature: "Idade"),
                         const SizedBox(width: 8),
                         buildPetFeature(value: "Vira-lata", feature: "Raça"),
                         const SizedBox(width: 8),
@@ -116,6 +123,13 @@ class PetWidgetProfile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getYearOrMonth(YearOrMonth yearOrMonth) {
+    if (yearOrMonth.name == 'years') {
+      return 'anos';
+    }
+    return 'meses';
   }
 
   Widget buildPetFeature({

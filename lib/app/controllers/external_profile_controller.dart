@@ -22,14 +22,27 @@ class ExternalProfileController extends GetxController {
 
   TextEditingController searchController = TextEditingController();
 
+  final RxInt _page = RxInt(0);
+  int get page => _page.value;
+  set page(int page) => _page.value = page;
+
+  final RxBool _maxPostsReached = RxBool(false);
+  bool get maxPostsReached => _maxPostsReached.value;
+  set maxPostsReached(bool isMaxPostsReached) =>
+      _maxPostsReached.value = isMaxPostsReached;
+
+  final RxBool _loadMoreFeed = RxBool(false);
+  bool get loadMoreFeed => _loadMoreFeed.value;
+  set loadMoreFeed(bool isLoadMoreFeed) => _loadMoreFeed.value = isLoadMoreFeed;
+
   final RxBool _loadingList = RxBool(false);
   bool get loadingList => _loadingList.value;
   set loadingList(bool isLoadingList) => _loadingList.value = isLoadingList;
 
-  final RxBool _loadingPetList = RxBool(false);
-  bool get loadingPetList => _loadingPetList.value;
-  set loadingPetList(bool isLoadingPetList) =>
-      _loadingPetList.value = isLoadingPetList;
+  final RxBool _loadingProfile = RxBool(false);
+  bool get loadingProfile => _loadingProfile.value;
+  set loadingProfile(bool isLoadingProfile) =>
+      _loadingProfile.value = isLoadingProfile;
 
   final Rx<UserEntity> _externalUserEntity = Rx<UserEntity>(_emptyUserEntity);
   UserEntity get externalUserEntity => _externalUserEntity.value;
@@ -58,10 +71,16 @@ class ExternalProfileController extends GetxController {
   set postList(List<PostEntity> posts) => _postList.value = posts;
 
   clear() {
-    externalUserEntity = _emptyUserEntity;
-    petList = [];
-    postList = [];
-    adoptionPetList = [];
+    searchController.text = "";
     loadingList = false;
+    loadingProfile = false;
+    externalUserEntity = _emptyUserEntity;
+    userList = [];
+    petList = [];
+    adoptionPetList = [];
+    postList = [];
+    page = 0;
+    maxPostsReached = false;
+    loadMoreFeed = false;
   }
 }

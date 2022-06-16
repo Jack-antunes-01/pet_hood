@@ -3,11 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/register_controller.dart';
-import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
-import 'package:pet_hood/core/entities/user_entity.dart';
 import 'package:pet_hood/database/api_adapter.dart';
 import 'package:pet_hood/utils/validators/confirm_password_validator.dart';
 import 'package:pet_hood/utils/validators/email_validator.dart';
@@ -21,7 +20,6 @@ class SecondRegisterForm extends StatefulWidget {
 
 class _SecondRegisterFormState extends State<SecondRegisterForm> {
   final RegisterController _registerController = Get.find();
-  final UserController _userController = Get.find();
   final ApiAdapter _apiAdapter = Get.find();
 
   bool validation = false;
@@ -117,24 +115,19 @@ class _SecondRegisterFormState extends State<SecondRegisterForm> {
         _registerController.loading = true;
 
         try {
-          var response = await _apiAdapter.post('/users', data: {
-            "email": _registerController.emailController.text,
-            "password": _registerController.passwordController.text,
-            "name": _registerController.nameController.text,
+          final email = _registerController.emailController.text;
+          final password = _registerController.passwordController.text;
+          final name = _registerController.nameController.text;
+
+          await _apiAdapter.post('/users', data: {
+            "email": email,
+            "password": password,
+            "name": name,
             "type": "user",
           });
 
-          UserEntity userEntity = UserEntity(
-            id: response.data['id'],
-            email: _registerController.emailController.text,
-            name: _registerController.nameController.text,
-            userName: response.data['user_name'],
-            profileImage: "",
-            backgroundImage: "",
-            bio: "",
-          );
-
-          _userController.userEntity = userEntity;
+          await Future.delayed(const Duration(seconds: 1));
+          await ApiController().loginAttempt(email, password);
 
           Get.offAllNamed(Routes.home);
         } catch (e) {

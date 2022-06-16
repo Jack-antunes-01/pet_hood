@@ -6,7 +6,7 @@ import 'package:pet_hood/core/entities/entities.dart';
 
 PostEntity emptyEntity = PostEntity(
   id: "",
-  type: PostTypeEnum.normal,
+  userId: "",
   name: "",
   avatar: "",
   username: "",
@@ -81,7 +81,7 @@ class PublicationPageController extends GetxController {
 
 // PostEntity updatedPost = PostEntity(
 //         id: post.id,
-//         type: post.type,
+//         type: post.pet!.category,
 //         name: post.name,
 //         avatar: post.avatar,
 //         username: post.username,

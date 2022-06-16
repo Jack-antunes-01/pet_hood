@@ -5,7 +5,6 @@ import 'package:pet_hood/app/controllers/adoption_controller.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
-import 'package:pet_hood/utils/utils.dart';
 
 class AdoptionPage extends StatefulWidget {
   const AdoptionPage({Key? key}) : super(key: key);
@@ -16,14 +15,6 @@ class AdoptionPage extends StatefulWidget {
 
 class _AdoptionPageState extends State<AdoptionPage> {
   final AdoptionController _adoptionPageController = Get.find();
-
-  late List<PetEntity> pets;
-
-  @override
-  void initState() {
-    super.initState();
-    pets = _adoptionPageController.petList;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,47 +70,34 @@ class _AdoptionPageState extends State<AdoptionPage> {
         SizedBox(
           height: 300,
           child: Obx(
-            () => ListView(
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              children: _buildList(),
-            ),
+            () => _adoptionPageController.petList.isNotEmpty
+                ? ListView(
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    children: _adoptionPageController.petList
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                      int idx = entry.key;
+                      PetEntity pet = entry.value;
+
+                      return PetWidget(
+                        pet: pet,
+                        index: idx,
+                      );
+                    }).toList())
+                : const Padding(
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    child: CustomText(
+                      text: "Não há novos pets no momento.",
+                      color: grey800,
+                    ),
+                  ),
           ),
         ),
       ],
     );
-  }
-
-  List<Widget> _buildList() {
-    if (pets.isNotEmpty) {
-      return _buildNewestPet();
-    }
-    return [
-      const Padding(
-        padding: EdgeInsets.only(left: 15, right: 15),
-        child: CustomText(
-          text: "Não há novos pets no momento.",
-          color: grey800,
-        ),
-      ),
-    ];
-  }
-
-  List<Widget> _buildNewestPet() {
-    List<Widget> list = [];
-
-    for (var i = 0; i < pets.length; i++) {
-      if (pets[i].createdAt.verifyNewest()) {
-        list.add(
-          PetWidget(
-            pet: pets[i],
-            index: i,
-          ),
-        );
-      }
-    }
-
-    return list;
   }
 
   Widget buildPetCategory(PetCategory petCategory) {

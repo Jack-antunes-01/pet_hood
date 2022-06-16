@@ -25,11 +25,7 @@ class LoginPage extends StatelessWidget {
       final String email = _loginPageController.emailController.text;
       final String password = _loginPageController.passwordController.text;
 
-      var responseLogin = await ApiController().loginAttempt(email, password);
-
-      if (responseLogin) {
-        Get.offAllNamed("/");
-      }
+      await ApiController().loginAttempt(email, password);
 
       _loginPageController.loading = false;
     }
@@ -72,29 +68,30 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                    padding:
-                        const EdgeInsets.only(right: 32, left: 32, bottom: 16),
-                    child: Obx(
-                      () => CustomInput(
-                        controller: _loginPageController.passwordController,
-                        placeholderText: "Senha",
-                        obscureText: _loginPageController.hidePassword,
-                        onIconPress: () => _loginPageController.hidePassword =
-                            !_loginPageController.hidePassword,
-                        suffixIcon: const Icon(
-                          Icons.visibility_off_outlined,
-                          color: placeholder,
-                        ),
-                        suffixIconReverse: const Icon(
-                          Icons.visibility_outlined,
-                          color: placeholder,
-                        ),
-                        validator: (password) =>
-                            password != null && password.isNotEmpty
-                                ? null
-                                : "Digite sua senha",
+                  padding:
+                      const EdgeInsets.only(right: 32, left: 32, bottom: 16),
+                  child: Obx(
+                    () => CustomInput(
+                      controller: _loginPageController.passwordController,
+                      placeholderText: "Senha",
+                      obscureText: _loginPageController.hidePassword,
+                      onIconPress: () => _loginPageController.hidePassword =
+                          !_loginPageController.hidePassword,
+                      suffixIcon: const Icon(
+                        Icons.visibility_off_outlined,
+                        color: placeholder,
                       ),
-                    )),
+                      suffixIconReverse: const Icon(
+                        Icons.visibility_outlined,
+                        color: placeholder,
+                      ),
+                      validator: (password) =>
+                          password != null && password.isNotEmpty
+                              ? null
+                              : "Digite sua senha",
+                    ),
+                  ),
+                ),
                 Padding(
                   padding:
                       const EdgeInsets.only(right: 32, left: 32, bottom: 20),
@@ -109,7 +106,14 @@ class LoginPage extends StatelessWidget {
                 InkWell(
                   splashColor: inputColor,
                   highlightColor: inputColor,
-                  onTap: () {},
+                  onTap: () {
+                    Get.snackbar(
+                      "Desculpa",
+                      "Não implementamos a troca de senha ainda!",
+                      backgroundColor: primary,
+                      colorText: base,
+                    );
+                  },
                   child: const CustomText(
                     text: "Esqueceu a senha?",
                     color: primary,

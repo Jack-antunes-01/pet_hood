@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
@@ -36,6 +37,10 @@ class FoundPublication extends StatelessWidget {
     );
   }
 
+  void openExternalProfile() async {
+    await ApiController().goToExternalProfileById(userId: post.userId);
+  }
+
   Widget _header(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
@@ -46,51 +51,54 @@ class FoundPublication extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 15,
-                    left: 15,
-                  ),
-                  child: post.isOwner
-                      ? Obx(
-                          () => UserAvatar(
-                            size: 56,
-                            avatar: _userController.userEntity.profileImage,
-                          ),
-                        )
-                      : UserAvatar(
-                          size: 56,
-                          avatar: post.avatar,
-                        ),
-                ),
-                Expanded(
-                  child: Padding(
+            child: GestureDetector(
+              onTap: () => openExternalProfile(),
+              child: Row(
+                children: [
+                  Padding(
                     padding: const EdgeInsets.only(
+                      top: 15,
                       left: 15,
-                      right: 15,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: post.name,
-                          color: grey800,
-                          fontSize: 18,
-                          textOverflow: TextOverflow.ellipsis,
-                        ),
-                        CustomText(
-                          text: "@${post.username}",
-                          color: grey600,
-                          fontSize: 16,
-                          textOverflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                    child: post.isOwner
+                        ? Obx(
+                            () => UserAvatar(
+                              size: 56,
+                              avatar: _userController.userEntity.profileImage,
+                            ),
+                          )
+                        : UserAvatar(
+                            size: 56,
+                            avatar: post.avatar,
+                          ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 15,
+                        right: 15,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: post.name,
+                            color: grey800,
+                            fontSize: 18,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
+                          CustomText(
+                            text: "@${post.username}",
+                            color: grey600,
+                            fontSize: 16,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Padding(
@@ -160,7 +168,7 @@ class FoundPublication extends StatelessWidget {
                 height: height * 0.4,
                 width: width,
                 child: Image.network(
-                  '${dotenv.env["API_IMAGE"]}${post.postImage}',
+                  '${dotenv.env["API_IMAGE"]}${post.pet!.petImage}',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -170,7 +178,7 @@ class FoundPublication extends StatelessWidget {
               left: 15,
               child: TagPet(
                 category: PetCategory.values.firstWhere(
-                  (element) => element.name == post.type.name,
+                  (element) => element.name == post.pet!.category.name,
                 ),
               ),
             ),
@@ -209,7 +217,7 @@ class FoundPublication extends StatelessWidget {
                 bottom: 8,
               ),
               child: CustomText(
-                text: post.postedAt.postDate(),
+                text: post.postedAt.postDate(post.postedAt),
                 color: grey600,
                 fontSize: 14,
               ),

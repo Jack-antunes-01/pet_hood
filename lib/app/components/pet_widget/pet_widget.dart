@@ -16,10 +16,14 @@ class PetWidget extends StatelessWidget {
     Key? key,
     required this.pet,
     required this.index,
+    this.isFilterScreen = false,
+    this.isExternalProfile = false,
   }) : super(key: key);
 
   final PetEntity pet;
   final int index;
+  final bool isFilterScreen;
+  final bool isExternalProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +42,7 @@ class PetWidget extends StatelessWidget {
         _petDetailsController.setPet(
           pet: pet,
           userId: _userController.userEntity.id,
+          isExternalProfile: isExternalProfile,
         );
         Get.toNamed(Routes.petDetails);
       },
@@ -56,31 +61,30 @@ class PetWidget extends StatelessWidget {
         width: 230,
         margin: EdgeInsets.only(
           right: 16,
-          left: index == 0 ? 16 : 0,
+          left: !isFilterScreen && index == 0 ? 16 : 0,
           bottom: 16,
         ),
+        // child: CustomText(text: "ksaopdspoa", color: grey800),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  Hero(
-                    tag: pet.petImage!,
-                    child: SizedBox(
-                      height: 300,
-                      width: width,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: Image.network(
-                          '${dotenv.env["API_IMAGE"]}${pet.petImage}',
-                          fit: BoxFit.cover,
-                        ),
+            Stack(
+              children: [
+                Hero(
+                  tag: isExternalProfile ? 'p${pet.petImage!}' : pet.petImage!,
+                  child: SizedBox(
+                    height: isFilterScreen ? 230 : 150,
+                    width: width,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Image.network(
+                        '${dotenv.env["API_IMAGE"]}${pet.petImage}',
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(16),
@@ -101,7 +105,9 @@ class PetWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   CustomText(
-                    text: pet.name != null ? pet.name! : "Pet encontrado",
+                    text: pet.name != null && pet.name!.isNotEmpty
+                        ? pet.name!
+                        : getPetNameWhenEmpty(),
                     color: grey800,
                     fontWeight: FontWeight.bold,
                     textOverflow: TextOverflow.ellipsis,
@@ -118,7 +124,7 @@ class PetWidget extends StatelessWidget {
                         color: grey600,
                       ),
                       CustomText(
-                        text: pet.city,
+                        text: '${pet.city} / ${pet.state}',
                         color: grey600,
                         fontSize: 14,
                         textOverflow: TextOverflow.ellipsis,
@@ -132,6 +138,19 @@ class PetWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getPetNameWhenEmpty() {
+    switch (pet.category) {
+      case PetCategory.adoption:
+        return "Pet para adoção";
+      case PetCategory.disappear:
+        return "Pet desaparecido";
+      case PetCategory.found:
+        return "Pet encontrado";
+      default:
+        return "Meu nome está vazio :(";
+    }
   }
 
   getBackgroundColor(PetCategory category) {

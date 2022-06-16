@@ -3,14 +3,11 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class ChatPeoplePage extends StatelessWidget {
-  final UserController _userController = Get.find();
-
-  ChatPeoplePage({Key? key}) : super(key: key);
+  const ChatPeoplePage({Key? key}) : super(key: key);
 
   void openExternalProfile() => Get.toNamed(Routes.externalProfile);
 
@@ -26,6 +23,32 @@ class ChatPeoplePage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: inputColor,
+                    border: Border.all(
+                      color: grey200,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                    child: CustomText(
+                      text: "Hoje",
+                      color: grey800,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           const Expanded(child: ChatList()),
           _chatInput(context),
         ],
@@ -57,7 +80,7 @@ class ChatPeoplePage extends StatelessWidget {
             ),
             Expanded(
               child: InkWell(
-                onTap: () => openExternalProfile(),
+                // onTap: () => openExternalProfile(),
                 child: Padding(
                   padding: const EdgeInsets.only(
                     top: 8,
@@ -65,19 +88,19 @@ class ChatPeoplePage extends StatelessWidget {
                     left: 4,
                   ),
                   child: Row(
-                    children: [
+                    children: const [
                       UserAvatar(
                         size: 40,
                         useBorder: false,
-                        avatar: _userController.userEntity.profileImage,
+                        // avatar: _userController.userEntity.profileImage,
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.only(
                           left: 8,
                           right: 8,
                         ),
                         child: CustomText(
-                          text: "Jackson Antunes",
+                          text: "Pet Hood",
                           color: base,
                           fontWeight: FontWeight.bold,
                         ),

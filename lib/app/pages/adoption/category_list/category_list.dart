@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/adoption_controller.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/utils/regex/only_letters.dart';
@@ -23,6 +25,7 @@ class _CategoryListState extends State<CategoryList> {
   final AdoptionController _adoptionController = Get.find();
 
   late PetCategory category;
+  late final ScrollController _controller;
 
   final formKey = GlobalKey<FormState>();
   final GlobalKey<ExpansionTileCardState> expansionKey = GlobalKey();
@@ -32,19 +35,59 @@ class _CategoryListState extends State<CategoryList> {
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
+    _controller.addListener(_scrollListener);
     category = _adoptionController.petCategory;
+    getFilteredPets();
+  }
+
+  _scrollListener() async {
+    if (_controller.offset >= _controller.position.maxScrollExtent &&
+        !_controller.position.outOfRange) {
+      if (!_adoptionController.maxPetsReached) {
+        try {
+          await ApiController().getFilteredPets(
+            petCategory: _adoptionController.petCategory,
+            page: _adoptionController.page,
+          );
+        } on DioError catch (e) {
+          Get.snackbar(
+            "Erro",
+            e.message.toString(),
+            backgroundColor: primary,
+            colorText: base,
+            duration: const Duration(seconds: 2),
+          );
+        }
+      }
+    }
+  }
+
+  getFilteredPets() async {
+    try {
+      _adoptionController.loadingPets = true;
+      await ApiController().getFilteredPets(
+        petCategory: _adoptionController.petCategory,
+        page: _adoptionController.page,
+      );
+    } on DioError catch (e) {
+      Get.snackbar(
+        "Erro",
+        e.message.toString(),
+        backgroundColor: primary,
+        colorText: base,
+        duration: const Duration(seconds: 2),
+      );
+      _adoptionController.loadingPets = false;
+    }
+    _adoptionController.loadingPets = false;
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    _adoptionController.filterLoading = false;
-    _adoptionController.filteredPetList = [];
-    _adoptionController.breed.text = "";
-    _adoptionController.dateSearch.text = "";
-    _adoptionController.city.text = "";
-    _adoptionController.state.text = "";
+    _adoptionController.reset();
   }
 
   validateForm() async {
@@ -56,49 +99,49 @@ class _CategoryListState extends State<CategoryList> {
       final _city = _adoptionController.city.text.toLowerCase();
       final _state = _adoptionController.state.text.toLowerCase();
 
-      _adoptionController.filterLoading = true;
-      await Future.delayed(const Duration(seconds: 1), () {
-        /// If evetything is empty, show list and collapse
-        if (_breed.isEmpty &&
-            _dateSearch.isEmpty &&
-            _city.isEmpty &&
-            _state.isEmpty) {
-          _adoptionController.filteredPetList = [];
-          expansionKey.currentState!.collapse();
-        } else {
-          _adoptionController.filteredPetList =
-              _adoptionController.petList.where((element) {
-            DateTime createdAtDate = element.createdAt;
-            var day = createdAtDate.day;
-            var month = createdAtDate.month < 10
-                ? "0${createdAtDate.month}"
-                : createdAtDate.month;
-            var year = createdAtDate.year;
-            String createdAt = "$day/$month/$year";
-
-            return element.category == category &&
-                ((_breed.isNotEmpty &&
-                        element.breed!.toLowerCase().contains(_breed)) ||
-                    (_dateSearch.isNotEmpty && _dateSearch == createdAt) ||
-                    (_city.isNotEmpty &&
-                        element.city.toLowerCase().contains(_city)) ||
-                    (_state.isNotEmpty &&
-                        element.state.toLowerCase().contains(_state)));
-          }).toList();
-
-          if (_adoptionController.filteredPetList.isEmpty) {
-            Get.snackbar(
-              "Pet",
-              "Nenhum pet encontrado.",
-              duration: const Duration(milliseconds: 1200),
-              backgroundColor: primary,
-              colorText: base,
-            );
-          } else {
-            expansionKey.currentState!.collapse();
+      _adoptionController.page = 0;
+      _adoptionController.maxPetsReached = false;
+      if (_breed.isEmpty &&
+          _dateSearch.isEmpty &&
+          _city.isEmpty &&
+          _state.isEmpty) {
+        getFilteredPets();
+        expansionKey.currentState!.collapse();
+      } else {
+        _adoptionController.filterLoading = true;
+        try {
+          var response = await ApiController().getFilteredPets(
+            petCategory: _adoptionController.petCategory,
+            page: _adoptionController.page,
+            createdAt: _dateSearch,
+            breed: _breed,
+            city: _city,
+            state: _state,
+          );
+          if (response) {
+            if (_adoptionController.filteredPetList.isEmpty) {
+              Get.snackbar(
+                "Pet",
+                "Nenhum pet encontrado.",
+                duration: const Duration(milliseconds: 1200),
+                backgroundColor: primary,
+                colorText: base,
+              );
+            } else {
+              expansionKey.currentState!.collapse();
+            }
           }
+        } on DioError catch (e) {
+          Get.snackbar(
+            "Erro",
+            e.message.toString(),
+            backgroundColor: primary,
+            colorText: base,
+            duration: const Duration(seconds: 2),
+          );
         }
-      });
+      }
+
       _adoptionController.filterLoading = false;
     }
   }
@@ -254,8 +297,11 @@ class _CategoryListState extends State<CategoryList> {
                       child: SizedBox(
                         width: 120,
                         child: CustomButton(
-                            child: Obx(() => _buildButton()),
-                            onPress: () => validateForm()),
+                          child: Obx(
+                            () => _buildButton(),
+                          ),
+                          onPress: () => validateForm(),
+                        ),
                       ),
                     ),
                   ),
@@ -287,22 +333,54 @@ class _CategoryListState extends State<CategoryList> {
 
   Widget _list() {
     return Expanded(
-      child: Obx(
-        () => GridView.count(
-          padding: const EdgeInsets.only(top: 20, left: 20),
-          physics: const BouncingScrollPhysics(),
-          crossAxisCount: 1,
-          childAspectRatio: 1 / 1,
-          crossAxisSpacing: 0,
-          children: _adoptionController.filteredPetList.isNotEmpty
-              ? _adoptionController.filteredPetList
-                  .map((e) => PetWidget(pet: e, index: 1))
-                  .toList()
-              : _adoptionController.petList
-                  .where((element) => element.category == category)
-                  .map((item) {
-                  return PetWidget(pet: item, index: 1);
-                }).toList(),
+      child: Obx(() =>
+          _adoptionController.loadingPets ? _buildLoading() : _filterOrCache()),
+    );
+  }
+
+  Widget _filterOrCache() {
+    return ListView.builder(
+      controller: _controller,
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.only(left: 20, top: 20),
+      itemCount: _adoptionController.filteredPetList.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        if (index > _adoptionController.filteredPetList.length - 1 &&
+            _adoptionController.maxPetsReached) {
+          return const SizedBox.shrink();
+        }
+        if (index > _adoptionController.filteredPetList.length - 1) {
+          return _buildCustomLoading();
+        }
+
+        return PetWidget(
+          pet: _adoptionController.filteredPetList[index],
+          index: index,
+          isFilterScreen: true,
+        );
+      },
+    );
+  }
+
+  Widget _buildCustomLoading() {
+    return const SizedBox(
+      width: 100,
+      height: 100,
+      child: Center(
+        child: CircularProgressIndicator(
+          color: primary,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return const Center(
+      child: SizedBox(
+        width: 30,
+        height: 30,
+        child: CircularProgressIndicator(
+          color: primary,
         ),
       ),
     );
@@ -321,7 +399,10 @@ class _CategoryListState extends State<CategoryList> {
         fontWeight: FontWeight.bold,
       ),
       leading: GestureDetector(
-        onTap: () => Get.back(),
+        onTap: () {
+          Get.back();
+          _adoptionController.reset();
+        },
         child: const Icon(
           Icons.arrow_back,
           color: grey800,

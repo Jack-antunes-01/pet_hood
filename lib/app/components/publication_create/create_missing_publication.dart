@@ -36,105 +36,10 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
     final isValid = formKey.currentState!.validate();
 
     if (isValid) {
-      if (_publicationPageController.petImage.path.isNotEmpty) {
-        _publicationPageController.loadingPublication = true;
-        await Future.delayed(const Duration(seconds: 2), () {});
-        final UserEntity user = _userController.userEntity;
-        final String petName =
-            _publicationPageController.petNameController.text;
-        final String breed = _publicationPageController.breedController.text;
-        final int? age =
-            int.tryParse(_publicationPageController.ageController.text);
-        final YearOrMonth yearOrMonth =
-            _publicationPageController.dropdownValue == "Anos"
-                ? YearOrMonth.years
-                : YearOrMonth.months;
-        final String city = _publicationPageController.cityController.text;
-        final String state = _publicationPageController.stateController.text;
-        final String description =
-            _publicationPageController.descriptionController.text.trim();
-        final File petImage = _publicationPageController.petImage;
-
-        try {
-          final responsePet = await ApiController().savePet(
-            breed: breed,
-            petName: petName,
-            age: age,
-            vaccine: false,
-            yearOrMonth: yearOrMonth,
-            description: description,
-            state: state,
-            city: city,
-            petImage: petImage,
-            petCategory: PetCategory.disappear,
-          );
-
-          final responsePost = await ApiController().addPost(
-            imageId: responsePet['petImage'],
-            petId: responsePet['petId'],
-            postType: PostTypeEnum.disappear,
-          );
-
-          if (responsePost['postId'] != null &&
-              responsePet['petId'] != null &&
-              responsePet['petImage'] != null) {
-            // final PostEntity temp = _publicationPageController.postEntityTemp;
-            final DateTime timeNow = DateTime.now();
-            final PostEntity postEntity = PostEntity(
-              id: responsePost['postId'],
-              type: PostTypeEnum.disappear,
-              name: user.name,
-              avatar: user.profileImage != null ? user.profileImage! : '',
-              username: user.userName,
-              isOwner: true,
-              postImage: responsePet['petImage'],
-              postedAt: timeNow,
-              pet: PetEntity(
-                userId: _userController.userEntity.id,
-                breed: breed,
-                age: age,
-                yearOrMonth: YearOrMonth.values
-                    .firstWhere((element) => element == yearOrMonth),
-                vaccine: false,
-                id: responsePet['petId'],
-                name: petName,
-                description: description,
-                createdAt: timeNow,
-                category: PetCategory.disappear,
-                state: state,
-                city: city,
-                petImage: responsePet['petImage'],
-                petOwnerName: user.name,
-                petOwnerImage: user.profileImage,
-                postId: responsePost['postId'],
-              ),
-            );
-
-            _homePageController.selectedIndex = 0;
-            _feedController.addPost(postEntity);
-            _adoptionController.addNewPet(postEntity.pet!);
-            _userController.addNewPost(postEntity);
-
-            _publicationPageController.reset();
-            Get.back();
-          }
-        } catch (e) {
-          Get.snackbar(
-            "Erro",
-            "Erro ao criar post",
-            duration: const Duration(seconds: 2),
-            backgroundColor: primary,
-            colorText: base,
-          );
-        }
+      if (_publicationPageController.isChangePublicationTypeEnabled) {
+        await savePost();
       } else {
-        Get.snackbar(
-          "Imagem",
-          "Adicione uma imagem para continuar",
-          duration: const Duration(seconds: 2),
-          backgroundColor: primary,
-          colorText: base,
-        );
+        await updatePost();
       }
     } else {
       Get.snackbar(
@@ -145,6 +50,155 @@ class _CreateMissingPublicationState extends State<CreateMissingPublication> {
         colorText: base,
       );
     }
+  }
+
+  Future savePost() async {
+    if (_publicationPageController.petImage.path.isNotEmpty) {
+      _publicationPageController.loadingPublication = true;
+      final UserEntity user = _userController.userEntity;
+      final String petName = _publicationPageController.petNameController.text;
+      final String breed = _publicationPageController.breedController.text;
+      final int? age =
+          int.tryParse(_publicationPageController.ageController.text);
+      final YearOrMonth yearOrMonth =
+          _publicationPageController.dropdownValue == "Anos"
+              ? YearOrMonth.years
+              : YearOrMonth.months;
+      final String city = _publicationPageController.cityController.text;
+      final String state = _publicationPageController.stateController.text;
+      final String description =
+          _publicationPageController.descriptionController.text.trim();
+      final File petImage = _publicationPageController.petImage;
+
+      try {
+        final responsePet = await ApiController().savePet(
+          breed: breed,
+          petName: petName,
+          age: age,
+          vaccine: false,
+          yearOrMonth: yearOrMonth,
+          description: description,
+          state: state,
+          city: city,
+          petImage: petImage,
+          petCategory: PetCategory.disappear,
+        );
+
+        final responsePost = await ApiController().addPost(
+          imageId: responsePet['petImage'],
+          petId: responsePet['petId'],
+          petCategory: PetCategory.disappear,
+        );
+
+        if (responsePost['postId'] != null &&
+            responsePet['petId'] != null &&
+            responsePet['petImage'] != null) {
+          // final PostEntity temp = _publicationPageController.postEntityTemp;
+          final DateTime timeNow = DateTime.now().add(const Duration(hours: 6));
+          final PostEntity postEntity = PostEntity(
+            id: responsePost['postId'],
+            userId: _userController.userEntity.id,
+            name: user.name,
+            avatar: user.profileImage != null ? user.profileImage! : '',
+            username: user.userName,
+            isOwner: true,
+            postedAt: timeNow,
+            pet: PetEntity(
+              userId: _userController.userEntity.id,
+              breed: breed,
+              age: age,
+              yearOrMonth: YearOrMonth.values
+                  .firstWhere((element) => element == yearOrMonth),
+              vaccine: false,
+              id: responsePet['petId'],
+              name: petName,
+              description: description,
+              createdAt: timeNow,
+              category: PetCategory.disappear,
+              state: state,
+              city: city,
+              petImage: responsePet['petImage'],
+              petOwnerName: user.name,
+              petOwnerImage: user.profileImage,
+              postId: responsePost['postId'],
+            ),
+          );
+
+          _homePageController.selectedIndex = 0;
+          _feedController.addPost(postEntity);
+          _adoptionController.addNewPet(postEntity.pet!);
+          _userController.addNewPost(postEntity);
+
+          _publicationPageController.reset();
+          Get.back();
+        }
+      } catch (e) {
+        Get.snackbar(
+          "Erro",
+          "Erro ao criar post",
+          duration: const Duration(seconds: 2),
+          backgroundColor: primary,
+          colorText: base,
+        );
+      }
+    } else {
+      Get.snackbar(
+        "Imagem",
+        "Adicione uma imagem para continuar",
+        duration: const Duration(seconds: 2),
+        backgroundColor: primary,
+        colorText: base,
+      );
+    }
+  }
+
+  Future<void> updatePost() async {
+    _publicationPageController.loadingPublication = true;
+    final String petName = _publicationPageController.petNameController.text;
+    final String breed = _publicationPageController.breedController.text;
+    final int? age =
+        int.tryParse(_publicationPageController.ageController.text);
+    final YearOrMonth yearOrMonth =
+        _publicationPageController.dropdownValue == "Anos"
+            ? YearOrMonth.years
+            : YearOrMonth.months;
+    final String city = _publicationPageController.cityController.text;
+    final String state = _publicationPageController.stateController.text;
+    final String description =
+        _publicationPageController.descriptionController.text.trim();
+    final File petImage = _publicationPageController.petImage;
+    final PostEntity temp = _publicationPageController.postEntityTemp;
+
+    try {
+      await ApiController().updatePost(
+        age: age,
+        breed: breed,
+        city: city,
+        createdAt: temp.postedAt,
+        description: description,
+        id: temp.id,
+        petCategory: PetCategory.disappear,
+        petId: temp.pet!.id,
+        petImage: petImage,
+        petName: petName,
+        state: state,
+        vaccine: false,
+        yearOrMonth: yearOrMonth,
+      );
+
+      _publicationPageController.reset();
+      Get.back();
+    } catch (e) {
+      _publicationPageController.loadingPublication = false;
+      Get.snackbar(
+        "Erro",
+        "Erro ao atualizar post",
+        duration: const Duration(seconds: 2),
+        backgroundColor: primary,
+        colorText: base,
+      );
+    }
+    _publicationPageController.loadingPublication = false;
   }
 
   bool validation = false;

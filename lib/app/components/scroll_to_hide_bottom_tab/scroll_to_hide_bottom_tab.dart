@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
+import 'package:pet_hood/app/pages/home/home_page_controller.dart';
 
 class ScrollToHideBottomTab extends StatefulWidget
     implements PreferredSizeWidget {
@@ -24,7 +27,7 @@ class ScrollToHideBottomTab extends StatefulWidget
 }
 
 class _ScrollToHideBottomTabState extends State<ScrollToHideBottomTab> {
-  bool isVisible = true;
+  final HomePageController _homePageController = Get.find();
 
   @override
   void initState() {
@@ -52,17 +55,21 @@ class _ScrollToHideBottomTabState extends State<ScrollToHideBottomTab> {
   }
 
   void show() {
-    if (!isVisible) setState(() => isVisible = true);
+    if (!_homePageController.isBottomTabVisible) {
+      _homePageController.isBottomTabVisible = true;
+    }
   }
 
   void hide() {
-    if (isVisible) setState(() => isVisible = false);
+    if (_homePageController.isBottomTabVisible) {
+      _homePageController.isBottomTabVisible = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return widget.isBottomTab
-        ? _buildBottomTab(context)
+        ? Obx(() => _buildBottomTab(context))
         : _buildAppBar(context);
   }
 
@@ -70,7 +77,9 @@ class _ScrollToHideBottomTabState extends State<ScrollToHideBottomTab> {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     return AnimatedContainer(
       duration: widget.duration,
-      height: isVisible ? kBottomNavigationBarHeight + bottomPadding : 0,
+      height: _homePageController.isBottomTabVisible
+          ? kBottomNavigationBarHeight + bottomPadding
+          : 0,
       child: Wrap(
         children: [
           widget.child,
@@ -83,21 +92,8 @@ class _ScrollToHideBottomTabState extends State<ScrollToHideBottomTab> {
     final topPadding = MediaQuery.of(context).padding.top;
     return AnimatedContainer(
       duration: widget.duration,
-      height: isVisible ? 56 + topPadding : 0,
+      height: _homePageController.isBottomTabVisible ? 56 + topPadding : 0,
       child: widget.child,
     );
   }
-
-  // getHeight(BuildContext context) {
-  //   final bottomPadding = MediaQuery.of(context).padding.bottom;
-  //   final topPadding = MediaQuery.of(context).padding.top;
-
-  //   if (widget.isBottomTab && isVisible) {
-  //     return kBottomNavigationBarHeight + bottomPadding;
-  //   } else if (isVisible) {
-  //     return 50.0 + topPadding;
-  //   }
-
-  //   return 0.0;
-  // }
 }

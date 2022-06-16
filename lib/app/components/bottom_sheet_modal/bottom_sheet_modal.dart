@@ -85,13 +85,13 @@ Future removePublication({
         await ApiController().removePost(petId: post.pet!.id, postId: post.id);
 
     if (response) {
-      if (post.type == PostTypeEnum.adoption) {
+      if (post.pet!.category == PetCategory.adoption) {
         _userController.removeAdoptionPet(post.pet!.id);
       }
 
-      if (post.type == PostTypeEnum.adoption ||
-          post.type == PostTypeEnum.disappear ||
-          post.type == PostTypeEnum.found) {
+      if (post.pet!.category == PetCategory.adoption ||
+          post.pet!.category == PetCategory.disappear ||
+          post.pet!.category == PetCategory.found) {
         _adoptionController.removePet(post.pet!.id);
       }
 
@@ -123,8 +123,8 @@ void editPublication({
 
   var pet = post.pet!;
 
-  switch (post.type) {
-    case PostTypeEnum.adoption:
+  switch (post.pet!.category) {
+    case PetCategory.adoption:
       _publicationPageController.selectedOption = 2;
       _publicationPageController.petNameController.text = pet.name!;
       _publicationPageController.ageController.text = pet.age.toString();
@@ -133,14 +133,14 @@ void editPublication({
       _publicationPageController.radioValue =
           pet.vaccine! ? RadioEnum.yes : RadioEnum.no;
       break;
-    case PostTypeEnum.disappear:
+    case PetCategory.disappear:
       _publicationPageController.selectedOption = 3;
       _publicationPageController.petNameController.text = pet.name!;
       _publicationPageController.ageController.text = pet.age.toString();
       _publicationPageController.dropdownValue =
           pet.yearOrMonth == YearOrMonth.years ? "Anos" : "Meses";
       break;
-    case PostTypeEnum.found:
+    case PetCategory.found:
       _publicationPageController.selectedOption = 4;
       break;
     default:
@@ -148,11 +148,10 @@ void editPublication({
       break;
   }
 
-  _publicationPageController.petImage = post.postImageFile!;
   _publicationPageController.descriptionController.text =
       post.pet?.description ?? '';
 
-  if (post.type != PostTypeEnum.normal) {
+  if (post.pet!.category != PetCategory.normal) {
     _publicationPageController.breedController.text = pet.breed!;
     _publicationPageController.cityController.text = pet.city;
     _publicationPageController.stateController.text = pet.state;
