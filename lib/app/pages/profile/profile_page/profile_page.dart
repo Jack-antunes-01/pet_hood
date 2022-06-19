@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,10 +46,24 @@ class _ProfilePageState extends State<ProfilePage> {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
-      if (isProfileImage) {
-        await ApiController().updateProfileImage(image);
+      final imageTemporary = File(image.path);
+
+      final bytes = imageTemporary.readAsBytesSync().lengthInBytes;
+      final kb = bytes / 1024;
+      final mb = kb / 1024;
+      if (mb < 10) {
+        if (isProfileImage) {
+          await ApiController().updateProfileImage(image);
+        } else {
+          await ApiController().updateBackgroundImage(image);
+        }
       } else {
-        await ApiController().updateBackgroundImage(image);
+        Get.snackbar(
+          "Imagem muito grande!",
+          "Selecione uma imagem menor que 10MB\nTamanho atual: ${mb.round()} MB",
+          backgroundColor: primary,
+          colorText: base,
+        );
       }
     } on PlatformException {
       Get.snackbar(

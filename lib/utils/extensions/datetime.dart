@@ -1,43 +1,41 @@
 extension DateTimeExt on DateTime {
   String postDate(DateTime date) {
-    var postedDate = date.subtract(const Duration(hours: 6));
+    var postedDate = date.subtract(const Duration(hours: 3));
     var timeNow = DateTime.now();
 
-    final int yearDiff = timeNow.year - postedDate.year;
-    final int monthDiff = timeNow.month - postedDate.month;
-    final int dayDiff = timeNow.day - postedDate.day;
+    var seconds = ((timeNow.millisecondsSinceEpoch -
+                postedDate.millisecondsSinceEpoch -
+                10800000) /
+            1000)
+        .floor();
 
-    final int hourDiff = timeNow.hour - postedDate.hour;
-    final int minuteDiff = timeNow.minute - postedDate.minute;
+    var interval = (seconds / 31536000).round();
 
-    if (yearDiff > 0) {
-      if (yearDiff == 1) {
-        return "$yearDiff ano atrás";
-      }
-      return "$yearDiff anos atrás";
-    } else if (monthDiff > 0) {
-      if (monthDiff == 1) {
-        return "$monthDiff mês atrás";
-      }
-      return "$monthDiff meses atrás";
-    } else if (dayDiff > 0) {
-      if (dayDiff == 1) {
-        return "$dayDiff dia atrás";
-      }
-      return "$dayDiff dias atrás";
-    } else if (hourDiff > 0) {
-      if (hourDiff == 1) {
-        return "$hourDiff hora atrás";
-      }
-      return "$hourDiff horas atrás";
-    } else if (minuteDiff > 0) {
-      if (minuteDiff == 1) {
-        return "$minuteDiff minuto atrás";
-      }
-      return "$minuteDiff minutos atrás";
-    } else {
-      return "Agora";
+    if (interval > 1) {
+      if (interval == 1) return "$interval ano atrás";
+      return "$interval anos atrás";
     }
+    interval = (seconds / 2592000).round();
+    if (interval > 1) {
+      if (interval == 1) return "$interval mês atrás";
+      return "$interval meses atrás";
+    }
+    interval = (seconds / 86400).round();
+    if (interval > 1) {
+      if (interval == 1) return "$interval dia atrás";
+      return "$interval dias atrás";
+    }
+    interval = (seconds / 3600).round();
+    if (interval > 1) {
+      if (interval == 1) return "$interval hora atrás";
+      return "$interval horas atrás";
+    }
+    interval = (seconds / 60).round();
+    if (interval >= 1) {
+      if (interval == 1) return "$interval minuto atrás";
+      return "$interval minutos atrás";
+    }
+    return "Agora";
   }
 
   String toYearOrMonth() {

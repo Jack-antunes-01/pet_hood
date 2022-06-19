@@ -39,7 +39,7 @@ class _AddPetPageState extends State<AddPetPage> {
     _petDetailsController.reset();
   }
 
-  void savePet() async {
+  Future savePet() async {
     final String breed = _petDetailsController.breedController.text;
     final String petName = _petDetailsController.petNameController.text;
     final int? age = int.tryParse(_petDetailsController.ageController.text);
@@ -74,7 +74,7 @@ class _AddPetPageState extends State<AddPetPage> {
     }
   }
 
-  void updatePet() async {
+  Future updatePet() async {
     final String petName = _petDetailsController.petNameController.text;
     final String breed = _petDetailsController.breedController.text;
     final int? age = int.tryParse(_petDetailsController.ageController.text);
@@ -120,10 +120,11 @@ class _AddPetPageState extends State<AddPetPage> {
         _petDetailsController.loadingPublication = true;
 
         if (_petDetailsController.petDetail.id.isNotEmpty) {
-          updatePet();
+          await updatePet();
         } else {
-          savePet();
+          await savePet();
         }
+        _petDetailsController.reset();
         _petDetailsController.loadingPublication = false;
       } else {
         Get.snackbar(

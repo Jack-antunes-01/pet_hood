@@ -124,7 +124,9 @@ class NormalPublication extends StatelessWidget {
                 onTap: () {
                   openBottomSheetModal(
                     context: context,
-                    owner: post.isOwner,
+                    owner: post.isOwner ||
+                        _userController.userEntity.email ==
+                            "admin.app@pethood.com",
                     post: post,
                   );
                 },

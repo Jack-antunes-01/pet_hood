@@ -4,7 +4,6 @@ import 'package:pet_hood/app/components/components.dart';
 import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/controllers.dart';
 import 'package:pet_hood/app/controllers/external_profile_controller.dart';
-import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 import 'package:pet_hood/core/entities/user_entity.dart';
 
@@ -14,9 +13,10 @@ class SearchPage extends StatelessWidget {
 
   SearchPage({Key? key}) : super(key: key);
 
-  void goToExternalProfile(UserEntity user) {
-    _externalProfileController.externalUserEntity = user;
-    Get.toNamed(Routes.externalProfile);
+  void goToExternalProfile(UserEntity user) async {
+    await ApiController().goToExternalProfileById(
+      userId: user.id,
+    );
   }
 
   void validateForm() async {

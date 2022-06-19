@@ -292,7 +292,7 @@ class PetDetails extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    "${_petDetailsController.petDetail.city} / ${_petDetailsController.petDetail.state}",
+                    renderCityPet(),
                     style: const TextStyle(
                       color: grey600,
                       fontSize: 16,
@@ -302,41 +302,93 @@ class PetDetails extends StatelessWidget {
               ),
             ],
           ),
-          !_petDetailsController.isExternalProfile ||
-                  _petDetailsController.isOwner ||
-                  _petDetailsController.petDetail.category !=
-                      PetCategory.adoption
-              ? const SizedBox.shrink()
-              : Material(
-                  color: primary,
-                  borderRadius: BorderRadius.circular(20),
-                  child: InkWell(
-                    onTap: () => Get.toNamed(Routes.chatPeople),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: primary.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 2,
-                            offset: const Offset(0, 0),
-                          )
-                        ],
-                      ),
-                      child: const CustomText(
-                        text: "Me adote",
-                        color: base,
-                      ),
-                    ),
-                  ),
-                ),
+          renderContactButton(),
         ],
       ),
     );
+  }
+
+  Widget renderContactButton() {
+    if (_petDetailsController.isExternalProfile) {
+      return _petDetailsController.petDetailExternal.category !=
+                  PetCategory.normal &&
+              _petDetailsController.petDetailExternal.category !=
+                  PetCategory.profile
+          ? Material(
+              color: primary,
+              borderRadius: BorderRadius.circular(20),
+              child: InkWell(
+                onTap: () => Get.toNamed(Routes.chatPeople),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: primary.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                        offset: const Offset(0, 0),
+                      )
+                    ],
+                  ),
+                  child: CustomText(
+                    text: _petDetailsController.petDetail.category ==
+                            PetCategory.adoption
+                        ? "Me adote"
+                        : "Contate-me",
+                    color: base,
+                  ),
+                ),
+              ),
+            )
+          : const SizedBox.shrink();
+    } else {
+      return !_petDetailsController.isOwner &&
+              _petDetailsController.petDetail.category != PetCategory.normal &&
+              _petDetailsController.petDetail.category != PetCategory.profile
+          ? Material(
+              color: primary,
+              borderRadius: BorderRadius.circular(20),
+              child: InkWell(
+                onTap: () => Get.toNamed(Routes.chatPeople),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: primary.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                        offset: const Offset(0, 0),
+                      )
+                    ],
+                  ),
+                  child: CustomText(
+                    text: _petDetailsController.petDetail.category ==
+                            PetCategory.adoption
+                        ? "Me adote"
+                        : "Contate-me",
+                    color: base,
+                  ),
+                ),
+              ),
+            )
+          : const SizedBox.shrink();
+    }
+  }
+
+  String renderCityPet() {
+    if (_petDetailsController.isExternalProfile) {
+      return "${_petDetailsController.petDetailExternal.city} / ${_petDetailsController.petDetailExternal.state}";
+    } else {
+      return "${_petDetailsController.petDetail.city} / ${_petDetailsController.petDetail.state}";
+    }
   }
 
   String getPetNameWhenEmpty({

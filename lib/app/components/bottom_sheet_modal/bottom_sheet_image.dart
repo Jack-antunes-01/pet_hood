@@ -21,12 +21,24 @@ Future pickImage({
 
     final imageTemporary = File(image.path);
 
-    if (isPublication) {
-      final PublicationPageController _publicationPageController = Get.find();
-      _publicationPageController.petImage = imageTemporary;
+    final bytes = imageTemporary.readAsBytesSync().lengthInBytes;
+    final kb = bytes / 1024;
+    final mb = kb / 1024;
+    if (mb < 10) {
+      if (isPublication) {
+        final PublicationPageController _publicationPageController = Get.find();
+        _publicationPageController.petImage = imageTemporary;
+      } else {
+        final PetDetailsController _petDetailsController = Get.find();
+        _petDetailsController.petImage = imageTemporary;
+      }
     } else {
-      final PetDetailsController _petDetailsController = Get.find();
-      _petDetailsController.petImage = imageTemporary;
+      Get.snackbar(
+        "Imagem muito grande!",
+        "Selecione uma imagem menor que 10MB\nTamanho atual: ${mb.round()} MB",
+        backgroundColor: primary,
+        colorText: base,
+      );
     }
   } on PlatformException {
     Get.snackbar(

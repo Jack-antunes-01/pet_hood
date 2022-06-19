@@ -111,7 +111,7 @@ class PetWidgetProfile extends StatelessWidget {
                                 '${pet.age.toString()} ${getYearOrMonth(pet.yearOrMonth!)}',
                             feature: "Idade"),
                         const SizedBox(width: 8),
-                        buildPetFeature(value: "Vira-lata", feature: "Raça"),
+                        buildPetFeature(value: pet.breed!, feature: "Raça"),
                         const SizedBox(width: 8),
                       ],
                     ),

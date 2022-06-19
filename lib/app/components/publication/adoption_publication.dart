@@ -13,7 +13,8 @@ import 'package:pet_hood/utils/utils.dart';
 
 class AdoptionPublication extends StatelessWidget {
   final UserController _userController = Get.find();
-  final PetDetailsController _petDetailsController = Get.find();
+  final PetDetailsController _petDetailsController =
+      Get.put(PetDetailsController());
   final PostEntity post;
   final bool isExternalProfile;
 
@@ -26,7 +27,7 @@ class AdoptionPublication extends StatelessWidget {
   void seeMore() {
     _petDetailsController.setPet(
       pet: post.pet!,
-      userId: _userController.userEntity.id,
+      userId: post.userId,
       isExternalProfile: isExternalProfile,
     );
     Get.toNamed(Routes.petDetails);
@@ -34,7 +35,7 @@ class AdoptionPublication extends StatelessWidget {
 
   void openExternalProfile() async {
     await ApiController().goToExternalProfileById(
-      userId: _petDetailsController.petDetail.userId,
+      userId: post.userId,
     );
   }
 

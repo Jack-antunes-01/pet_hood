@@ -812,7 +812,6 @@ class ApiController {
         data: {
           "breed": breed,
           "name": petName,
-          "description": description,
           "age": age,
           "vaccine": vaccine,
           "pet_image": imagePath.data,
@@ -925,7 +924,7 @@ class ApiController {
       var responsePet = await _apiAdapter.post(
         "/pets",
         data: {
-          "description": description,
+          "bio": description,
           "breed": '',
           "pet_image": imagePath.data,
           "pet_category": 'normal',
