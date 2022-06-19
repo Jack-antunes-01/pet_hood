@@ -1,10 +1,15 @@
-import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
+import 'package:get/route_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
+import 'package:pet_hood/app/controllers/external_profile_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
+import 'package:pet_hood/app/pages/profile/add_pet_page/add_pet_page.dart';
 import 'package:pet_hood/app/pages/publication/publication_page.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/core/entities/entities.dart';
@@ -26,6 +31,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final UserController _userController = Get.find();
   final PublicationPageController _publicationPageController = Get.find();
+  final ExternalProfileController _externalProfileController = Get.find();
+  late ScrollController _controller;
 
   Future pickImage({
     required ImageSource source,
@@ -37,20 +44,10 @@ class _ProfilePageState extends State<ProfilePage> {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
-      final imageTemporary = File(image.path);
-
       if (isProfileImage) {
-        _userController.loadingProfileImage = true;
-        await Future.delayed(const Duration(seconds: 2), () {
-          _userController.profileImage = imageTemporary;
-        });
-        _userController.loadingProfileImage = false;
+        await ApiController().updateProfileImage(image);
       } else {
-        _userController.loadingBackgroundImage = true;
-        await Future.delayed(const Duration(seconds: 2), () {
-          _userController.backgroundImage = imageTemporary;
-        });
-        _userController.loadingBackgroundImage = false;
+        await ApiController().updateBackgroundImage(image);
       }
     } on PlatformException {
       Get.snackbar(
@@ -63,22 +60,86 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _controller = ScrollController();
+    _controller.addListener(_scrollListener);
+  }
+
+  _scrollListener() async {
+    if (_controller.offset >= _controller.position.maxScrollExtent &&
+        !_controller.position.outOfRange) {
+      widget.isOwner ? getMorePosts() : getMoreExternalPosts();
+    }
+  }
+
+  Future getMorePosts() async {
+    if (!_userController.maxPostsReached) {
+      try {
+        _userController.loadMoreFeed = true;
+        await ApiController().getPostsByUserId(
+          userId: _userController.userEntity.id,
+          page: _userController.page,
+        );
+      } on DioError catch (e) {
+        _userController.loadMoreFeed = false;
+        Get.snackbar(
+          "Erro",
+          e.message.toString(),
+          backgroundColor: primary,
+          colorText: base,
+          duration: const Duration(seconds: 2),
+        );
+      }
+      _userController.loadMoreFeed = false;
+    }
+  }
+
+  Future getMoreExternalPosts() async {
+    if (!_externalProfileController.maxPostsReached) {
+      try {
+        _externalProfileController.loadMoreFeed = true;
+        await ApiController().getPostsByUserId(
+          userId: _externalProfileController.externalUserEntity.id,
+          page: _externalProfileController.page,
+        );
+      } on DioError catch (e) {
+        _externalProfileController.loadMoreFeed = false;
+        Get.snackbar(
+          "Erro",
+          e.message.toString(),
+          backgroundColor: primary,
+          colorText: base,
+          duration: const Duration(seconds: 2),
+        );
+      }
+      _externalProfileController.loadMoreFeed = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     var safePadding = MediaQuery.of(context).padding.bottom;
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.only(bottom: safePadding + 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _header(context),
-            _bio(),
-            _myPets(),
-            _adoption(),
-            _publications(),
-          ],
-        ),
-      ),
+    return Obx(
+      () => _externalProfileController.loadingProfile
+          ? _buildLoading()
+          : SingleChildScrollView(
+              controller: _controller,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: safePadding + 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _header(context),
+                    _bio(),
+                    _myPets(),
+                    _adoption(),
+                    _publications(),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
@@ -90,28 +151,29 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Stack(
             children: [
-              Obx(
-                () => Stack(
-                  children: [
-                    UserBackgroundImage(
-                      backgroundImage: _userController.backgroundImage,
-                      isLoading: _userController.loadingBackgroundImage,
-                    ),
-                    _userController.loadingBackgroundImage
-                        ? Positioned(
-                            top: 50,
-                            left: width / 2 - 10,
-                            child: const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: base,
-                              ),
+              Stack(
+                children: [
+                  UserBackgroundImage(
+                    backgroundImage: widget.isOwner
+                        ? _userController.userEntity.backgroundImage
+                        : _externalProfileController
+                            .externalUserEntity.backgroundImage,
+                    isLoading: _userController.loadingBackgroundImage,
+                  ),
+                  _userController.loadingBackgroundImage
+                      ? Positioned(
+                          top: 50,
+                          left: width / 2 - 10,
+                          child: const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: base,
                             ),
-                          )
-                        : const SizedBox.shrink(),
-                  ],
-                ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ],
               ),
               widget.isOwner
                   ? Positioned(
@@ -149,29 +211,30 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Stack(
                   children: [
-                    Obx(
-                      () => Stack(
-                        children: [
-                          UserAvatar(
-                            size: 100,
-                            avatarFile: _userController.profileImage,
-                            isLoading: _userController.loadingProfileImage,
-                          ),
-                          _userController.loadingProfileImage
-                              ? const Positioned(
-                                  top: 42,
-                                  left: 43,
-                                  child: SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      color: base,
-                                    ),
+                    Stack(
+                      children: [
+                        UserAvatar(
+                          size: 100,
+                          avatar: widget.isOwner
+                              ? _userController.userEntity.profileImage
+                              : _externalProfileController
+                                  .externalUserEntity.profileImage,
+                          isLoading: _userController.loadingProfileImage,
+                        ),
+                        _userController.loadingProfileImage
+                            ? const Positioned(
+                                top: 42,
+                                left: 43,
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: base,
                                   ),
-                                )
-                              : const SizedBox.shrink(),
-                        ],
-                      ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ],
                     ),
                     widget.isOwner
                         ? Positioned(
@@ -223,17 +286,19 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            text: _userController.userEntity.name,
+                            text: widget.isOwner
+                                ? _userController.userEntity.name
+                                : _externalProfileController
+                                    .externalUserEntity.name,
                             color: grey800,
                             fontSize: 18,
                             textOverflow: TextOverflow.ellipsis,
                           ),
-                          Obx(
-                            () => CustomText(
-                              text: "@${_userController.userEntity.userName}",
-                              color: grey600,
-                              textOverflow: TextOverflow.ellipsis,
-                            ),
+                          CustomText(
+                            text:
+                                "@${widget.isOwner ? _userController.userEntity.userName : _externalProfileController.externalUserEntity.userName}",
+                            color: grey600,
+                            textOverflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
@@ -273,6 +338,18 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Widget _buildLoading() {
+    return const Center(
+      child: SizedBox(
+        width: 30,
+        height: 30,
+        child: CircularProgressIndicator(
+          color: primary,
+        ),
+      ),
+    );
+  }
+
   Widget _bio() {
     return Padding(
       padding: const EdgeInsets.only(
@@ -306,12 +383,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 expandedAlignment: Alignment.centerLeft,
                 children: [
-                  Obx(() => CustomText(
-                        text: _userController.userEntity.bio.isNotEmpty
-                            ? _userController.userEntity.bio
-                            : "Não há nada aqui! Altere sua bio.",
-                        color: grey600,
-                      )),
+                  CustomText(
+                    text: renderBio(),
+                    color: grey600,
+                  ),
                 ],
               ),
             ),
@@ -321,28 +396,32 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  String renderBio() {
+    if (widget.isOwner) {
+      return _userController.userEntity.bio != null &&
+              _userController.userEntity.bio!.isNotEmpty
+          ? _userController.userEntity.bio!
+          : "Não há nada aqui! Altere sua bio.";
+    } else {
+      return _externalProfileController.externalUserEntity.bio!.isNotEmpty
+          ? _externalProfileController.externalUserEntity.bio!
+          : "Não há nada aqui!";
+    }
+  }
+
   Widget _myPets() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 8, left: 20, right: 20),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8, left: 20, right: 20),
           child: CustomText(
-            text: "Meus Pets",
+            text: widget.isOwner ? "Meus Pets" : "Pets",
             color: grey800,
             fontSize: 18,
           ),
         ),
-        Obx(() => _userController.petList.isNotEmpty
-            ? SizedBox(
-                height: 280,
-                child: ListView(
-                  physics: const BouncingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  children: buildMyPets(),
-                ),
-              )
-            : _noPets()),
+        _renderMyPets(),
         widget.isOwner
             ? Padding(
                 padding: const EdgeInsets.only(
@@ -351,33 +430,114 @@ class _ProfilePageState extends State<ProfilePage> {
                   bottom: 16,
                 ),
                 child: CustomButton(
-                    child: const CustomText(
-                      text: "Adicionar pet",
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: base,
-                    ),
-                    onPress: () {}),
+                  child: const CustomText(
+                    text: "Adicionar pet",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: base,
+                  ),
+                  onPress: () => showGeneralDialog(
+                    transitionBuilder: (context, anim1, anim2, child) {
+                      return SlideTransition(
+                        position: Tween(
+                                begin: const Offset(0, 1),
+                                end: const Offset(0, 0))
+                            .animate(anim1),
+                        child: child,
+                      );
+                    },
+                    context: context,
+                    barrierColor: base, // Background color
+                    barrierDismissible: false,
+                    barrierLabel: 'Dialog',
+                    transitionDuration: const Duration(milliseconds: 200),
+                    pageBuilder: (_, __, ___) {
+                      return const AddPetPage();
+                    },
+                  ),
+                ),
               )
             : const SizedBox.shrink()
       ],
     );
   }
 
-  List<Widget> buildMyPets() {
-    List<Widget> _list = [];
-    List<PetEntity> _pets = _userController.petList;
-
-    for (var i = 0; i < _pets.length; i++) {
-      _list.add(
-        PetWidgetProfile(
-          pet: _pets[i],
-          index: i,
-        ),
-      );
+  Widget _renderMyPets() {
+    if (widget.isOwner) {
+      return _userController.petList.isNotEmpty
+          ? SizedBox(
+              height: 280,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) => PetWidgetProfile(
+                  pet: _userController.petList[index],
+                  index: index,
+                ),
+                itemCount: _userController.petList.length,
+              ),
+            )
+          : _noPets();
+    } else {
+      return _externalProfileController.petList.isNotEmpty
+          ? SizedBox(
+              height: 280,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) => PetWidgetProfile(
+                  pet: _externalProfileController.petList[index],
+                  index: index,
+                  isExternalProfile: true,
+                ),
+                itemCount: _externalProfileController.petList.length,
+              ),
+            )
+          : _noPets();
     }
+  }
 
-    return _list;
+  Widget _renderAdoptionPets() {
+    if (widget.isOwner) {
+      return _userController.adoptionPetList.isNotEmpty
+          ? SizedBox(
+              height: 300,
+              child: ListView(
+                  padding: const EdgeInsets.only(left: 20, right: 4),
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  children: _userController.adoptionPetList
+                      .where(
+                          (element) => element.category == PetCategory.adoption)
+                      .map((item) {
+                    return PetWidget(pet: item, index: 1);
+                  }).toList()),
+            )
+          : _noAdoptionPets();
+    } else {
+      return _externalProfileController.adoptionPetList.isNotEmpty
+          ? SizedBox(
+              height: 300,
+              child: ListView(
+                padding: const EdgeInsets.only(left: 20, right: 4),
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                children: _externalProfileController.adoptionPetList
+                    .where(
+                        (element) => element.category == PetCategory.adoption)
+                    .map((item) {
+                  return PetWidget(
+                    pet: item,
+                    index: 1,
+                    isExternalProfile: true,
+                  );
+                }).toList(),
+              ),
+            )
+          : _noAdoptionPets();
+    }
   }
 
   Widget _adoption() {
@@ -392,22 +552,7 @@ class _ProfilePageState extends State<ProfilePage> {
             fontSize: 18,
           ),
         ),
-        Obx(() => _userController.adoptionPetList.isNotEmpty
-            ? SizedBox(
-                height: 280,
-                child: ListView(
-                  padding: const EdgeInsets.only(left: 20, right: 4),
-                  physics: const BouncingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  children: _userController.adoptionPetList
-                      .where(
-                          (element) => element.category == PetCategory.adoption)
-                      .map((item) {
-                    return PetWidget(pet: item, index: 1);
-                  }).toList(),
-                ),
-              )
-            : _noAdoptionPets()),
+        _renderAdoptionPets(),
         widget.isOwner
             ? Padding(
                 padding: const EdgeInsets.only(
@@ -465,49 +610,105 @@ class _ProfilePageState extends State<ProfilePage> {
             fontSize: 18,
           ),
         ),
-        _userController.postList.isNotEmpty
-            ? ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.only(top: 10),
-                shrinkWrap: true,
-                itemBuilder: (context, index) =>
-                    _buildFeed(_userController.postList[index]),
-                itemCount: _userController.postList.length,
-              )
-            : const Padding(
-                padding: EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: 8,
-                ),
-                child: CustomText(
-                  text: "Crie uma publicação e ela aparecerá aqui!",
-                  color: grey600,
-                ),
-              ),
-        // NormalPublication(),
-        // Divider(color: grey200, thickness: 10),
-        // NormalPublication(),
-        // Divider(color: grey200, thickness: 10),
-        // NormalPublication(),
+        widget.isOwner ? _renderPosts() : _renderExternalPosts(),
       ],
     );
   }
 
+  Widget _renderPosts() {
+    return _userController.postList.isNotEmpty
+        ? ListView.separated(
+            separatorBuilder: (context, index) => Container(
+              color: inputColor,
+              height: 10,
+            ),
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(top: 10),
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              if (index > _userController.postList.length - 1 &&
+                  _userController.maxPostsReached) {
+                return const SizedBox.shrink();
+              }
+              if (index > _userController.postList.length - 1) {
+                return _buildCustomLoading();
+              }
+
+              return _buildFeed(_userController.postList[index]);
+            },
+            itemCount: _userController.postList.length + 1,
+          )
+        : const Padding(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 8,
+            ),
+            child: CustomText(
+              text: "Crie uma publicação e ela aparecerá aqui!",
+              color: grey600,
+            ),
+          );
+  }
+
+  Widget _buildCustomLoading() {
+    return const SizedBox(
+      width: 100,
+      height: 100,
+      child: Center(
+        child: CircularProgressIndicator(
+          color: primary,
+        ),
+      ),
+    );
+  }
+
+  Widget _renderExternalPosts() {
+    return _externalProfileController.postList.isNotEmpty
+        ? ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(top: 10),
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              if (index > _externalProfileController.postList.length - 1 &&
+                  _externalProfileController.maxPostsReached) {
+                return const SizedBox.shrink();
+              }
+              if (index > _externalProfileController.postList.length - 1) {
+                return _buildCustomLoading();
+              }
+
+              return _buildFeed(_externalProfileController.postList[index]);
+            },
+            itemCount: _externalProfileController.postList.length + 1,
+          )
+        : const Padding(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 8,
+            ),
+            child: CustomText(
+              text: "Não há publicações",
+              color: grey600,
+            ),
+          );
+  }
+
   Widget _buildFeed(PostEntity post) {
-    if (post.type == PostTypeEnum.normal) {
+    if (post.pet!.category == PetCategory.normal) {
       return NormalPublication(post: post);
     }
 
-    if (post.type == PostTypeEnum.adoption) {
+    if (post.pet!.category == PetCategory.adoption) {
       return AdoptionPublication(post: post);
     }
 
-    if (post.type == PostTypeEnum.disappear) {
+    if (post.pet!.category == PetCategory.disappear) {
       return MissingPublication(post: post);
     }
 
-    if (post.type == PostTypeEnum.found) {
+    if (post.pet!.category == PetCategory.found) {
       return FoundPublication(post: post);
     }
 
@@ -518,29 +719,32 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _noPets() {
-    return const Padding(
-      padding: EdgeInsets.only(
+    return Padding(
+      padding: const EdgeInsets.only(
         left: 20,
         right: 20,
         bottom: 16,
       ),
       child: CustomText(
-        text:
-            "Você não adicionou nenhum pet. Adicione e mostre para todos que acessarem seu perfil!",
+        text: widget.isOwner
+            ? "Você não adicionou nenhum pet. Adicione e mostre para todos que acessarem seu perfil!"
+            : "Não há nenhum pet",
         color: grey600,
       ),
     );
   }
 
   Widget _noAdoptionPets() {
-    return const Padding(
-      padding: EdgeInsets.only(
+    return Padding(
+      padding: const EdgeInsets.only(
         left: 20,
         right: 20,
         bottom: 16,
       ),
       child: CustomText(
-        text: "Você não possui nenhum pet para adoção.",
+        text: widget.isOwner
+            ? "Você não possui nenhum pet para adoção."
+            : "Não há pets para adoção",
         color: grey600,
       ),
     );

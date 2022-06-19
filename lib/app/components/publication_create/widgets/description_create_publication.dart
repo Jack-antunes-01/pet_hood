@@ -1,14 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/bottom_sheet_modal/bottom_sheet_image.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/pages/publication/publication_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class DescriptionCreatePublication extends StatelessWidget {
-  DescriptionCreatePublication({Key? key}) : super(key: key);
+  final bool isPublication;
+
+  DescriptionCreatePublication({
+    Key? key,
+    this.isPublication = true,
+  }) : super(key: key);
 
   final PublicationPageController _publicationPageController = Get.find();
+  final PetDetailsController _petDetailsController = Get.find();
+
+  bool haveImage() {
+    if ((isPublication &&
+            _publicationPageController.petImage.path.isNotEmpty) ||
+        _publicationPageController.postEntityTemp.pet != null &&
+            _publicationPageController
+                .postEntityTemp.pet!.petImage!.isNotEmpty) {
+      return true;
+    }
+
+    if (_petDetailsController.petImage.path.isNotEmpty ||
+        (_petDetailsController.petDetail.petImage != null &&
+            _petDetailsController.petDetail.petImage!.isNotEmpty)) return true;
+
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +50,9 @@ class DescriptionCreatePublication extends StatelessWidget {
                 child: CustomText(text: "Descrição", color: grey800),
               ),
               TextField(
-                controller: _publicationPageController.descriptionController,
+                controller: isPublication
+                    ? _publicationPageController.descriptionController
+                    : _petDetailsController.descriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
@@ -49,7 +75,10 @@ class DescriptionCreatePublication extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: GestureDetector(
                   onTap: () {
-                    openBottomSheetModalImage(context);
+                    openBottomSheetModalImage(
+                      context: context,
+                      isPublication: isPublication,
+                    );
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -70,21 +99,37 @@ class DescriptionCreatePublication extends StatelessWidget {
           ),
         ),
         Obx(
-          () => _publicationPageController.petImage.path.isNotEmpty
+          () => haveImage()
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 16),
-                  child: SizedBox(
-                    height: 250,
-                    width: width,
-                    child: Image.file(
-                      _publicationPageController.petImage,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  child: SizedBox(height: 250, width: width, child: getImage()),
                 )
               : const SizedBox.shrink(),
         ),
       ],
     );
+  }
+
+  Widget getImage() {
+    if (_petDetailsController.petDetail.id.isNotEmpty &&
+        _petDetailsController.petImage.path.isEmpty) {
+      return Image.network(
+        '${dotenv.env['API_IMAGE']}${_petDetailsController.petDetail.petImage}',
+        fit: BoxFit.cover,
+      );
+    } else if (!_publicationPageController.isChangePublicationTypeEnabled &&
+        _publicationPageController.petImage.path.isEmpty) {
+      return Image.network(
+        '${dotenv.env['API_IMAGE']}${_publicationPageController.postEntityTemp.pet!.petImage!}',
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.file(
+        isPublication
+            ? _publicationPageController.petImage
+            : _petDetailsController.petImage,
+        fit: BoxFit.cover,
+      );
+    }
   }
 }

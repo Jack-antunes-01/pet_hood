@@ -1,11 +1,11 @@
-import 'dart:io';
+enum PetCategory { normal, adoption, disappear, found, profile }
 
-enum PetCategory { adoption, disappear, found }
 enum YearOrMonth { years, months }
 
 class PetEntity {
   final String id;
   final String userId;
+  final String? postId;
   final String? name;
   final String? breed;
   final bool? vaccine;
@@ -15,10 +15,8 @@ class PetEntity {
   final String city;
   final String state;
   final String? petImage;
-  final File? petImageFile;
   final DateTime createdAt;
   final String petOwnerName;
-  final File? petOwnerImageFile;
   final String? petOwnerImage;
 
   final PetCategory category;
@@ -34,15 +32,11 @@ class PetEntity {
     required this.createdAt,
     required this.petOwnerName,
     required this.petOwnerImage,
-    this.petOwnerImageFile,
     this.name,
     this.vaccine,
     this.age,
     this.yearOrMonth,
     this.petImage,
-    this.petImageFile,
+    this.postId,
   });
-
-  // PetCategory.values.firstWhere((element) => element == category),
-
 }

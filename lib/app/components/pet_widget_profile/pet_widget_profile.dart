@@ -1,29 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
+import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class PetWidgetProfile extends StatelessWidget {
-  const PetWidgetProfile({
+  final PetDetailsController _petDetailsController = Get.find();
+  final UserController _userController = Get.find();
+
+  PetWidgetProfile({
     Key? key,
     required this.pet,
     required this.index,
+    this.isExternalProfile = false,
   }) : super(key: key);
 
   final PetEntity pet;
   final int index;
+  final bool isExternalProfile;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
-        Get.toNamed(
-          Routes.petDetails,
-          arguments: pet,
+        _petDetailsController.setPet(
+          pet: pet,
+          userId: _userController.userEntity.id,
+          isExternalProfile: isExternalProfile,
         );
+        Get.toNamed(Routes.petDetails);
       },
       child: Container(
         decoration: const BoxDecoration(
@@ -33,7 +43,7 @@ class PetWidgetProfile extends StatelessWidget {
             topRight: Radius.circular(4),
           ),
         ),
-        width: 230,
+        width: 240,
         margin: EdgeInsets.only(
           right: 16,
           left: index == 0 ? 16 : 0,
@@ -46,37 +56,22 @@ class PetWidgetProfile extends StatelessWidget {
               child: Stack(
                 children: [
                   Hero(
-                    tag: pet.petImage != null && pet.petImage!.isNotEmpty
-                        ? pet.petImage!
-                        : pet.petImageFile!.path,
-                    child: pet.petImage != null
-                        ? Container(
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image:
-                                    AssetImage("assets/images/dog_image.png"),
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                topRight: Radius.circular(4),
-                              ),
-                            ),
-                          )
-                        : SizedBox(
-                            height: 300,
-                            width: width,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                topRight: Radius.circular(4),
-                              ),
-                              child: Image.file(
-                                pet.petImageFile!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
+                    tag:
+                        isExternalProfile ? 'p${pet.petImage!}' : pet.petImage!,
+                    child: SizedBox(
+                      height: 300,
+                      width: width,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        ),
+                        child: Image.network(
+                          '${dotenv.env["API_IMAGE"]}${pet.petImage}',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -111,7 +106,10 @@ class PetWidgetProfile extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const SizedBox(width: 8),
-                        buildPetFeature(value: "4 anos", feature: "Idade"),
+                        buildPetFeature(
+                            value:
+                                '${pet.age.toString()} ${getYearOrMonth(pet.yearOrMonth!)}',
+                            feature: "Idade"),
                         const SizedBox(width: 8),
                         buildPetFeature(value: "Vira-lata", feature: "Raça"),
                         const SizedBox(width: 8),
@@ -125,6 +123,13 @@ class PetWidgetProfile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getYearOrMonth(YearOrMonth yearOrMonth) {
+    if (yearOrMonth.name == 'years') {
+      return 'anos';
+    }
+    return 'meses';
   }
 
   Widget buildPetFeature({

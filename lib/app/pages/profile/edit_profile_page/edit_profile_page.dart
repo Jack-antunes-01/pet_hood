@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/pages/profile/edit_profile_page/edit_profile_page_controller.dart';
 import 'package:pet_hood/app/theme/colors.dart';
-import 'package:pet_hood/core/entities/user_entity.dart';
-import 'package:pet_hood/utils/validators/email_validator.dart';
 import 'package:pet_hood/utils/validators/username_validator.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -34,7 +33,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         _userController.userEntity.userName;
 
     _editProfilePageController.bioController.text =
-        _userController.userEntity.bio;
+        _userController.userEntity.bio != null
+            ? _userController.userEntity.bio!
+            : "";
   }
 
   validateForm() async {
@@ -42,20 +43,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     if (isValidForm) {
       _editProfilePageController.loading = true;
-      await Future.delayed(const Duration(seconds: 2), () {
-        UserEntity _userEntity = _userController.userEntity;
 
-        String username =
-            _editProfilePageController.usernameController.text.toLowerCase();
+      String username =
+          _editProfilePageController.usernameController.text.toLowerCase();
+      String email = _userController.userEntity.email;
+      String bio = _editProfilePageController.bioController.text.trim();
 
-        _userEntity.email = _editProfilePageController.emailController.text;
-        _userEntity.userName = username;
-        _userEntity.bio = _editProfilePageController.bioController.text.trim();
+      final response = await ApiController().updateUserInfo(
+        bio: bio,
+        email: email,
+        username: username,
+      );
 
-        _userController.userEntity = _userEntity;
-
+      if (response) {
         Get.back();
-      });
+      }
+
       _editProfilePageController.loading = false;
     }
   }
@@ -84,14 +87,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 padding: EdgeInsets.only(bottom: 8),
                 child: CustomText(text: "Email", color: grey800),
               ),
-              CustomInput(
-                controller: _editProfilePageController.emailController,
-                placeholderText: "Email",
-                labelActive: false,
-                validator: (email) => emailValidator(
-                  value: email,
-                  isEnabled: true,
-                ),
+              CustomText(
+                text: _editProfilePageController.emailController.text,
+                color: grey800,
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 16, bottom: 8),

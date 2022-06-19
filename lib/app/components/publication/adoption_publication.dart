@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
+import 'package:pet_hood/app/controllers/pet_details_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/core/entities/pet_entity.dart';
 import 'package:pet_hood/app/theme/colors.dart';
-import 'package:pet_hood/core/entities/post_entity.dart';
+import 'package:pet_hood/core/entities/entities.dart';
 import 'package:pet_hood/utils/utils.dart';
 
 class AdoptionPublication extends StatelessWidget {
   final UserController _userController = Get.find();
+  final PetDetailsController _petDetailsController = Get.find();
   final PostEntity post;
+  final bool isExternalProfile;
 
   AdoptionPublication({
     Key? key,
     required this.post,
+    this.isExternalProfile = false,
   }) : super(key: key);
 
   void seeMore() {
-    Get.toNamed(
-      Routes.petDetails,
-      arguments: post.pet,
+    _petDetailsController.setPet(
+      pet: post.pet!,
+      userId: _userController.userEntity.id,
+      isExternalProfile: isExternalProfile,
+    );
+    Get.toNamed(Routes.petDetails);
+  }
+
+  void openExternalProfile() async {
+    await ApiController().goToExternalProfileById(
+      userId: _petDetailsController.petDetail.userId,
     );
   }
 
@@ -50,52 +63,54 @@ class AdoptionPublication extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 15,
-                    left: 15,
-                  ),
-                  child: post.isOwner
-                      ? Obx(
-                          () => UserAvatar(
-                            size: 56,
-                            avatarFile: _userController.profileImage,
-                            avatar: _userController.userEntity.profileImage,
-                          ),
-                        )
-                      : UserAvatar(
-                          size: 56,
-                          avatar: post.avatar,
-                        ),
-                ),
-                Expanded(
-                  child: Padding(
+            child: GestureDetector(
+              onTap: () => openExternalProfile(),
+              child: Row(
+                children: [
+                  Padding(
                     padding: const EdgeInsets.only(
+                      top: 15,
                       left: 15,
-                      right: 15,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: post.name,
-                          color: grey800,
-                          fontSize: 18,
-                          textOverflow: TextOverflow.ellipsis,
-                        ),
-                        CustomText(
-                          text: "@${post.username}",
-                          color: grey600,
-                          fontSize: 16,
-                          textOverflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                    child: post.isOwner
+                        ? Obx(
+                            () => UserAvatar(
+                              size: 56,
+                              avatar: _userController.userEntity.profileImage,
+                            ),
+                          )
+                        : UserAvatar(
+                            size: 56,
+                            avatar: post.avatar,
+                          ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 15,
+                        right: 15,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: post.name,
+                            color: grey800,
+                            fontSize: 18,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
+                          CustomText(
+                            text: "@${post.username}",
+                            color: grey600,
+                            fontSize: 16,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Padding(
@@ -109,7 +124,11 @@ class AdoptionPublication extends StatelessWidget {
                 splashColor: grey200,
                 highlightColor: grey200,
                 onTap: () {
-                  openBottomSheetModal(context, true);
+                  openBottomSheetModal(
+                    context: context,
+                    owner: post.isOwner,
+                    post: post,
+                  );
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(8),
@@ -129,7 +148,6 @@ class AdoptionPublication extends StatelessWidget {
   Widget _content(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-
     return Column(
       children: [
         Padding(
@@ -148,31 +166,21 @@ class AdoptionPublication extends StatelessWidget {
         Stack(
           children: [
             PinchToZoom(
-              child: post.postImage != null
-                  ? Container(
-                      height: height * 0.4,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(post.postImage!),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                  : SizedBox(
-                      height: height * 0.4,
-                      width: width,
-                      child: Image.file(
-                        post.postImageFile!,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+              child: SizedBox(
+                height: height * 0.4,
+                width: width,
+                child: Image.network(
+                  '${dotenv.env["API_IMAGE"]}${post.pet!.petImage}',
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             Positioned(
               bottom: 15,
               left: 15,
               child: TagPet(
                 category: PetCategory.values.firstWhere(
-                  (element) => element.name == post.type.name,
+                  (element) => element.name == post.pet!.category.name,
                 ),
               ),
             )
@@ -211,7 +219,7 @@ class AdoptionPublication extends StatelessWidget {
                 bottom: 8,
               ),
               child: CustomText(
-                text: post.postedAt.postDate(),
+                text: post.postedAt.postDate(post.postedAt),
                 color: grey600,
                 fontSize: 14,
               ),
@@ -230,7 +238,10 @@ class AdoptionPublication extends StatelessWidget {
             ? BuildPetFeature(value: post.pet!.name!, feature: "Nome")
             : const SizedBox.shrink(),
         post.pet?.age != null
-            ? BuildPetFeature(value: "${post.pet!.age!} anos", feature: "Idade")
+            ? BuildPetFeature(
+                value:
+                    '${post.pet!.age.toString()} ${getYearOrMonth(post.pet!.yearOrMonth!)}',
+                feature: "Idade")
             : const SizedBox.shrink(),
         post.pet?.breed != null
             ? BuildPetFeature(value: post.pet!.breed!, feature: "Raça")
@@ -242,5 +253,12 @@ class AdoptionPublication extends StatelessWidget {
         const SizedBox(width: 8),
       ],
     );
+  }
+
+  String getYearOrMonth(YearOrMonth yearOrMonth) {
+    if (yearOrMonth.name == 'years') {
+      return 'anos';
+    }
+    return 'meses';
   }
 }

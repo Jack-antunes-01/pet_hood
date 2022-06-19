@@ -13,7 +13,7 @@ class RankingPage extends StatelessWidget {
       ),
       body: const Center(
         child: CustomText(
-          text: "Ranking - Não implementado",
+          text: "Ranking - Em breve..",
           color: grey800,
         ),
       ),

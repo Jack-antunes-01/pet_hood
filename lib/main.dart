@@ -6,11 +6,14 @@ import 'package:pet_hood/app/bindings/initial_binding.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/routes/routes_list.dart';
 import 'package:pet_hood/app/theme/colors.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app/constants/constants.dart';
 
-void main() {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: ".env");
 
   runApp(const MyApp());
 }

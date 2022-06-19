@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/pinch_to_zoom/pinch_to_zoom.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/controllers/user_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/components/components.dart';
@@ -19,6 +21,10 @@ class MissingPublication extends StatelessWidget {
   }) : super(key: key);
 
   void goToChat() => Get.toNamed(Routes.chatPeople);
+
+  void openExternalProfile() async {
+    await ApiController().goToExternalProfileById(userId: post.userId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,52 +51,54 @@ class MissingPublication extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 15,
-                    left: 15,
-                  ),
-                  child: post.isOwner
-                      ? Obx(
-                          () => UserAvatar(
-                            size: 56,
-                            avatarFile: _userController.profileImage,
-                            avatar: _userController.userEntity.profileImage,
-                          ),
-                        )
-                      : UserAvatar(
-                          size: 56,
-                          avatar: post.avatar,
-                        ),
-                ),
-                Expanded(
-                  child: Padding(
+            child: GestureDetector(
+              onTap: () => openExternalProfile(),
+              child: Row(
+                children: [
+                  Padding(
                     padding: const EdgeInsets.only(
+                      top: 15,
                       left: 15,
-                      right: 15,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: post.name,
-                          color: grey800,
-                          fontSize: 18,
-                          textOverflow: TextOverflow.ellipsis,
-                        ),
-                        CustomText(
-                          text: "@${post.username}",
-                          color: grey600,
-                          fontSize: 16,
-                          textOverflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                    child: post.isOwner
+                        ? Obx(
+                            () => UserAvatar(
+                              size: 56,
+                              avatar: _userController.userEntity.profileImage,
+                            ),
+                          )
+                        : UserAvatar(
+                            size: 56,
+                            avatar: post.avatar,
+                          ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 15,
+                        right: 15,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: post.name,
+                            color: grey800,
+                            fontSize: 18,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
+                          CustomText(
+                            text: "@${post.username}",
+                            color: grey600,
+                            fontSize: 16,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Padding(
@@ -104,7 +112,11 @@ class MissingPublication extends StatelessWidget {
                 splashColor: grey200,
                 highlightColor: grey200,
                 onTap: () {
-                  openBottomSheetModal(context, true);
+                  openBottomSheetModal(
+                    context: context,
+                    owner: post.isOwner,
+                    post: post,
+                  );
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(8),
@@ -140,11 +152,11 @@ class MissingPublication extends StatelessWidget {
             ),
           ),
         ),
-        post.description != null && post.description!.isNotEmpty
+        post.pet?.description != null && post.pet!.description.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.only(right: 15, left: 15, bottom: 15),
                 child: CustomText(
-                  text: post.description!,
+                  text: post.pet!.description,
                   color: grey800,
                 ),
               )
@@ -152,31 +164,21 @@ class MissingPublication extends StatelessWidget {
         Stack(
           children: [
             PinchToZoom(
-              child: post.postImage != null
-                  ? Container(
-                      height: height * 0.4,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(post.postImage!),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                  : SizedBox(
-                      height: height * 0.4,
-                      width: width,
-                      child: Image.file(
-                        post.postImageFile!,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+              child: SizedBox(
+                height: height * 0.4,
+                width: width,
+                child: Image.network(
+                  '${dotenv.env["API_IMAGE"]}${post.pet!.petImage}',
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             Positioned(
               bottom: 15,
               left: 15,
               child: TagPet(
                 category: PetCategory.values.firstWhere(
-                  (element) => element.name == post.type.name,
+                  (element) => element.name == post.pet!.category.name,
                 ),
               ),
             )
@@ -215,7 +217,7 @@ class MissingPublication extends StatelessWidget {
                 bottom: 8,
               ),
               child: CustomText(
-                text: post.postedAt.postDate(),
+                text: post.postedAt.postDate(post.postedAt),
                 color: grey600,
                 fontSize: 14,
               ),
@@ -226,18 +228,25 @@ class MissingPublication extends StatelessWidget {
     );
   }
 
+  String getYearOrMonth(YearOrMonth yearOrMonth) {
+    if (yearOrMonth.name == 'years') {
+      return 'anos';
+    }
+    return 'meses';
+  }
+
   Widget _buildFeatures() {
     return Row(
       children: [
         const SizedBox(width: 8),
-        post.dateMissing != null
-            ? BuildPetFeature(value: post.dateMissing!, feature: "Desaparecido")
-            : const SizedBox.shrink(),
         post.pet?.name != null
             ? BuildPetFeature(value: post.pet!.name!, feature: "Nome")
             : const SizedBox.shrink(),
         post.pet?.age != null
-            ? BuildPetFeature(value: "${post.pet!.age} anos", feature: "Idade")
+            ? BuildPetFeature(
+                value:
+                    '${post.pet!.age.toString()} ${getYearOrMonth(post.pet!.yearOrMonth!)}',
+                feature: "Idade")
             : const SizedBox.shrink(),
         post.pet?.breed != null
             ? BuildPetFeature(value: post.pet!.breed!, feature: "Raça")

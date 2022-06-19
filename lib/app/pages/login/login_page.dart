@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
-import 'package:pet_hood/app/controllers/user_controller.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
 import 'package:pet_hood/app/pages/login/login_page_controller.dart';
 import 'package:pet_hood/app/routes/routes.dart';
 import 'package:pet_hood/app/theme/colors.dart';
@@ -14,8 +14,6 @@ class LoginPage extends StatelessWidget {
   final LoginPageController _loginPageController =
       Get.put(LoginPageController());
 
-  final UserController _userController = Get.find();
-
   final formKey = GlobalKey<FormState>();
 
   validateLogin() async {
@@ -23,24 +21,12 @@ class LoginPage extends StatelessWidget {
 
     if (isValidForm) {
       _loginPageController.loading = true;
-      await Future.delayed(const Duration(seconds: 2), () {
-        if (_loginPageController.emailController.text ==
-                _userController.userEntity.email &&
-            _loginPageController.passwordController.text ==
-                _userController.password) {
-          Get.offAllNamed("/");
-        } else {
-          Get.snackbar(
-            "Erro",
-            "Email ou senha incorretos",
-            duration: const Duration(
-              seconds: 2,
-            ),
-            backgroundColor: primary,
-            colorText: base,
-          );
-        }
-      });
+
+      final String email = _loginPageController.emailController.text;
+      final String password = _loginPageController.passwordController.text;
+
+      await ApiController().loginAttempt(email, password);
+
       _loginPageController.loading = false;
     }
   }
@@ -82,29 +68,30 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                    padding:
-                        const EdgeInsets.only(right: 32, left: 32, bottom: 16),
-                    child: Obx(
-                      () => CustomInput(
-                        controller: _loginPageController.passwordController,
-                        placeholderText: "Senha",
-                        obscureText: _loginPageController.hidePassword,
-                        onIconPress: () => _loginPageController.hidePassword =
-                            !_loginPageController.hidePassword,
-                        suffixIcon: const Icon(
-                          Icons.visibility_off_outlined,
-                          color: placeholder,
-                        ),
-                        suffixIconReverse: const Icon(
-                          Icons.visibility_outlined,
-                          color: placeholder,
-                        ),
-                        validator: (password) =>
-                            password != null && password.isNotEmpty
-                                ? null
-                                : "Digite sua senha",
+                  padding:
+                      const EdgeInsets.only(right: 32, left: 32, bottom: 16),
+                  child: Obx(
+                    () => CustomInput(
+                      controller: _loginPageController.passwordController,
+                      placeholderText: "Senha",
+                      obscureText: _loginPageController.hidePassword,
+                      onIconPress: () => _loginPageController.hidePassword =
+                          !_loginPageController.hidePassword,
+                      suffixIcon: const Icon(
+                        Icons.visibility_off_outlined,
+                        color: placeholder,
                       ),
-                    )),
+                      suffixIconReverse: const Icon(
+                        Icons.visibility_outlined,
+                        color: placeholder,
+                      ),
+                      validator: (password) =>
+                          password != null && password.isNotEmpty
+                              ? null
+                              : "Digite sua senha",
+                    ),
+                  ),
+                ),
                 Padding(
                   padding:
                       const EdgeInsets.only(right: 32, left: 32, bottom: 20),
@@ -119,7 +106,14 @@ class LoginPage extends StatelessWidget {
                 InkWell(
                   splashColor: inputColor,
                   highlightColor: inputColor,
-                  onTap: () {},
+                  onTap: () {
+                    Get.snackbar(
+                      "Desculpa",
+                      "Não implementamos a troca de senha ainda!",
+                      backgroundColor: primary,
+                      colorText: base,
+                    );
+                  },
                   child: const CustomText(
                     text: "Esqueceu a senha?",
                     color: primary,

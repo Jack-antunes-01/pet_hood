@@ -1,9 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/app/controllers/api_controller.dart';
+import 'package:pet_hood/app/pages/feed/feed_controller.dart';
 import 'package:pet_hood/app/pages/home/home_page_controller.dart';
 import 'package:pet_hood/app/pages/pages.dart';
 import 'package:pet_hood/app/routes/routes.dart';
+import 'package:pet_hood/app/theme/colors.dart';
 
 List<Widget> _pages(ScrollController controller) => [
       FeedPage(controller: controller),
@@ -22,21 +26,47 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final HomePageController _homePageController = Get.put(HomePageController());
+  final FeedController _feedController = Get.find();
 
-  late ScrollController controller;
+  late ScrollController _controller;
 
   @override
   void initState() {
     super.initState();
 
-    controller = ScrollController();
+    _controller = ScrollController();
+    _controller.addListener(_scrollListener);
+  }
+
+  _scrollListener() async {
+    if (_controller.offset >= _controller.position.maxScrollExtent &&
+        !_controller.position.outOfRange) {
+      if (!_feedController.maxPostsReached) {
+        try {
+          _feedController.loadMoreFeed = true;
+          await ApiController().getFeedPosts(
+            page: _feedController.page,
+          );
+        } on DioError catch (e) {
+          _feedController.loadMoreFeed = false;
+          Get.snackbar(
+            "Erro",
+            e.message.toString(),
+            backgroundColor: primary,
+            colorText: base,
+            duration: const Duration(seconds: 2),
+          );
+        }
+        _feedController.loadMoreFeed = false;
+      }
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    controller.dispose();
+    _controller.dispose();
   }
 
   Future<bool> _onWillPop() async {
@@ -68,14 +98,14 @@ class _HomePageState extends State<HomePage> {
         drawer: const DrawerNavigation(),
         appBar: _appBar(),
         bottomNavigationBar: ScrollToHideBottomTab(
-          controller: controller,
+          controller: _controller,
           child: BottomTabNavigation(),
           isBottomTab: true,
         ),
         body: Obx(
           () => Container(
-            child:
-                _pages(controller).elementAt(_homePageController.selectedIndex),
+            child: _pages(_controller)
+                .elementAt(_homePageController.selectedIndex),
           ),
         ),
       ),

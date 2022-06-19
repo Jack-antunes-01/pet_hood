@@ -1,13 +1,14 @@
 extension DateTimeExt on DateTime {
-  String postDate() {
-    final timeNow = DateTime.now();
+  String postDate(DateTime date) {
+    var postedDate = date.subtract(const Duration(hours: 6));
+    var timeNow = DateTime.now();
 
-    final int yearDiff = timeNow.year - year;
-    final int monthDiff = timeNow.month - month;
-    final int dayDiff = timeNow.day - day;
+    final int yearDiff = timeNow.year - postedDate.year;
+    final int monthDiff = timeNow.month - postedDate.month;
+    final int dayDiff = timeNow.day - postedDate.day;
 
-    final int hourDiff = timeNow.hour - hour;
-    final int minuteDiff = timeNow.minute - minute;
+    final int hourDiff = timeNow.hour - postedDate.hour;
+    final int minuteDiff = timeNow.minute - postedDate.minute;
 
     if (yearDiff > 0) {
       if (yearDiff == 1) {

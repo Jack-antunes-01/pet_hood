@@ -4,11 +4,13 @@ import 'package:pet_hood/app/theme/colors.dart';
 class CustomButton extends StatelessWidget {
   final Widget child;
   final VoidCallback onPress;
+  final Color backgroundColor;
 
   const CustomButton({
     Key? key,
     required this.child,
     required this.onPress,
+    this.backgroundColor = primary,
   }) : super(key: key);
 
   @override
@@ -17,7 +19,7 @@ class CustomButton extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        color: primary,
+        color: backgroundColor,
       ),
       child: Material(
         color: Colors.transparent,

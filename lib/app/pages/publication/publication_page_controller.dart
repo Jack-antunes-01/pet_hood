@@ -1,7 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:pet_hood/app/components/components.dart';
+import 'package:pet_hood/core/entities/entities.dart';
+
+PostEntity emptyEntity = PostEntity(
+  id: "",
+  userId: "",
+  name: "",
+  avatar: "",
+  username: "",
+  isOwner: false,
+  postedAt: DateTime.now(),
+);
 
 class PublicationPageController extends GetxController {
   TextEditingController descriptionController = TextEditingController();
@@ -12,6 +23,12 @@ class PublicationPageController extends GetxController {
   TextEditingController stateController = TextEditingController();
   TextEditingController dateMissingController = TextEditingController();
   TextEditingController dateFoundController = TextEditingController();
+
+  final RxBool _isChangePublicationTypeEnabled = RxBool(true);
+  bool get isChangePublicationTypeEnabled =>
+      _isChangePublicationTypeEnabled.value;
+  set isChangePublicationTypeEnabled(bool isChangePublicationTypeEnabled) =>
+      _isChangePublicationTypeEnabled.value = isChangePublicationTypeEnabled;
 
   final RxInt _selectedOption = RxInt(0);
   int get selectedOption => _selectedOption.value;
@@ -36,6 +53,10 @@ class PublicationPageController extends GetxController {
   RadioEnum get radioValue => _radioValue.value;
   set radioValue(RadioEnum radioEnum) => _radioValue.value = radioEnum;
 
+  final Rx<PostEntity> _postEntityTemp = Rx<PostEntity>(emptyEntity);
+  PostEntity get postEntityTemp => _postEntityTemp.value;
+  set postEntityTemp(PostEntity post) => _postEntityTemp.value = post;
+
   reset() {
     descriptionController.text = "";
     petNameController.text = "";
@@ -51,5 +72,24 @@ class PublicationPageController extends GetxController {
     loadingPublication = false;
     dropdownValue = "Anos";
     radioValue = RadioEnum.unselected;
+    isChangePublicationTypeEnabled = true;
+    postEntityTemp = emptyEntity;
+  }
+
+  void updatePost(PostEntity post) {
+    // int index = _feedController.listPosts.indexWhere((p) => p.id == post.id);
+
+// PostEntity updatedPost = PostEntity(
+//         id: post.id,
+//         type: post.pet!.category,
+//         name: post.name,
+//         avatar: post.avatar,
+//         username: post.username,
+//         isOwner: post.isOwner,
+//         postedAt: post.postedAt,
+//         description:
+//       );
+
+    // _feedController.listPosts[index] = post;
   }
 }

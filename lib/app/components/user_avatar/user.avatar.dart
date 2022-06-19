@@ -1,10 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pet_hood/app/theme/colors.dart';
 
 class UserAvatar extends StatelessWidget {
   final double size;
-  final File? avatarFile;
   final String? avatar;
   final bool useBorder;
   final bool isLoading;
@@ -12,7 +11,6 @@ class UserAvatar extends StatelessWidget {
   const UserAvatar({
     Key? key,
     this.size = 80,
-    this.avatarFile,
     this.avatar,
     this.useBorder = true,
     this.isLoading = false,
@@ -46,30 +44,15 @@ class UserAvatar extends StatelessWidget {
   }
 
   Widget _buildAvatar() {
-    if (avatarFile != null && avatarFile?.path != "") {
+    if (avatar != null && avatar!.isNotEmpty) {
       return ClipOval(
         child: ColorFiltered(
           colorFilter: ColorFilter.mode(
             Colors.black.withOpacity(isLoading ? 0.4 : 0),
             BlendMode.darken,
           ),
-          child: Image.file(
-            avatarFile!,
-            width: size,
-            height: size,
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
-    } else if (avatar != null && avatar!.isNotEmpty) {
-      return ClipOval(
-        child: ColorFiltered(
-          colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(isLoading ? 0.4 : 0),
-            BlendMode.darken,
-          ),
-          child: Image.asset(
-            avatar!,
+          child: Image.network(
+            '${dotenv.env["API_IMAGE"]}$avatar',
             fit: BoxFit.cover,
           ),
         ),
